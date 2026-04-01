@@ -1,13 +1,141 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+const problemCards = [
+  {
+    icon: "⚠️",
+    title: "The Problem",
+    color: "text-risk-coral",
+    border: "border-risk-coral/30 bg-risk-coral/5",
+    text: "Choosing where to build water-intensive infrastructure requires balancing environmental risk, cost, and carbon — a complex trade-off with no easy answer.",
+  },
+  {
+    icon: "💡",
+    title: "Our Solution",
+    color: "text-teal",
+    border: "border-teal/30 bg-teal/5",
+    text: "An interactive dashboard that translates raw data into a single Total Impact Score — with adjustable weights so every stakeholder can explore their own priorities.",
+  },
+  {
+    icon: "🎯",
+    title: "The Outcome",
+    color: "text-risk-green",
+    border: "border-risk-green/30 bg-risk-green/5",
+    text: "A publicly accessible tool any sustainability officer, city planner, or engineer can use — no programming required.",
+  },
+];
+
+const goals = [
+  {
+    num: "01",
+    title: "Curate Real Data",
+    text: "Gather standardized public data from NOAA, EIA, and Circle of Blue — covering temperature, rainfall, water price, and grid carbon intensity for 5 major U.S. cities.",
+  },
+  {
+    num: "02",
+    title: "Build a Scoring Model",
+    text: "Design a transparent, multi-variable algorithm that converts raw inputs into normalized indices and combines them into a single comparable Total Impact Score.",
+  },
+  {
+    num: "03",
+    title: "Enable Scenario Planning",
+    text: "Allow users to shift priorities between water sustainability, carbon reduction, and cooling cost — and instantly see how city rankings change.",
+  },
+  {
+    num: "04",
+    title: "Visualize the Trade-offs",
+    text: "Create clear charts and a clickable map that make complex multi-variable data intuitive at a glance for any audience.",
+  },
+  {
+    num: "05",
+    title: "Make it Accessible",
+    text: "Plain-language tooltips, clear disclaimers, and a guided interface ensure any stakeholder — not just engineers — can use the tool confidently.",
+  },
+  {
+    num: "06",
+    title: "Document the Process",
+    text: "Log every AI prompt used to build this app, creating a replicable vibe-coding workflow demonstrating how AI can produce professional engineering tools.",
+  },
+];
+
 const About = () => (
-  <div className="bg-background min-h-screen">
+  <div className="bg-cream min-h-screen">
     <Navbar />
-    <div className="max-w-[1240px] mx-auto px-14 py-16 text-center">
-      <h1 className="font-display text-4xl font-black text-foreground mb-4">About</h1>
-      <p className="text-slate">Coming soon — project background, problem statement, and goals.</p>
-    </div>
+
+    {/* Section 1 — Hero split */}
+    <section className="max-w-[1240px] mx-auto px-14 pt-20 pb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        {/* Left column */}
+        <div>
+          <span className="inline-block font-mono-code text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-5 tracking-wide">
+            // About the Project
+          </span>
+          <h1 className="font-display text-[42px] leading-[1.15] font-black text-foreground mb-6">
+            Why Water Matters for Data Centers
+          </h1>
+          <p className="text-[15px] text-slate leading-[1.75] mb-4">
+            Data centers are among the fastest-growing water consumers in the United States. A single hyperscale facility can use millions of gallons annually for cooling — competing directly with municipal and agricultural demand.
+          </p>
+          <p className="text-[15px] text-slate leading-[1.75]">
+            Yet most siting decisions focus on land cost, power availability, and connectivity — leaving water risk as an afterthought. This tool changes that. By combining real federal data with a transparent scoring algorithm, we make the trade-offs visible and actionable for any decision-maker.
+          </p>
+        </div>
+
+        {/* Right column — stacked cards */}
+        <div className="flex flex-col gap-4">
+          {problemCards.map((card) => (
+            <div
+              key={card.title}
+              className={`bg-card rounded-xl border-2 ${card.border} p-6 transition-all hover:-translate-y-1 hover:shadow-lg`}
+            >
+              <div className="flex items-start gap-4">
+                <span className="text-2xl mt-0.5">{card.icon}</span>
+                <div>
+                  <h3 className={`font-display text-lg font-bold ${card.color} mb-1.5`}>
+                    {card.title}
+                  </h3>
+                  <p className="text-[14px] text-slate leading-[1.7]">{card.text}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* Section 2 — Goals grid */}
+    <section className="bg-cream py-20">
+      <div className="max-w-[1240px] mx-auto px-14">
+        <div className="text-center mb-12">
+          <span className="inline-block font-mono-code text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-4 tracking-wide">
+            // Project Goals
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground">
+            What We Set Out To Do
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {goals.map((goal) => (
+            <div
+              key={goal.num}
+              className="relative bg-card rounded-xl border border-border p-7 overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg"
+            >
+              <span className="absolute top-3 right-5 font-display text-[72px] font-black text-teal/[0.08] leading-none select-none pointer-events-none">
+                {goal.num}
+              </span>
+              <h3 className="font-display text-lg font-bold text-teal mb-2 relative z-10">
+                {goal.title}
+              </h3>
+              <p className="text-[14px] text-slate leading-[1.7] relative z-10">
+                {goal.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <Footer />
   </div>
 );
