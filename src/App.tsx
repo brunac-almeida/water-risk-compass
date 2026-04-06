@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import About from "./pages/About.tsx";
 import Methodology from "./pages/Methodology.tsx";
 import Team from "./pages/Team.tsx";
+import SiteRecommender from "./pages/SiteRecommender.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recommender" element={<SiteRecommender />} />
           <Route path="/about" element={<About />} />
           <Route path="/methodology" element={<Methodology />} />
           <Route path="/team" element={<Team />} />
