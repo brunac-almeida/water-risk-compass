@@ -6,7 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, ScatterChart, Scatter, ZAxis, LabelList,
 } from "recharts";
-import { MapPin } from "lucide-react";
+import DashboardMap from "@/components/DashboardMap";
 
 /* ── raw city data ── */
 const BASE_DATA = [
@@ -240,14 +240,7 @@ const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="map">
-              <div className="bg-card rounded-lg border-2 border-dashed border-primary/40 p-16 flex flex-col items-center justify-center text-center min-h-[400px]">
-                <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mb-5">
-                  <MapPin className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="font-display text-xl font-bold text-foreground mb-2">Interactive Map</h3>
-                <p className="text-muted-foreground text-sm max-w-md mb-4">Click city pins to explore risk profiles across the five U.S. markets analyzed in this study.</p>
-                <span className="inline-block px-4 py-1.5 rounded-full bg-accent text-xs font-semibold text-accent-foreground">Map integration coming soon</span>
-              </div>
+              <DashboardMap weights={weights} />
             </TabsContent>
           </Tabs>
         </main>
