@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import avatarBruna from "@/assets/avatar-bruna.png";
 import avatarOzzy from "@/assets/avatar-ozzy.png";
 import avatarBen from "@/assets/avatar-ben.png";
@@ -124,13 +125,7 @@ const Team = () => (
       })}
     </section>
 
-    {/* Dark footer strip */}
-    <footer className="mt-auto bg-ink px-14 py-6 flex items-center justify-between">
-      <span className="font-display text-lg font-bold text-teal">WaterRisk Explorers · 2026</span>
-      <span className="font-mono-code text-[10px] text-slate/60">
-        A water risk site selection tool for data center infrastructure.
-      </span>
-    </footer>
+    <Footer />
   </div>
 );
 
