@@ -92,3 +92,15 @@
 .animate-blink {
   animation: blink 2s infinite;
 }
+
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 0;
+}
+.custom-leaflet-popup .leaflet-popup-content {
+  margin: 12px 16px;
+}
+.custom-leaflet-popup .leaflet-popup-tip {
+  box-shadow: none;
+}
