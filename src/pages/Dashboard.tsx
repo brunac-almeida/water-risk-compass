@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -245,6 +246,7 @@ const Dashboard = () => {
           </Tabs>
         </main>
       </div>
+      <Footer />
     </div>
   );
 };
