@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -38,10 +38,12 @@ const Dashboard = () => {
   const [selectedCity, setSelectedCity] = useState("Chicago");
   const [scenarioIdx, setScenarioIdx] = useState(0);
   const [weights, setWeights] = useState<Weights>({ water: 2.0, carbon: 1.5, cooling: 1.0 });
+  const manualSelect = useRef(false);
 
   const applyScenario = useCallback((idx: number) => {
     setScenarioIdx(idx);
     setWeights({ ...SCENARIOS[idx].weights });
+    manualSelect.current = false;
   }, []);
 
   /* computed city scores */
@@ -50,6 +52,19 @@ const Dashboard = () => {
       .sort((a, b) => a.total_score - b.total_score),
     [weights]
   );
+
+  /* auto-select best city when weights/scenario change (not on manual click) */
+  useEffect(() => {
+    if (!manualSelect.current && cities.length > 0) {
+      setSelectedCity(cities[0].city);
+    }
+    manualSelect.current = false;
+  }, [cities]);
+
+  const handleCitySelect = useCallback((city: string) => {
+    manualSelect.current = true;
+    setSelectedCity(city);
+  }, []);
 
   const selected = cities.find(c => c.city === selectedCity) ?? cities[0];
 
