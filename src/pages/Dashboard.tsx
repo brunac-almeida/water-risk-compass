@@ -27,12 +27,12 @@ const SCENARIOS: { label: string; tag: string; weights: Weights }[] = [
 ];
 
 function computeTotal(c: typeof BASE_DATA[0], w: Weights) {
-  const raw = c.water_stress * w.water + c.carbon_index * w.carbon + c.cooling_cost * w.cooling;
-  return +((raw / (w.water + w.carbon + w.cooling)) * 10).toFixed(2);
+  const raw = (c.water_stress * 100) * w.water + (c.carbon_index * 100) * w.carbon + (c.cooling_cost * 100) * w.cooling;
+  return +(raw / (w.water + w.carbon + w.cooling)).toFixed(1);
 }
 
 const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)"];
-const RISK_COLOR = (score: number) => score < 3 ? "hsl(148,62%,30%)" : score <= 5 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
+const RISK_COLOR = (score: number) => score < 30 ? "hsl(148,62%,30%)" : score <= 50 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
 
 const Dashboard = () => {
   const [selectedCity, setSelectedCity] = useState("Chicago");
@@ -83,7 +83,7 @@ const Dashboard = () => {
     </div>
   );
 
-  const totalColor = selected.total_score < 3 ? "text-risk-green" : selected.total_score <= 5 ? "text-risk-amber" : "text-risk-coral";
+  const totalColor = selected.total_score < 30 ? "text-risk-green" : selected.total_score <= 50 ? "text-risk-amber" : "text-risk-coral";
 
   return (
     <div className="bg-background min-h-screen font-body">
