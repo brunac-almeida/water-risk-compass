@@ -240,7 +240,7 @@ const SiteRecommender = () => {
                 </h2>
                 <div className="flex items-center justify-center gap-3 mt-3">
                   <span className="font-display text-4xl font-bold text-foreground">{results[0].total_score.toFixed(1)}</span>
-                  <span className="text-muted-foreground text-sm">/ 10</span>
+                  <span className="text-muted-foreground text-sm">/ 100</span>
                   <span className={`text-xs font-semibold px-3 py-1 rounded-full ${riskBg(results[0].total_score)}`}>
                     {riskLabel(results[0].total_score)}
                   </span>
