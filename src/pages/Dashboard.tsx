@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -38,10 +38,12 @@ const Dashboard = () => {
   const [selectedCity, setSelectedCity] = useState("Chicago");
   const [scenarioIdx, setScenarioIdx] = useState(0);
   const [weights, setWeights] = useState<Weights>({ water: 2.0, carbon: 1.5, cooling: 1.0 });
+  const manualSelect = useRef(false);
 
   const applyScenario = useCallback((idx: number) => {
     setScenarioIdx(idx);
     setWeights({ ...SCENARIOS[idx].weights });
+    manualSelect.current = false;
   }, []);
 
   /* computed city scores */
@@ -50,6 +52,19 @@ const Dashboard = () => {
       .sort((a, b) => a.total_score - b.total_score),
     [weights]
   );
+
+  /* auto-select best city when weights/scenario change (not on manual click) */
+  useEffect(() => {
+    if (!manualSelect.current && cities.length > 0) {
+      setSelectedCity(cities[0].city);
+    }
+    manualSelect.current = false;
+  }, [cities]);
+
+  const handleCitySelect = useCallback((city: string) => {
+    manualSelect.current = true;
+    setSelectedCity(city);
+  }, []);
 
   const selected = cities.find(c => c.city === selectedCity) ?? cities[0];
 
@@ -99,7 +114,7 @@ const Dashboard = () => {
               {cities.map(c => (
                 <button
                   key={c.city}
-                  onClick={() => setSelectedCity(c.city)}
+                  onClick={() => handleCitySelect(c.city)}
                   className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
                     c.city === selectedCity
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -152,7 +167,7 @@ const Dashboard = () => {
                 <Slider
                   min={0} max={4} step={0.1}
                   value={[weights[s.key]]}
-                  onValueChange={([v]) => setWeights(prev => ({ ...prev, [s.key]: v }))}
+                  onValueChange={([v]) => { manualSelect.current = false; setWeights(prev => ({ ...prev, [s.key]: v })); }}
                 />
               </div>
             ))}
