@@ -114,7 +114,7 @@ const Dashboard = () => {
               {cities.map(c => (
                 <button
                   key={c.city}
-                  onClick={() => setSelectedCity(c.city)}
+                  onClick={() => handleCitySelect(c.city)}
                   className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
                     c.city === selectedCity
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -167,7 +167,7 @@ const Dashboard = () => {
                 <Slider
                   min={0} max={4} step={0.1}
                   value={[weights[s.key]]}
-                  onValueChange={([v]) => setWeights(prev => ({ ...prev, [s.key]: v }))}
+                  onValueChange={([v]) => { manualSelect.current = false; setWeights(prev => ({ ...prev, [s.key]: v })); }}
                 />
               </div>
             ))}
