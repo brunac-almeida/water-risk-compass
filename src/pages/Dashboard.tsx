@@ -185,9 +185,9 @@ const Dashboard = () => {
             <TabsContent value="charts" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI icon="💧" label="Water Stress" value={selected.water_stress.toFixed(3)} />
-                <KPI icon="🌿" label="Carbon Index" value={selected.carbon_index.toFixed(3)} />
-                <KPI icon="🌡️" label="Cooling Cost" value={selected.cooling_cost.toFixed(3)} />
+                <KPI icon="💧" label="Water Stress" value={((selected.water_stress * 100) * weights.water / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
+                <KPI icon="🌿" label="Carbon Index" value={((selected.carbon_index * 100) * weights.carbon / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
+                <KPI icon="🌡️" label="Cooling Cost" value={((selected.cooling_cost * 100) * weights.cooling / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
                 <KPI icon="📊" label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
               </div>
 
