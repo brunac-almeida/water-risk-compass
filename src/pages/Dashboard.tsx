@@ -183,7 +183,7 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                      <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+                      <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <YAxis type="category" dataKey="city" width={100} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <Tooltip
                         formatter={(v: number) => [v.toFixed(2), "Score"]}
@@ -224,8 +224,8 @@ const Dashboard = () => {
                 <ResponsiveContainer width="100%" height={280}>
                   <ScatterChart margin={{ top: 10, right: 30, bottom: 20, left: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                    <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                    <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                    <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                    <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
                     <ZAxis dataKey="z" range={[200, 400]} />
                     <Tooltip
                       formatter={(v: number, name: string) => [v.toFixed(1), name]}
