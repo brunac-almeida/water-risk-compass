@@ -27,12 +27,12 @@ const SCENARIOS: { label: string; tag: string; weights: Weights }[] = [
 ];
 
 function computeTotal(c: typeof BASE_DATA[0], w: Weights) {
-  const raw = c.water_stress * w.water + c.carbon_index * w.carbon + c.cooling_cost * w.cooling;
-  return +((raw / (w.water + w.carbon + w.cooling)) * 10).toFixed(2);
+  const raw = (c.water_stress * 100) * w.water + (c.carbon_index * 100) * w.carbon + (c.cooling_cost * 100) * w.cooling;
+  return +(raw / (w.water + w.carbon + w.cooling)).toFixed(1);
 }
 
 const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)"];
-const RISK_COLOR = (score: number) => score < 3 ? "hsl(148,62%,30%)" : score <= 5 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
+const RISK_COLOR = (score: number) => score < 30 ? "hsl(148,62%,30%)" : score <= 50 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
 
 const Dashboard = () => {
   const [selectedCity, setSelectedCity] = useState("Chicago");
@@ -62,14 +62,14 @@ const Dashboard = () => {
   }));
 
   const donutData = [
-    { name: "Water Stress", value: +(selected.water_stress * weights.water).toFixed(2) },
-    { name: "Carbon Index", value: +(selected.carbon_index * weights.carbon).toFixed(2) },
-    { name: "Cooling Cost", value: +(selected.cooling_cost * weights.cooling).toFixed(2) },
+    { name: "Water Stress", value: +((selected.water_stress * 100) * weights.water).toFixed(1) },
+    { name: "Carbon Index", value: +((selected.carbon_index * 100) * weights.carbon).toFixed(1) },
+    { name: "Cooling Cost", value: +((selected.cooling_cost * 100) * weights.cooling).toFixed(1) },
   ];
 
   const scatterData = cities.map(c => ({
-    x: c.cooling_cost * 10,
-    y: c.water_stress * 10,
+    x: c.cooling_cost * 100,
+    y: c.water_stress * 100,
     z: c.total_score,
     city: c.city,
     fill: RISK_COLOR(c.total_score),
@@ -83,7 +83,7 @@ const Dashboard = () => {
     </div>
   );
 
-  const totalColor = selected.total_score < 3 ? "text-risk-green" : selected.total_score <= 5 ? "text-risk-amber" : "text-risk-coral";
+  const totalColor = selected.total_score < 30 ? "text-risk-green" : selected.total_score <= 50 ? "text-risk-amber" : "text-risk-coral";
 
   return (
     <div className="bg-background min-h-screen font-body">
@@ -183,7 +183,7 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                      <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+                      <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <YAxis type="category" dataKey="city" width={100} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <Tooltip
                         formatter={(v: number) => [v.toFixed(2), "Score"]}
@@ -224,8 +224,8 @@ const Dashboard = () => {
                 <ResponsiveContainer width="100%" height={280}>
                   <ScatterChart margin={{ top: 10, right: 30, bottom: 20, left: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                    <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                    <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                    <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                    <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
                     <ZAxis dataKey="z" range={[200, 400]} />
                     <Tooltip
                       formatter={(v: number, name: string) => [v.toFixed(1), name]}

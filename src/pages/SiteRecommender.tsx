@@ -24,13 +24,13 @@ const CITY_TAGLINES: Record<string, string> = {
 type Weights = { water: number; carbon: number; cooling: number };
 
 function computeTotal(c: typeof BASE_DATA[0], w: Weights) {
-  const raw = c.water_stress * w.water + c.carbon_index * w.carbon + c.cooling_cost * w.cooling;
-  return +((raw / (w.water + w.carbon + w.cooling)) * 10).toFixed(2);
+  const raw = (c.water_stress * 100) * w.water + (c.carbon_index * 100) * w.carbon + (c.cooling_cost * 100) * w.cooling;
+  return +(raw / (w.water + w.carbon + w.cooling)).toFixed(1);
 }
 
-const riskLabel = (s: number) => s < 3 ? "Low Risk" : s <= 5 ? "Medium Risk" : "High Risk";
-const riskColor = (s: number) => s < 3 ? "text-risk-green" : s <= 5 ? "text-risk-amber" : "text-risk-coral";
-const riskBg = (s: number) => s < 3 ? "bg-green-light text-risk-green" : s <= 5 ? "bg-amber-light text-risk-amber" : "bg-coral-light text-risk-coral";
+const riskLabel = (s: number) => s < 30 ? "Low Risk" : s <= 50 ? "Medium Risk" : "High Risk";
+const riskColor = (s: number) => s < 30 ? "text-risk-green" : s <= 50 ? "text-risk-amber" : "text-risk-coral";
+const riskBg = (s: number) => s < 30 ? "bg-green-light text-risk-green" : s <= 50 ? "bg-amber-light text-risk-amber" : "bg-coral-light text-risk-coral";
 
 /* ── Wizard steps config ── */
 const FACILITY_TYPES = [
