@@ -62,14 +62,14 @@ const Dashboard = () => {
   }));
 
   const donutData = [
-    { name: "Water Stress", value: +(selected.water_stress * weights.water).toFixed(2) },
-    { name: "Carbon Index", value: +(selected.carbon_index * weights.carbon).toFixed(2) },
-    { name: "Cooling Cost", value: +(selected.cooling_cost * weights.cooling).toFixed(2) },
+    { name: "Water Stress", value: +((selected.water_stress * 100) * weights.water).toFixed(1) },
+    { name: "Carbon Index", value: +((selected.carbon_index * 100) * weights.carbon).toFixed(1) },
+    { name: "Cooling Cost", value: +((selected.cooling_cost * 100) * weights.cooling).toFixed(1) },
   ];
 
   const scatterData = cities.map(c => ({
-    x: c.cooling_cost * 10,
-    y: c.water_stress * 10,
+    x: c.cooling_cost * 100,
+    y: c.water_stress * 100,
     z: c.total_score,
     city: c.city,
     fill: RISK_COLOR(c.total_score),
