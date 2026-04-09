@@ -157,9 +157,9 @@ const SiteRecommender = () => {
               {/* Progress */}
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-muted-foreground">Step {step + 1} of 4</span>
-                <span className="text-xs text-muted-foreground font-mono-code">{Math.round(((step + 1) / 4) * 100)}%</span>
+                <span className="text-xs text-muted-foreground font-mono-code">{Math.round((step / 4) * 100)}%</span>
               </div>
-              <Progress value={((step + 1) / 4) * 100} className="h-1.5 mb-8" />
+              <Progress value={(step / 4) * 100} className="h-1.5 mb-8" />
 
               {/* Question */}
               <h2 className="font-display text-xl font-bold text-foreground mb-6">{stepTitles[step]}</h2>
