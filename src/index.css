@@ -104,3 +104,15 @@
 .custom-leaflet-popup .leaflet-popup-tip {
   box-shadow: none;
 }
+
+/* Allow scatter chart labels to render outside the clipped plot area */
+.scatter-no-clip svg {
+  overflow: visible !important;
+}
+.scatter-no-clip .recharts-scatter .recharts-scatter-symbol,
+.scatter-no-clip .recharts-label-list {
+  clip-path: none !important;
+}
+.scatter-no-clip [class*="recharts"] {
+  overflow: visible !important;
+}
