@@ -236,22 +236,24 @@ const Dashboard = () => {
               {/* scatter */}
               <div className="bg-card rounded-lg border border-border p-5">
                 <h4 className="font-display text-sm font-bold text-foreground mb-4">Risk Landscape — Cooling Cost vs Water Stress</h4>
-                <ResponsiveContainer width="100%" height={300} style={{ overflow: "visible" }}>
-                  <ScatterChart margin={{ top: 30, right: 30, bottom: 20, left: 10 }} style={{ overflow: "visible" }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                    <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                    <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                    <ZAxis dataKey="z" range={[200, 400]} />
-                    <Tooltip
-                      formatter={(v: number, name: string) => [v.toFixed(1), name]}
-                      contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
-                    />
-                    <Scatter data={scatterData}>
-                      {scatterData.map((d, i) => <Cell key={i} fill={d.fill} />)}
-                      <LabelList dataKey="city" position="top" dy={-10} style={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
-                    </Scatter>
-                  </ScatterChart>
-                </ResponsiveContainer>
+                <div className="scatter-no-clip" style={{ overflow: "visible" }}>
+                  <ResponsiveContainer width="100%" height={320}>
+                    <ScatterChart margin={{ top: 40, right: 30, bottom: 20, left: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
+                      <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                      <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                      <ZAxis dataKey="z" range={[200, 400]} />
+                      <Tooltip
+                        formatter={(v: number, name: string) => [v.toFixed(1), name]}
+                        contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
+                      />
+                      <Scatter data={scatterData}>
+                        {scatterData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                        <LabelList dataKey="city" position="top" dy={-12} style={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
+                      </Scatter>
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </TabsContent>
 
