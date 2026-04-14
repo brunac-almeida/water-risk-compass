@@ -2,30 +2,18 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-type Weights = { water: number; carbon: number; cooling: number };
+type Weights = { water: number; climate: number; carbon: number; cost: number };
 
-const MAP_CITIES = [
-  { name: "Northern Virginia", coords: [38.9072, -77.0369] as [number, number],
-    water_stress: 0.434, carbon_index: 0.419, cooling_cost: 0.249,
-    raw_temp: "55.1°F", raw_water: "$4.95/1k gal", raw_carbon: "235.0 kg CO₂/MWh" },
-  { name: "Dallas–Fort Worth", coords: [32.7767, -96.7970] as [number, number],
-    water_stress: 0.251, carbon_index: 1.000, cooling_cost: 1.000,
-    raw_temp: "64.9°F", raw_water: "$4.29/1k gal", raw_carbon: "338.6 kg CO₂/MWh" },
-  { name: "Silicon Valley", coords: [37.3861, -122.0839] as [number, number],
-    water_stress: 1.000, carbon_index: 0.000, cooling_cost: 0.450,
-    raw_temp: "57.7°F", raw_water: "$7.00/1k gal", raw_carbon: "160.2 kg CO₂/MWh" },
-  { name: "Phoenix", coords: [33.4484, -112.0740] as [number, number],
-    water_stress: 0.000, carbon_index: 0.831, cooling_cost: 0.604,
-    raw_temp: "59.8°F", raw_water: "$3.38/1k gal", raw_carbon: "308.5 kg CO₂/MWh" },
-  { name: "Chicago", coords: [41.8781, -87.6298] as [number, number],
-    water_stress: 0.139, carbon_index: 0.294, cooling_cost: 0.000,
-    raw_temp: "51.9°F", raw_water: "$3.88/1k gal", raw_carbon: "212.7 kg CO₂/MWh" },
-];
-
-function score(c: typeof MAP_CITIES[0], w: Weights) {
-  const raw = c.water_stress * w.water + c.carbon_index * w.carbon + c.cooling_cost * w.cooling;
-  return +((raw / (w.water + w.carbon + w.cooling)) * 10).toFixed(1);
-}
+type CityEntry = {
+  city: string;
+  latitude: number;
+  longitude: number;
+  water_risk: number;
+  climate_load: number;
+  carbon: number;
+  energy_cost: number;
+  total_score: number;
+};
 
 function riskColor(s: number) {
   return s < 3 ? "#1e7e4a" : s <= 5 ? "#c4780a" : "#c94a2a";
@@ -37,35 +25,32 @@ function riskBadgeBg(s: number) {
   return s < 3 ? "#e6f4ec" : s <= 5 ? "#fdf3e3" : "#fce8e4";
 }
 
-function popupHtml(c: typeof MAP_CITIES[0], total: number) {
-  const color = riskColor(total);
-  const badge = riskLabel(total);
+function popupHtml(c: CityEntry) {
+  const color = riskColor(c.total_score);
+  const badge = riskLabel(c.total_score);
   return `
 <div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:220px;padding:4px 0">
-  <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:${color};margin-bottom:4px">${c.name}</div>
+  <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:${color};margin-bottom:4px">${c.city}</div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-    <span style="font-size:22px;font-weight:800;color:${color}">${total.toFixed(1)}</span>
+    <span style="font-size:22px;font-weight:800;color:${color}">${c.total_score.toFixed(1)}</span>
     <span style="font-size:11px;color:#6b7c93">/ 10</span>
-    <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:${riskBadgeBg(total)};color:${color}">${badge}</span>
-  </div>
-  <div style="border-top:1px solid #e5e0d8;padding-top:6px;margin-bottom:6px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Water Stress</span><span style="font-family:monospace;font-weight:600">${c.water_stress.toFixed(3)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Carbon Index</span><span style="font-family:monospace;font-weight:600">${c.carbon_index.toFixed(3)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Cooling Cost</span><span style="font-family:monospace;font-weight:600">${c.cooling_cost.toFixed(3)}</span></div>
+    <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:${riskBadgeBg(c.total_score)};color:${color}">${badge}</span>
   </div>
   <div style="border-top:1px solid #e5e0d8;padding-top:6px">
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7c93;padding:2px 0"><span>🌡️ Temperature</span><span>${c.raw_temp}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7c93;padding:2px 0"><span>💧 Water Price</span><span>${c.raw_water}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7c93;padding:2px 0"><span>⚡ Carbon</span><span>${c.raw_carbon}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>💧 Water Risk</span><span style="font-family:monospace;font-weight:600">${c.water_risk.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>🌡️ Climate Load</span><span style="font-family:monospace;font-weight:600">${c.climate_load.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>🌿 Carbon</span><span style="font-family:monospace;font-weight:600">${c.carbon.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>⚡ Energy Cost</span><span style="font-family:monospace;font-weight:600">${c.energy_cost.toFixed(3)}</span></div>
   </div>
 </div>`;
 }
 
 interface DashboardMapProps {
   weights: Weights;
+  cities: CityEntry[];
 }
 
-const DashboardMap = ({ weights }: DashboardMapProps) => {
+const DashboardMap = ({ weights, cities }: DashboardMapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.CircleMarker[]>([]);
@@ -103,20 +88,18 @@ const DashboardMap = ({ weights }: DashboardMapProps) => {
     return () => { map.remove(); mapRef.current = null; };
   }, []);
 
-  // Update markers when weights change
+  // Update markers when cities or weights change
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || cities.length === 0) return;
 
-    // Remove old markers
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
-    MAP_CITIES.forEach(c => {
-      const total = score(c, weights);
-      const radius = Math.max(total * 5, 6);
-      const color = riskColor(total);
-      const marker = L.circleMarker(c.coords, {
+    cities.forEach(c => {
+      const radius = Math.max(c.total_score * 5, 6);
+      const color = riskColor(c.total_score);
+      const marker = L.circleMarker([c.latitude, c.longitude], {
         radius,
         fillColor: color,
         fillOpacity: 0.7,
@@ -124,13 +107,13 @@ const DashboardMap = ({ weights }: DashboardMapProps) => {
         weight: 2,
         opacity: 0.9,
       }).addTo(map);
-      marker.bindPopup(popupHtml(c, total), {
+      marker.bindPopup(popupHtml(c), {
         maxWidth: 260,
         className: "custom-leaflet-popup",
       });
       markersRef.current.push(marker);
     });
-  }, [weights]);
+  }, [cities]);
 
   return (
     <div className="bg-card rounded-lg border border-border overflow-hidden">

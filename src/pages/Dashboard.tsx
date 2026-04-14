@@ -3,42 +3,77 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, ScatterChart, Scatter, ZAxis, LabelList,
 } from "recharts";
 import DashboardMap from "@/components/DashboardMap";
 
-/* ── raw city data ── */
-const BASE_DATA = [
-  { city: "Northern Virginia", water_stress: 0.434, carbon_index: 0.419, cooling_cost: 0.249, raw_temp: "55.1°F", raw_water: "$4.95/1k gal", raw_carbon: "235.0 kg CO₂/MWh" },
-  { city: "Dallas–Fort Worth", water_stress: 0.251, carbon_index: 1.0, cooling_cost: 1.0, raw_temp: "64.9°F", raw_water: "$4.29/1k gal", raw_carbon: "338.6 kg CO₂/MWh" },
-  { city: "Silicon Valley", water_stress: 1.0, carbon_index: 0.0, cooling_cost: 0.45, raw_temp: "57.7°F", raw_water: "$7.00/1k gal", raw_carbon: "160.2 kg CO₂/MWh" },
-  { city: "Phoenix", water_stress: 0.0, carbon_index: 0.831, cooling_cost: 0.604, raw_temp: "59.8°F", raw_water: "$3.38/1k gal", raw_carbon: "308.5 kg CO₂/MWh" },
-  { city: "Chicago", water_stress: 0.139, carbon_index: 0.294, cooling_cost: 0.0, raw_temp: "51.9°F", raw_water: "$3.88/1k gal", raw_carbon: "212.7 kg CO₂/MWh" },
-];
+const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
 
-type Weights = { water: number; carbon: number; cooling: number };
+type Weights = { water: number; climate: number; carbon: number; cost: number };
+
+type CityData = {
+  city: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  water_risk: number;
+  climate_load: number;
+  carbon: number;
+  energy_cost: number;
+};
 
 const SCENARIOS: { label: string; tag: string; weights: Weights }[] = [
-  { label: "Balanced Sustainability", tag: "Water×2.0 · Carbon×1.5 · Cooling×1.0", weights: { water: 2.0, carbon: 1.5, cooling: 1.0 } },
-  { label: "Carbon Priority", tag: "Water×1.5 · Carbon×3.0 · Cooling×1.0", weights: { water: 1.5, carbon: 3.0, cooling: 1.0 } },
-  { label: "Cost Priority", tag: "Water×1.0 · Carbon×1.0 · Cooling×2.0", weights: { water: 1.0, carbon: 1.0, cooling: 2.0 } },
+  { label: "Balanced Sustainability", tag: "Water×2.0 · Climate×1.0 · Carbon×1.5 · Cost×2.0", weights: { water: 2.0, climate: 1.0, carbon: 1.5, cost: 2.0 } },
+  { label: "Carbon Priority", tag: "Water×1.5 · Climate×1.0 · Carbon×3.0 · Cost×1.0", weights: { water: 1.5, climate: 1.0, carbon: 3.0, cost: 1.0 } },
+  { label: "Cost Priority", tag: "Water×1.0 · Climate×1.0 · Carbon×1.0 · Cost×3.0", weights: { water: 1.0, climate: 1.0, carbon: 1.0, cost: 3.0 } },
+  { label: "Water Priority", tag: "Water×3.0 · Climate×1.0 · Carbon×1.0 · Cost×1.0", weights: { water: 3.0, climate: 1.0, carbon: 1.0, cost: 1.0 } },
 ];
 
-function computeTotal(c: typeof BASE_DATA[0], w: Weights) {
-  const raw = (c.water_stress * 100) * w.water + (c.carbon_index * 100) * w.carbon + (c.cooling_cost * 100) * w.cooling;
-  return +(raw / (w.water + w.carbon + w.cooling)).toFixed(1);
+function computeTotal(c: CityData, w: Weights) {
+  const raw = c.water_risk * w.water + c.climate_load * w.climate + c.carbon * w.carbon + c.energy_cost * w.cost;
+  return +((raw / (w.water + w.climate + w.carbon + w.cost)) * 10).toFixed(1);
 }
 
-const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)"];
-const RISK_COLOR = (score: number) => score < 30 ? "hsl(148,62%,30%)" : score <= 50 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
+const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)", "hsl(280,60%,45%)"];
+const RISK_COLOR = (score: number) => score < 3 ? "hsl(148,62%,30%)" : score <= 5 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
 
 const Dashboard = () => {
-  const [selectedCity, setSelectedCity] = useState("Chicago");
+  const [baseData, setBaseData] = useState<CityData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [selectedCity, setSelectedCity] = useState("");
   const [scenarioIdx, setScenarioIdx] = useState(0);
-  const [weights, setWeights] = useState<Weights>({ water: 2.0, carbon: 1.5, cooling: 1.0 });
+  const [weights, setWeights] = useState<Weights>({ water: 2.0, climate: 1.0, carbon: 1.5, cost: 2.0 });
   const manualSelect = useRef(false);
+
+  /* fetch data on mount */
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetch(DATA_URL)
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(json => {
+        if (cancelled) return;
+        const cities: CityData[] = json.cities.map((c: any) => ({
+          city: c.city,
+          state: c.state,
+          latitude: parseFloat(c.latitude),
+          longitude: parseFloat(c.longitude),
+          water_risk: c.scores.water_risk,
+          climate_load: c.scores.climate_load,
+          carbon: c.scores.carbon,
+          energy_cost: c.scores.energy_cost,
+        }));
+        setBaseData(cities);
+        setLoading(false);
+      })
+      .catch(e => { if (!cancelled) { setError(e.message); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, []);
 
   const applyScenario = useCallback((idx: number) => {
     setScenarioIdx(idx);
@@ -48,12 +83,12 @@ const Dashboard = () => {
 
   /* computed city scores */
   const cities = useMemo(() =>
-    BASE_DATA.map(c => ({ ...c, total_score: computeTotal(c, weights) }))
+    baseData.map(c => ({ ...c, total_score: computeTotal(c, weights) }))
       .sort((a, b) => a.total_score - b.total_score),
-    [weights]
+    [baseData, weights]
   );
 
-  /* auto-select best city when weights/scenario change (not on manual click) */
+  /* auto-select best city when weights/scenario change */
   useEffect(() => {
     if (!manualSelect.current && cities.length > 0) {
       setSelectedCity(cities[0].city);
@@ -70,23 +105,24 @@ const Dashboard = () => {
 
   /* chart data */
   const barData = cities.map(c => ({
-    city: c.city.length > 12 ? c.city.slice(0, 12) + "…" : c.city,
+    city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fullCity: c.city,
     score: c.total_score,
     fill: c.city === selectedCity ? "hsl(184,100%,26%)" : "hsl(218,26%,90%)",
   }));
 
-  const donutData = [
-    { name: "Water Stress", value: +((selected.water_stress * 100) * weights.water).toFixed(1) },
-    { name: "Carbon Index", value: +((selected.carbon_index * 100) * weights.carbon).toFixed(1) },
-    { name: "Cooling Cost", value: +((selected.cooling_cost * 100) * weights.cooling).toFixed(1) },
-  ];
+  const donutData = selected ? [
+    { name: "Water Risk", value: +(selected.water_risk * weights.water).toFixed(3) },
+    { name: "Climate Load", value: +(selected.climate_load * weights.climate).toFixed(3) },
+    { name: "Carbon", value: +(selected.carbon * weights.carbon).toFixed(3) },
+    { name: "Energy Cost", value: +(selected.energy_cost * weights.cost).toFixed(3) },
+  ] : [];
 
   const scatterData = cities.map(c => ({
-    x: c.cooling_cost * 100,
-    y: c.water_stress * 100,
+    x: c.energy_cost * 100,
+    y: c.water_risk * 100,
     z: c.total_score,
-    city: c.city,
+    city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fill: RISK_COLOR(c.total_score),
   }));
 
@@ -98,7 +134,46 @@ const Dashboard = () => {
     </div>
   );
 
-  const totalColor = selected.total_score < 30 ? "text-risk-green" : selected.total_score <= 50 ? "text-risk-amber" : "text-risk-coral";
+  const totalColor = selected ? (selected.total_score < 3 ? "text-risk-green" : selected.total_score <= 5 ? "text-risk-amber" : "text-risk-coral") : "";
+  const wSum = weights.water + weights.climate + weights.carbon + weights.cost;
+
+  /* loading skeleton */
+  if (loading) {
+    return (
+      <div className="bg-background min-h-screen font-body">
+        <Navbar />
+        <div className="max-w-[1320px] mx-auto px-4 py-8 flex gap-6">
+          <aside className="w-[280px] shrink-0 flex flex-col gap-5">
+            <Skeleton className="h-[260px] rounded-lg" />
+            <Skeleton className="h-[200px] rounded-lg" />
+            <Skeleton className="h-[240px] rounded-lg" />
+          </aside>
+          <main className="flex-1 min-w-0 space-y-6">
+            <div className="grid grid-cols-4 gap-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-20 rounded-lg" />)}</div>
+            <Skeleton className="h-[260px] rounded-lg" />
+            <Skeleton className="h-[340px] rounded-lg" />
+          </main>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  /* error state */
+  if (error) {
+    return (
+      <div className="bg-background min-h-screen font-body">
+        <Navbar />
+        <div className="max-w-[1320px] mx-auto px-4 py-16 text-center">
+          <p className="text-destructive font-semibold mb-4">Failed to load dashboard data: {error}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold">Retry</button>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!selected) return null;
 
   return (
     <div className="bg-background min-h-screen font-body">
@@ -155,9 +230,10 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <h3 className="font-display text-sm font-bold text-foreground mb-3">Adjust Weights</h3>
             {([
-              { key: "water" as const, icon: "💧", label: "Water Stress" },
-              { key: "carbon" as const, icon: "🌿", label: "Carbon Index" },
-              { key: "cooling" as const, icon: "🌡️", label: "Cooling Cost" },
+              { key: "water" as const, icon: "💧", label: "Water Risk" },
+              { key: "climate" as const, icon: "🌡️", label: "Climate Load" },
+              { key: "carbon" as const, icon: "🌿", label: "Carbon" },
+              { key: "cost" as const, icon: "⚡", label: "Energy Cost" },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
@@ -185,9 +261,9 @@ const Dashboard = () => {
             <TabsContent value="charts" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI icon="💧" label="Water Stress" value={((selected.water_stress * 100) * weights.water / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
-                <KPI icon="🌿" label="Carbon Index" value={((selected.carbon_index * 100) * weights.carbon / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
-                <KPI icon="🌡️" label="Cooling Cost" value={((selected.cooling_cost * 100) * weights.cooling / (weights.water + weights.carbon + weights.cooling)).toFixed(1)} />
+                <KPI icon="💧" label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} />
+                <KPI icon="🌡️" label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
+                <KPI icon="🌿" label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
                 <KPI icon="📊" label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
               </div>
 
@@ -198,10 +274,10 @@ const Dashboard = () => {
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                      <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-                      <YAxis type="category" dataKey="city" width={100} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+                      <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+                      <YAxis type="category" dataKey="city" width={120} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <Tooltip
-                        formatter={(v: number) => [v.toFixed(2), "Score"]}
+                        formatter={(v: number) => [v.toFixed(1), "Score"]}
                         labelFormatter={(l: string) => barData.find(d => d.city === l)?.fullCity ?? l}
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
                       />
@@ -220,28 +296,29 @@ const Dashboard = () => {
                         {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i]} />)}
                       </Pie>
                       <Tooltip
-                        formatter={(v: number, name: string) => [v.toFixed(2), name]}
+                        formatter={(v: number, name: string) => [v.toFixed(3), name]}
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="flex justify-center gap-4 text-[11px] text-muted-foreground -mt-2">
+                  <div className="flex justify-center gap-3 text-[11px] text-muted-foreground -mt-2 flex-wrap">
                     <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[0] }} />Water</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Carbon</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Cooling</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Climate</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Carbon</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[3] }} />Cost</span>
                   </div>
                 </div>
               </div>
 
               {/* scatter */}
               <div className="bg-card rounded-lg border border-border p-5">
-                <h4 className="font-display text-sm font-bold text-foreground mb-4">Risk Landscape — Cooling Cost vs Water Stress</h4>
+                <h4 className="font-display text-sm font-bold text-foreground mb-4">Risk Landscape — Energy Cost vs Water Risk</h4>
                 <div className="scatter-no-clip" style={{ overflow: "visible" }}>
                   <ResponsiveContainer width="100%" height={320}>
                     <ScatterChart margin={{ top: 40, right: 30, bottom: 20, left: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                      <XAxis type="number" dataKey="x" name="Cooling Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Cooling Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                      <YAxis type="number" dataKey="y" name="Water Stress" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Stress", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                      <XAxis type="number" dataKey="x" name="Energy Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Energy Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                      <YAxis type="number" dataKey="y" name="Water Risk" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Risk", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
                       <ZAxis dataKey="z" range={[200, 400]} />
                       <Tooltip
                         formatter={(v: number, name: string) => [v.toFixed(1), name]}
@@ -258,7 +335,7 @@ const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="map">
-              <DashboardMap weights={weights} />
+              <DashboardMap weights={weights} cities={cities} />
             </TabsContent>
           </Tabs>
         </main>
