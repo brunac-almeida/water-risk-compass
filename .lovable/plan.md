@@ -1,37 +1,27 @@
 
 
-## Plan: Connect Dashboard to Live GitHub JSON Data
+## Plan: Add Info Tooltips to Scenario Buttons
 
-### Data source
-Fetch from `https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json` on page load.
+### What changes
 
-### Scoring
-Keep client-side `computeTotal()` with **4 pillars** (water, climate, carbon, cost) so sliders work dynamically. Do NOT use pre-computed scenario rankings.
+Add a small circle-info icon next to each scenario label in the sidebar. On hover, a tooltip displays a description of what that scenario prioritizes. No layout shifts, no styling changes.
 
-```
-total = (water_risk×w.water + climate_load×w.climate + carbon×w.carbon + energy_cost×w.cost)
-        / (w.water + w.climate + w.carbon + w.cost) × 10
-```
-
-Scale: 0–10, lower is better. Thresholds: <3 green, 3–5 amber, >5 red.
-
-### Files to edit
+### Implementation
 
 **`src/pages/Dashboard.tsx`**
-- Add `useState` for `loading`, `error`, `baseData` (fetched cities)
-- `useEffect` fetch on mount → map JSON cities to internal shape
-- Update `Weights` type to `{ water, climate, carbon, cost }`
-- Update `SCENARIOS` to 4-pillar weights (balanced, carbon_priority, cost_priority, water_priority from JSON)
-- Add 4th slider "Climate Load"
-- Update bar chart X-axis domain `[0, 10]`, KPI display to 0–10 scale
-- Show `<Skeleton>` while loading, error banner on failure
-- Pass fetched cities (with lat/lng) to `DashboardMap`
 
-**`src/components/DashboardMap.tsx`**
-- Accept cities array as prop instead of hardcoded `MAP_CITIES`
-- Use `latitude`/`longitude` from fetched data
-- Keep existing popup HTML, legend, styling
+1. Import `Info` from `lucide-react` and `Tooltip, TooltipTrigger, TooltipContent, TooltipProvider` from `@/components/ui/tooltip`.
 
-### What stays the same
-All layout, styling, components, flip cards, scatter plot fixes, progress bar fix — untouched. Only the data source and weight model change.
+2. Add a `description` field to the `SCENARIOS` array with the exact tooltip text:
+   - Balanced Sustainability → "Equal emphasis on water risk, carbon impact, and energy cost, with moderate climate weighting. Good all-around starting point."
+   - Carbon Priority → "Grid carbon intensity and state-level emissions dominate the ranking. Best for organizations with net-zero or emissions reduction commitments."
+   - Cost Priority → "Industrial electricity price and energy cost drive the ranking. Best for operations where energy spend is the primary site selection constraint."
+   - Water Priority → "Water scarcity, drought risk, water pricing, and precipitation patterns carry the heaviest weight. Best for regions where long-term water access is the critical concern."
+
+3. In the scenario button (lines 221–235), add a `TooltipProvider`/`Tooltip`/`TooltipTrigger`/`TooltipContent` wrapping a small `<Info size={14} />` icon next to the scenario label. The icon sits inline after the label text. The tooltip has `max-w-[240px]` and small text.
+
+4. The icon uses `text-muted-foreground` styling and `onClick` stops propagation so clicking the info icon doesn't trigger the scenario switch.
+
+### No other changes
+Layout, colors, tab styling, ranking logic — all untouched. Only one file edited.
 
