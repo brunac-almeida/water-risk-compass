@@ -220,6 +220,7 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <h3 className="font-display text-sm font-bold text-foreground mb-3">Scenario</h3>
             <div className="flex flex-col gap-2">
+              <TooltipProvider delayDuration={200}>
               {SCENARIOS.map((s, i) => (
                 <button
                   key={s.label}
@@ -230,10 +231,21 @@ const Dashboard = () => {
                       : "border-border hover:border-primary/40 text-foreground"
                   }`}
                 >
-                  <span className="font-semibold block">{s.label}</span>
+                  <span className="font-semibold flex items-center gap-1.5">
+                    {s.label}
+                    <ShadTooltip>
+                      <TooltipTrigger asChild>
+                        <span onClick={(e) => e.stopPropagation()} className="inline-flex text-muted-foreground hover:text-foreground transition-colors cursor-help">
+                          <Info size={14} />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[240px] text-xs">{s.description}</TooltipContent>
+                    </ShadTooltip>
+                  </span>
                   <span className="text-xs text-muted-foreground">{s.tag}</span>
                 </button>
               ))}
+              </TooltipProvider>
             </div>
           </div>
 
