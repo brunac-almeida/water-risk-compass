@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   const [selectedCity, setSelectedCity] = useState("");
   const [scenarioIdx, setScenarioIdx] = useState(0);
-  const [weights, setWeights] = useState<Weights>({ water: 2.0, climate: 1.0, carbon: 1.5, cost: 2.0 });
+  const [weights, setWeights] = useState<Weights>(SCENARIOS[0].weights);
   const manualSelect = useRef(false);
 
   /* fetch data on mount */
@@ -69,6 +69,15 @@ const Dashboard = () => {
           energy_cost: c.scores.energy_cost,
         }));
         setBaseData(cities);
+        if (json.default_weights) {
+          const dw: Weights = {
+            water: json.default_weights.water ?? 2.0,
+            climate: json.default_weights.climate ?? 1.0,
+            carbon: json.default_weights.carbon ?? 1.5,
+            cost: json.default_weights.cost ?? 2.0,
+          };
+          setWeights(dw);
+        }
         setLoading(false);
       })
       .catch(e => { if (!cancelled) { setError(e.message); setLoading(false); } });
@@ -241,7 +250,7 @@ const Dashboard = () => {
                   <span className="font-mono font-semibold text-foreground">{weights[s.key].toFixed(1)}</span>
                 </div>
                 <Slider
-                  min={0} max={4} step={0.1}
+                  min={0} max={5} step={0.1}
                   value={[weights[s.key]]}
                   onValueChange={([v]) => { manualSelect.current = false; setWeights(prev => ({ ...prev, [s.key]: v })); }}
                 />
