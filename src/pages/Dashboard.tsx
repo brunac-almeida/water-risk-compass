@@ -296,18 +296,21 @@ const Dashboard = () => {
                 <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
                   <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">🌧️ Annual Precipitation</span>
                   <span className="text-2xl font-display font-bold text-foreground">
-                    {(selected.avg_annual_precipitation ?? 0).toFixed(1)} <span className="text-sm font-normal text-muted-foreground">in/yr</span>
+                    {selected?.avg_annual_precipitation != null
+                      ? `${selected.avg_annual_precipitation.toFixed(1)}`
+                      : "N/A"}{" "}
+                    <span className="text-sm font-normal text-muted-foreground">in/yr</span>
                   </span>
                   <span className="text-[11px] text-muted-foreground mt-1 leading-tight">
-                    Lower precipitation increases water risk (dryness stress). Seasonal variability across months is also factored in.
+                    Lower annual precipitation increases water risk. Seasonal rainfall variability across all 12 months is also factored into the Water Risk score.
                   </span>
                 </div>
                 <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
                   <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">📉 Rainfall Variability</span>
                   <span className={`text-2xl font-display font-bold ${
-                    selected.water_risk < 0.3 ? "text-risk-green" : selected.water_risk <= 0.6 ? "text-risk-amber" : "text-risk-coral"
+                    (selected?.water_risk ?? 0) < 0.35 ? "text-risk-green" : (selected?.water_risk ?? 0) <= 0.65 ? "text-risk-amber" : "text-risk-coral"
                   }`}>
-                    {selected.water_risk < 0.3 ? "Low" : selected.water_risk <= 0.6 ? "Moderate" : "High"}
+                    {(selected?.water_risk ?? 0) < 0.35 ? "Low" : (selected?.water_risk ?? 0) <= 0.65 ? "Moderate" : "High"}
                   </span>
                   <span className="text-[11px] text-muted-foreground mt-1 leading-tight">
                     Derived from water risk score as a proxy for seasonal rainfall variability.
