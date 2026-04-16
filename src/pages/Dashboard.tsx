@@ -27,11 +27,11 @@ type CityData = {
   energy_cost: number;
 };
 
-const SCENARIOS: { label: string; tag: string; weights: Weights; description: string }[] = [
-  { label: "Balanced Sustainability", tag: "Water×2.0 · Climate×1.0 · Carbon×1.5 · Cost×2.0", weights: { water: 2.0, climate: 1.0, carbon: 1.5, cost: 2.0 }, description: "Equal emphasis on water risk, carbon impact, and energy cost, with moderate climate weighting. Good all-around starting point." },
-  { label: "Carbon Priority", tag: "Water×1.5 · Climate×1.0 · Carbon×3.0 · Cost×1.0", weights: { water: 1.5, climate: 1.0, carbon: 3.0, cost: 1.0 }, description: "Grid carbon intensity and state-level emissions dominate the ranking. Best for organizations with net-zero or emissions reduction commitments." },
-  { label: "Cost Priority", tag: "Water×1.0 · Climate×1.0 · Carbon×1.0 · Cost×3.0", weights: { water: 1.0, climate: 1.0, carbon: 1.0, cost: 3.0 }, description: "Industrial electricity price and energy cost drive the ranking. Best for operations where energy spend is the primary site selection constraint." },
-  { label: "Water Priority", tag: "Water×3.0 · Climate×1.0 · Carbon×1.0 · Cost×1.0", weights: { water: 3.0, climate: 1.0, carbon: 1.0, cost: 1.0 }, description: "Water scarcity, drought risk, water pricing, and precipitation patterns carry the heaviest weight. Best for regions where long-term water access is the critical concern." },
+const SCENARIOS: { label: string; weights: Weights; description: string; weightLine: string }[] = [
+  { label: "Balanced Sustainability", weights: { water: 2.0, climate: 1.0, carbon: 1.5, cost: 2.0 }, description: "Equal emphasis on water risk, carbon impact, and energy cost, with moderate climate weighting. Good all-around starting point.", weightLine: "Weights: Water×2.0 Climate×1.0 Carbon×1.5 Cost×2.0" },
+  { label: "Carbon Priority", weights: { water: 1.5, climate: 1.0, carbon: 3.0, cost: 1.0 }, description: "Grid carbon intensity and state-level emissions dominate the ranking. Best for organizations with net-zero or emissions reduction commitments.", weightLine: "Weights: Water×1.5 Climate×1.0 Carbon×3.0 Cost×1.0" },
+  { label: "Cost Priority", weights: { water: 1.0, climate: 2.0, carbon: 1.0, cost: 3.0 }, description: "Industrial electricity price and energy cost drive the ranking. Best for operations where energy spend is the primary site selection constraint.", weightLine: "Weights: Water×1.0 Climate×2.0 Carbon×1.0 Cost×3.0" },
+  { label: "Water Priority", weights: { water: 3.0, climate: 1.0, carbon: 1.0, cost: 1.0 }, description: "Water scarcity, drought risk, water pricing, and precipitation patterns carry the heaviest weight. Best for regions where long-term water access is the critical concern.", weightLine: "Weights: Water×3.0 Climate×1.0 Carbon×1.0 Cost×1.0" },
 ];
 
 function computeTotal(c: CityData, w: Weights) {
@@ -239,10 +239,9 @@ const Dashboard = () => {
                           <Info size={14} />
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent className="max-w-[240px] text-xs">{s.description}</TooltipContent>
+                      <TooltipContent className="max-w-[260px] text-xs">{s.description}<br /><br />{s.weightLine}</TooltipContent>
                     </ShadTooltip>
                   </span>
-                  <span className="text-xs text-muted-foreground">{s.tag}</span>
                 </button>
               ))}
               </TooltipProvider>
