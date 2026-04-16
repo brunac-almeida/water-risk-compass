@@ -296,7 +296,7 @@ const Dashboard = () => {
                 <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
                   <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">🌧️ Annual Precipitation</span>
                   <span className="text-2xl font-display font-bold text-foreground">
-                    {selected.avg_annual_precipitation.toFixed(1)} <span className="text-sm font-normal text-muted-foreground">in/yr</span>
+                    {(selected.avg_annual_precipitation ?? 0).toFixed(1)} <span className="text-sm font-normal text-muted-foreground">in/yr</span>
                   </span>
                   <span className="text-[11px] text-muted-foreground mt-1 leading-tight">
                     Lower precipitation increases water risk (dryness stress). Seasonal variability across months is also factored in.
