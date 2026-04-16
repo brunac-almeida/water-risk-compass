@@ -25,6 +25,7 @@ type CityData = {
   climate_load: number;
   carbon: number;
   energy_cost: number;
+  avg_annual_precipitation: number;
 };
 
 const SCENARIOS: { label: string; weights: Weights; description: string; weightLine: string }[] = [
@@ -69,6 +70,7 @@ const Dashboard = () => {
           climate_load: c.scores.climate_load,
           carbon: c.scores.carbon,
           energy_cost: c.scores.energy_cost,
+          avg_annual_precipitation: c.inputs?.avg_annual_precipitation ?? 0,
         }));
         setBaseData(cities);
         if (json.default_weights) {
@@ -287,6 +289,30 @@ const Dashboard = () => {
                 <KPI icon="🌡️" label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
                 <KPI icon="🌿" label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
                 <KPI icon="📊" label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
+              </div>
+
+              {/* Precipitation & Variability detail */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
+                  <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">🌧️ Annual Precipitation</span>
+                  <span className="text-2xl font-display font-bold text-foreground">
+                    {selected.avg_annual_precipitation.toFixed(1)} <span className="text-sm font-normal text-muted-foreground">in/yr</span>
+                  </span>
+                  <span className="text-[11px] text-muted-foreground mt-1 leading-tight">
+                    Lower precipitation increases water risk (dryness stress). Seasonal variability across months is also factored in.
+                  </span>
+                </div>
+                <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
+                  <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">📉 Rainfall Variability</span>
+                  <span className={`text-2xl font-display font-bold ${
+                    selected.water_risk < 0.3 ? "text-risk-green" : selected.water_risk <= 0.6 ? "text-risk-amber" : "text-risk-coral"
+                  }`}>
+                    {selected.water_risk < 0.3 ? "Low" : selected.water_risk <= 0.6 ? "Moderate" : "High"}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground mt-1 leading-tight">
+                    Derived from water risk score as a proxy for seasonal rainfall variability.
+                  </span>
+                </div>
               </div>
 
               {/* bar + donut */}
