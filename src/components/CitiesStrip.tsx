@@ -13,7 +13,7 @@ const cities = [
   },
   {
     rank: 4, name: "Phoenix", capacity: "350+ MW", region: "Fastest Growing",
-    risk: "⚠ Very High Risk", riskPercent: 94, color: "coral" as const,
+    risk: "Very High Risk", riskPercent: 94, color: "coral" as const,
   },
   {
     rank: 5, name: "Chicago", capacity: "250+ MW", region: "Midwest Hub",
