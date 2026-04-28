@@ -135,10 +135,6 @@ const About = () => {
                     <h3 className="font-display text-lg font-bold text-teal relative z-10">
                       {goal.title}
                     </h3>
-                    <span className="absolute bottom-3 right-4 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80 group-hover:text-teal transition-colors">
-                      <RotateCw className="w-3 h-3" aria-hidden="true" />
-                      Click to flip
-                    </span>
                   </div>
 
                   {/* Back */}
@@ -149,10 +145,6 @@ const About = () => {
                     <p className="text-[14px] text-slate leading-[1.7] relative z-10">
                       {goal.text}
                     </p>
-                    <span className="absolute bottom-3 right-4 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80">
-                      <RotateCw className="w-3 h-3" aria-hidden="true" />
-                      Click to flip back
-                    </span>
                   </div>
                 </div>
               </div>
