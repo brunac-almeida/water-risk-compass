@@ -165,7 +165,7 @@ const SiteRecommender = () => {
               {step === 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {FACILITY_TYPES.map((f, i) => (
-                    <OptionCard key={i} icon={f.icon} label={f.label} desc={f.desc} selected={facility === i} onClick={() => setFacility(i)} />
+                    <OptionCard key={i} label={f.label} desc={f.desc} selected={facility === i} onClick={() => setFacility(i)} />
                   ))}
                 </div>
               )}
@@ -173,7 +173,7 @@ const SiteRecommender = () => {
               {step === 1 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {CONSTRAINTS.map((c, i) => (
-                    <OptionCard key={i} icon={c.icon} label={c.label} desc={c.desc} selected={constraint === i} onClick={() => setConstraint(i)} />
+                    <OptionCard key={i} label={c.label} desc={c.desc} selected={constraint === i} onClick={() => setConstraint(i)} />
                   ))}
                 </div>
               )}
@@ -181,7 +181,7 @@ const SiteRecommender = () => {
               {step === 2 && (
                 <div className="flex flex-col gap-3">
                   {RISK_TOLERANCE.map((r, i) => (
-                    <OptionCard key={i} icon={r.icon} label={r.label} desc={r.desc} selected={riskTol === i} onClick={() => setRiskTol(i)} />
+                    <OptionCard key={i} label={r.label} desc={r.desc} selected={riskTol === i} onClick={() => setRiskTol(i)} />
                   ))}
                 </div>
               )}
