@@ -99,19 +99,19 @@ const Methodology = () => (
 
     {/* Section 4 — Formula box */}
     <section className="max-w-[1240px] mx-auto px-14 pb-20 pt-4">
-      <div className="bg-ink rounded-xl p-10 text-center">
-        <p className="font-mono text-[15px] leading-[2.2] text-white/90">
-          <span className="text-white/50">Total Impact Score =</span>
+      <div className="bg-teal-light rounded-xl p-10 text-center border border-border">
+        <p className="font-mono text-[15px] leading-[2.2] text-foreground">
+          <span className="text-slate">Total Impact Score =</span>
           <br />
-          ( <span className="text-teal">Water Stress Score</span> × 2.0 ) +
+          ( <span className="text-teal font-semibold">Water Stress Score</span> × 2.0 ) +
           <br />
-          ( <span className="text-risk-green">Carbon Cost Index</span> × 1.5 ) +
+          ( <span className="text-risk-green font-semibold">Carbon Cost Index</span> × 1.5 ) +
           <br />
-          ( <span className="text-risk-amber">Cooling Cost Index</span> × 1.0 )
+          ( <span className="text-risk-amber font-semibold">Cooling Cost Index</span> × 1.0 )
           <br />
-          <span className="text-white/50">÷ 4.5 × 10  →  displayed on a 0–10 scale</span>
+          <span className="text-slate">÷ 4.5 × 10  →  displayed on a 0–10 scale</span>
         </p>
-        <p className="font-body text-[13px] text-white/40 italic mt-6">
+        <p className="font-body text-[13px] text-slate italic mt-6">
           Weights are user-adjustable. Base case prioritizes water sustainability (2.0×). Lower score = more sustainable site.
         </p>
       </div>
