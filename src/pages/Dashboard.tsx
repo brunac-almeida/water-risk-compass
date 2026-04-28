@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-import { Info } from "lucide-react";
+import { Info, MapPin, SlidersHorizontal, BarChart3, HelpCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Tooltip as ShadTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import Footer from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -52,6 +54,15 @@ const Dashboard = () => {
   const [scenarioIdx, setScenarioIdx] = useState(0);
   const [weights, setWeights] = useState<Weights>(SCENARIOS[0].weights);
   const manualSelect = useRef(false);
+  const [showGuide, setShowGuide] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return sessionStorage.getItem("dashboard_guide_seen") !== "1";
+  });
+
+  const dismissGuide = useCallback(() => {
+    sessionStorage.setItem("dashboard_guide_seen", "1");
+    setShowGuide(false);
+  }, []);
 
   /* fetch data on mount */
   useEffect(() => {
@@ -192,12 +203,71 @@ const Dashboard = () => {
     <div className="bg-background min-h-screen font-body">
       <Navbar />
 
+      <Dialog open={showGuide} onOpenChange={(o) => { if (!o) dismissGuide(); }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl">Welcome to the Site Selection Dashboard</DialogTitle>
+            <DialogDescription>
+              Compare candidate U.S. data center locations across water, climate, carbon, and energy cost dimensions — then test your own scenario.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="flex gap-3">
+              <div className="shrink-0 w-9 h-9 rounded-md bg-accent flex items-center justify-center">
+                <MapPin className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-display text-sm font-bold text-foreground">1. Pick a city</h4>
+                <p className="text-sm text-muted-foreground">Select any candidate city from the left sidebar (or click a marker on the map) to see its full risk breakdown.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="shrink-0 w-9 h-9 rounded-md bg-accent flex items-center justify-center">
+                <SlidersHorizontal className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-display text-sm font-bold text-foreground">2. Choose a scenario or set your own weights</h4>
+                <p className="text-sm text-muted-foreground">Try Balanced, Carbon-, Cost-, or Water-Priority presets — or drag the sliders to model your own priorities. Rankings update live.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="shrink-0 w-9 h-9 rounded-md bg-accent flex items-center justify-center">
+                <BarChart3 className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-display text-sm font-bold text-foreground">3. Compare and validate</h4>
+                <p className="text-sm text-muted-foreground">Use the bar chart, donut, and scatter plot to compare your chosen city against the field. Lower scores indicate lower combined risk.</p>
+              </div>
+            </div>
+
+            <div className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+              Tip: Scores are weighted composites scaled 0–10. Color tags (green / amber / red) indicate Low, Moderate, and High risk.
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={dismissGuide} className="w-full sm:w-auto">Explore the dashboard</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="max-w-[1320px] mx-auto px-4 py-8 flex gap-6">
         {/* ── SIDEBAR ── */}
         <aside className="w-[280px] shrink-0 flex flex-col gap-5">
           {/* cities */}
           <div className="bg-card rounded-lg border border-border p-4">
-            <h3 className="font-display text-sm font-bold text-foreground mb-3">Select City</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-display text-sm font-bold text-foreground">Select City</h3>
+              <button
+                onClick={() => setShowGuide(true)}
+                className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Open quick start guide"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                Guide
+              </button>
+            </div>
             <div className="flex flex-col gap-1">
               {cities.map(c => (
                 <button
