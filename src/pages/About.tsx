@@ -113,7 +113,7 @@ const About = () => {
             <h2 className="font-display text-3xl font-black text-foreground">
               What We Set Out To Do
             </h2>
-            <p className="mt-3 flex items-center justify-center gap-2 text-[13px] text-slate">
+            <p className="mt-3 inline-flex items-center gap-2 text-[13px] text-slate">
               <RotateCw className="w-3.5 h-3.5 text-teal" aria-hidden="true" />
               Click any card to reveal the details
             </p>
