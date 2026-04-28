@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { RotateCw } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -112,13 +113,17 @@ const About = () => {
             <h2 className="font-display text-3xl font-black text-foreground">
               What We Set Out To Do
             </h2>
+            <p className="mt-3 inline-flex items-center gap-2 text-[13px] text-slate">
+              <RotateCw className="w-3.5 h-3.5 text-teal" aria-hidden="true" />
+              Click any card to reveal the details
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {goals.map((goal) => (
               <div
                 key={goal.num}
-                className={`flip-card cursor-pointer h-[180px] transition-transform duration-200 hover:-translate-y-1 hover:drop-shadow-lg ${flipped[goal.num] ? "flipped" : ""}`}
+                className={`flip-card group cursor-pointer h-[180px] transition-transform duration-200 hover:-translate-y-1 hover:drop-shadow-lg ${flipped[goal.num] ? "flipped" : ""}`}
                 onClick={() => toggle(goal.num)}
               >
                 <div className="flip-card-inner relative w-full h-full">
@@ -130,6 +135,10 @@ const About = () => {
                     <h3 className="font-display text-lg font-bold text-teal relative z-10">
                       {goal.title}
                     </h3>
+                    <span className="absolute bottom-3 right-4 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80 group-hover:text-teal transition-colors">
+                      <RotateCw className="w-3 h-3" aria-hidden="true" />
+                      Click to flip
+                    </span>
                   </div>
 
                   {/* Back */}
@@ -140,6 +149,10 @@ const About = () => {
                     <p className="text-[14px] text-slate leading-[1.7] relative z-10">
                       {goal.text}
                     </p>
+                    <span className="absolute bottom-3 right-4 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/80">
+                      <RotateCw className="w-3 h-3" aria-hidden="true" />
+                      Click to flip back
+                    </span>
                   </div>
                 </div>
               </div>
