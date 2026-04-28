@@ -4,21 +4,18 @@ import Footer from "@/components/Footer";
 
 const problemCards = [
   {
-    icon: "⚠️",
     title: "The Problem",
     color: "text-risk-coral",
     border: "border-risk-coral/30 bg-risk-coral/5",
     text: "Choosing where to build water-intensive infrastructure requires balancing environmental risk, cost, and carbon — a complex trade-off with no easy answer.",
   },
   {
-    icon: "💡",
     title: "Our Solution",
     color: "text-teal",
     border: "border-teal/30 bg-teal/5",
     text: "An interactive dashboard that translates raw data into a single Total Impact Score — with adjustable weights so every stakeholder can explore their own priorities.",
   },
   {
-    icon: "🎯",
     title: "The Outcome",
     color: "text-risk-green",
     border: "border-risk-green/30 bg-risk-green/5",
@@ -93,14 +90,11 @@ const About = () => {
                 key={card.title}
                 className={`bg-card rounded-xl border-2 ${card.border} p-6 transition-all hover:-translate-y-1 hover:shadow-lg`}
               >
-                <div className="flex items-start gap-4">
-                  <span className="text-2xl mt-0.5">{card.icon}</span>
-                  <div>
-                    <h3 className={`font-display text-lg font-bold ${card.color} mb-1.5`}>
-                      {card.title}
-                    </h3>
-                    <p className="text-[14px] text-slate leading-[1.7]">{card.text}</p>
-                  </div>
+                <div>
+                  <h3 className={`font-display text-lg font-bold ${card.color} mb-1.5`}>
+                    {card.title}
+                  </h3>
+                  <p className="text-[14px] text-slate leading-[1.7]">{card.text}</p>
                 </div>
               </div>
             ))}
