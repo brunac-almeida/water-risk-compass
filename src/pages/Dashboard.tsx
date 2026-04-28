@@ -54,6 +54,15 @@ const Dashboard = () => {
   const [scenarioIdx, setScenarioIdx] = useState(0);
   const [weights, setWeights] = useState<Weights>(SCENARIOS[0].weights);
   const manualSelect = useRef(false);
+  const [showGuide, setShowGuide] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return sessionStorage.getItem("dashboard_guide_seen") !== "1";
+  });
+
+  const dismissGuide = useCallback(() => {
+    sessionStorage.setItem("dashboard_guide_seen", "1");
+    setShowGuide(false);
+  }, []);
 
   /* fetch data on mount */
   useEffect(() => {
