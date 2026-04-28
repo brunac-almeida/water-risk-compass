@@ -66,8 +66,8 @@ const Methodology = () => (
     <section className="bg-background py-20">
       <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Variables */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <div className="border-l-4 border-l-teal p-7">
+        <div className="bg-card rounded-xl border border-border overflow-hidden flex">
+          <div className="border-l-4 border-l-teal p-7 flex-1">
             <h3 className="font-display text-xl font-bold text-foreground mb-5">Input Variables</h3>
             <div className="flex flex-col gap-5">
               {inputVars.map((v) => (
