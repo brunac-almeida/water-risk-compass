@@ -140,9 +140,9 @@ const Dashboard = () => {
   }));
 
   /* KPI helper */
-  const KPI = ({ icon, label, value, color }: { icon: string; label: string; value: string; color?: string }) => (
+  const KPI = ({ label, value, color }: { label: string; value: string; color?: string }) => (
     <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
-      <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">{icon} {label}</span>
+      <span className="text-xs font-body text-muted-foreground">{label}</span>
       <span className={`text-2xl font-display font-bold ${color ?? "text-foreground"}`}>{value}</span>
     </div>
   );
@@ -254,14 +254,14 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <h3 className="font-display text-sm font-bold text-foreground mb-3">Adjust Weights</h3>
             {([
-              { key: "water" as const, icon: "💧", label: "Water Risk" },
-              { key: "climate" as const, icon: "🌡️", label: "Climate Load" },
-              { key: "carbon" as const, icon: "🌿", label: "Carbon" },
-              { key: "cost" as const, icon: "⚡", label: "Energy Cost" },
+              { key: "water" as const, label: "Water Risk" },
+              { key: "climate" as const, label: "Climate Load" },
+              { key: "carbon" as const, label: "Carbon" },
+              { key: "cost" as const, label: "Energy Cost" },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground">{s.icon} {s.label}</span>
+                  <span className="text-muted-foreground">{s.label}</span>
                   <span className="font-mono font-semibold text-foreground">{weights[s.key].toFixed(1)}</span>
                 </div>
                 <Slider
@@ -278,23 +278,23 @@ const Dashboard = () => {
         <main className="flex-1 min-w-0">
           <Tabs defaultValue="charts">
             <TabsList className="mb-6 bg-card border border-border">
-              <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">📊 Charts View</TabsTrigger>
-              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">🗺️ Map View</TabsTrigger>
+              <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
+              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
             </TabsList>
 
             <TabsContent value="charts" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI icon="💧" label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} />
-                <KPI icon="🌡️" label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
-                <KPI icon="🌿" label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
-                <KPI icon="📊" label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
+                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} />
+                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
+                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
+                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
               </div>
 
               {/* Precipitation & Variability detail */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
-                  <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">🌧️ Annual Precipitation</span>
+                  <span className="text-xs font-body text-muted-foreground">Annual Precipitation</span>
                   <span className="text-2xl font-display font-bold text-foreground">
                     {selected?.avg_annual_precipitation != null
                       ? `${selected.avg_annual_precipitation.toFixed(1)}`
@@ -306,7 +306,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
-                  <span className="text-xs font-body text-muted-foreground flex items-center gap-1.5">📉 Rainfall Variability</span>
+                  <span className="text-xs font-body text-muted-foreground">Rainfall Variability</span>
                   <span className={`text-2xl font-display font-bold ${
                     (selected?.water_risk ?? 0) < 0.35 ? "text-risk-green" : (selected?.water_risk ?? 0) <= 0.65 ? "text-risk-amber" : "text-risk-coral"
                   }`}>

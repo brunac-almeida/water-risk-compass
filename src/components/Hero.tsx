@@ -35,7 +35,7 @@ const Hero = () => (
             to="/dashboard"
             className="bg-gradient-to-br from-[#009eb0] to-teal text-primary-foreground font-bold text-sm px-7 py-[13px] rounded-[9px] shadow-[0_8px_24px_rgba(0,122,135,0.4)] hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(0,122,135,0.5)] transition-all"
           >
-            🚀 Launch Dashboard
+            Launch Dashboard
           </Link>
           <Link
             to="/about"

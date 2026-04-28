@@ -37,10 +37,10 @@ function popupHtml(c: CityEntry) {
     <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:${riskBadgeBg(c.total_score)};color:${color}">${badge}</span>
   </div>
   <div style="border-top:1px solid #e5e0d8;padding-top:6px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>💧 Water Risk</span><span style="font-family:monospace;font-weight:600">${c.water_risk.toFixed(3)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>🌡️ Climate Load</span><span style="font-family:monospace;font-weight:600">${c.climate_load.toFixed(3)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>🌿 Carbon</span><span style="font-family:monospace;font-weight:600">${c.carbon.toFixed(3)}</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>⚡ Energy Cost</span><span style="font-family:monospace;font-weight:600">${c.energy_cost.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Water Risk</span><span style="font-family:monospace;font-weight:600">${c.water_risk.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Climate Load</span><span style="font-family:monospace;font-weight:600">${c.climate_load.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Carbon</span><span style="font-family:monospace;font-weight:600">${c.carbon.toFixed(3)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#3a4a5c;padding:2px 0"><span>Energy Cost</span><span style="font-family:monospace;font-weight:600">${c.energy_cost.toFixed(3)}</span></div>
   </div>
 </div>`;
 }

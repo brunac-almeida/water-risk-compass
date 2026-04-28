@@ -34,23 +34,23 @@ const riskBg = (s: number) => s < 30 ? "bg-green-light text-risk-green" : s <= 5
 
 /* ── Wizard steps config ── */
 const FACILITY_TYPES = [
-  { icon: "☁️", label: "Cloud / Hyperscale", desc: "Large scale, water-intensive cooling" },
-  { icon: "🏢", label: "Colocation", desc: "Shared facility, moderate footprint" },
-  { icon: "🤖", label: "AI / GPU Cluster", desc: "Very high power density, cooling critical" },
-  { icon: "🏛️", label: "Enterprise", desc: "Private facility, balanced needs" },
+  { label: "Cloud / Hyperscale", desc: "Large scale, water-intensive cooling" },
+  { label: "Colocation", desc: "Shared facility, moderate footprint" },
+  { label: "AI / GPU Cluster", desc: "Very high power density, cooling critical" },
+  { label: "Enterprise", desc: "Private facility, balanced needs" },
 ];
 
 const CONSTRAINTS = [
-  { icon: "💧", label: "Water Availability", desc: "Water scarcity is a deal-breaker", key: "water" as const },
-  { icon: "🌿", label: "Carbon Footprint", desc: "ESG commitments require a clean grid", key: "carbon" as const },
-  { icon: "🌡️", label: "Cooling Cost", desc: "Energy cost for cooling dominates OpEx", key: "cooling" as const },
-  { icon: "⚖️", label: "Balanced", desc: "No single factor dominates", key: "balanced" as const },
+  { label: "Water Availability", desc: "Water scarcity is a deal-breaker", key: "water" as const },
+  { label: "Carbon Footprint", desc: "ESG commitments require a clean grid", key: "carbon" as const },
+  { label: "Cooling Cost", desc: "Energy cost for cooling dominates OpEx", key: "cooling" as const },
+  { label: "Balanced", desc: "No single factor dominates", key: "balanced" as const },
 ];
 
 const RISK_TOLERANCE = [
-  { icon: "🛡️", label: "Low", desc: "We need the safest, most resilient site" },
-  { icon: "⚖️", label: "Medium", desc: "Balanced risk/reward approach" },
-  { icon: "🚀", label: "High", desc: "Cost efficiency matters more than risk" },
+  { label: "Low", desc: "We need the safest, most resilient site" },
+  { label: "Medium", desc: "Balanced risk/reward approach" },
+  { label: "High", desc: "Cost efficiency matters more than risk" },
 ];
 
 const SiteRecommender = () => {
@@ -106,19 +106,16 @@ const SiteRecommender = () => {
 
   const reset = () => { setStep(0); setFacility(null); setConstraint(null); setRiskTol(null); setSustainability(3); };
 
-  const OptionCard = ({ icon, label, desc, selected, onClick }: { icon: string; label: string; desc: string; selected: boolean; onClick: () => void }) => (
+  const OptionCard = ({ label, desc, selected, onClick }: { label: string; desc: string; selected: boolean; onClick: () => void }) => (
     <button
       onClick={onClick}
       className={`text-left w-full p-4 rounded-xl border-2 transition-all hover:-translate-y-0.5 hover:shadow-md ${
         selected ? "border-primary bg-accent shadow-md" : "border-border bg-card hover:border-primary/40"
       }`}
     >
-      <div className="flex items-start gap-3">
-        <span className="text-2xl mt-0.5">{icon}</span>
-        <div>
-          <span className="font-display font-bold text-[15px] text-foreground block">{label}</span>
-          <span className="text-sm text-muted-foreground leading-relaxed">{desc}</span>
-        </div>
+      <div>
+        <span className="font-display font-bold text-[15px] text-foreground block">{label}</span>
+        <span className="text-sm text-muted-foreground leading-relaxed">{desc}</span>
       </div>
     </button>
   );
@@ -168,7 +165,7 @@ const SiteRecommender = () => {
               {step === 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {FACILITY_TYPES.map((f, i) => (
-                    <OptionCard key={i} icon={f.icon} label={f.label} desc={f.desc} selected={facility === i} onClick={() => setFacility(i)} />
+                    <OptionCard key={i} label={f.label} desc={f.desc} selected={facility === i} onClick={() => setFacility(i)} />
                   ))}
                 </div>
               )}
@@ -176,7 +173,7 @@ const SiteRecommender = () => {
               {step === 1 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {CONSTRAINTS.map((c, i) => (
-                    <OptionCard key={i} icon={c.icon} label={c.label} desc={c.desc} selected={constraint === i} onClick={() => setConstraint(i)} />
+                    <OptionCard key={i} label={c.label} desc={c.desc} selected={constraint === i} onClick={() => setConstraint(i)} />
                   ))}
                 </div>
               )}
@@ -184,7 +181,7 @@ const SiteRecommender = () => {
               {step === 2 && (
                 <div className="flex flex-col gap-3">
                   {RISK_TOLERANCE.map((r, i) => (
-                    <OptionCard key={i} icon={r.icon} label={r.label} desc={r.desc} selected={riskTol === i} onClick={() => setRiskTol(i)} />
+                    <OptionCard key={i} label={r.label} desc={r.desc} selected={riskTol === i} onClick={() => setRiskTol(i)} />
                   ))}
                 </div>
               )}
@@ -233,7 +230,7 @@ const SiteRecommender = () => {
             <div className="space-y-5">
               {/* Winner card */}
               <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
-                <span className="text-5xl block mb-3">🏆</span>
+                <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2">Recommended Location</span>
                 <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase">Recommended Location</span>
                 <h2 className={`font-display text-3xl font-bold mt-2 ${riskColor(results[0].total_score)}`}>
                   {results[0].city}

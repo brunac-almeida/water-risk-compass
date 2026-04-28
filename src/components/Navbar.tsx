@@ -15,8 +15,8 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 flex items-center justify-between px-14 h-[66px] bg-card/95 border-b border-border backdrop-blur-md shadow-[0_2px_16px_rgba(26,26,46,0.08)]">
       <Link to="/" className="flex items-center gap-2.5">
-        <div className="w-[38px] h-[38px] rounded-[10px] bg-gradient-to-br from-teal to-[#00b8cc] flex items-center justify-center text-lg shadow-[0_4px_12px_rgba(0,122,135,0.3)]">
-          💧
+        <div className="w-[38px] h-[38px] rounded-[10px] bg-gradient-to-br from-teal to-[#00b8cc] flex items-center justify-center shadow-[0_4px_12px_rgba(0,122,135,0.3)]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
         </div>
         <span className="font-display text-[19px] font-bold text-foreground tracking-tight">
           WaterRisk <span className="text-teal">Explorers</span>

@@ -2,24 +2,24 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const pipelineSteps = [
-  { num: "01", icon: "🗂️", title: "Data Collection", text: "Gather temperature, water price, and carbon intensity from NOAA, EIA, and Circle of Blue for 5 U.S. cities." },
-  { num: "02", icon: "📐", title: "Normalization", text: "Apply min-max scaling to convert all variables to a 0–1 scale for fair cross-variable comparison." },
-  { num: "03", icon: "🧮", title: "Index Calculation", text: "Compute three sub-indices: Cooling Cost Index, Water Stress Score, and Carbon Cost Index." },
-  { num: "04", icon: "⚖️", title: "Weighting", text: "Apply scenario weights to each index — adjustable by the user to reflect different planning priorities." },
-  { num: "05", icon: "📊", title: "Visualization", text: "Render results as interactive charts, a clickable map, and a Total Impact Score. Lower = better." },
+  { num: "01", title: "Data Collection", text: "Gather temperature, water price, and carbon intensity from NOAA, EIA, and Circle of Blue for 5 U.S. cities." },
+  { num: "02", title: "Normalization", text: "Apply min-max scaling to convert all variables to a 0–1 scale for fair cross-variable comparison." },
+  { num: "03", title: "Index Calculation", text: "Compute three sub-indices: Cooling Cost Index, Water Stress Score, and Carbon Cost Index." },
+  { num: "04", title: "Weighting", text: "Apply scenario weights to each index — adjustable by the user to reflect different planning priorities." },
+  { num: "05", title: "Visualization", text: "Render results as interactive charts, a clickable map, and a Total Impact Score. Lower = better." },
 ];
 
 const inputVars = [
-  { icon: "🌡️", label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
-  { icon: "💧", label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
-  { icon: "⚡", label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
+  { label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
+  { label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
+  { label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
 ];
 
 const outputIndices = [
-  { icon: "🌡️", label: "Cooling Cost Index", color: "text-risk-amber", formula: "Normalized Temperature" },
-  { icon: "💧", label: "Water Stress Score", color: "text-teal", formula: "Normalized Water Price" },
-  { icon: "🌿", label: "Carbon Cost Index", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
-  { icon: "📊", label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all three indices — lower is better" },
+  { label: "Cooling Cost Index", color: "text-risk-amber", formula: "Normalized Temperature" },
+  { label: "Water Stress Score", color: "text-teal", formula: "Normalized Water Price" },
+  { label: "Carbon Cost Index", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
+  { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all three indices — lower is better" },
 ];
 
 const Methodology = () => (
@@ -51,7 +51,6 @@ const Methodology = () => (
           <div key={step.num} className="flex items-stretch flex-1 min-w-0">
             <div className="bg-card rounded-xl border border-border p-5 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg flex-1">
               <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
-              <span className="text-2xl mb-2">{step.icon}</span>
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
             </div>
@@ -72,12 +71,9 @@ const Methodology = () => (
             <h3 className="font-display text-xl font-bold text-foreground mb-5">Input Variables</h3>
             <div className="flex flex-col gap-5">
               {inputVars.map((v) => (
-                <div key={v.label} className="flex items-start gap-3">
-                  <span className="text-xl mt-0.5">{v.icon}</span>
-                  <div>
-                    <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                    <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
-                  </div>
+                <div key={v.label}>
+                  <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
                 </div>
               ))}
             </div>
@@ -90,12 +86,9 @@ const Methodology = () => (
             <h3 className="font-display text-xl font-bold text-foreground mb-5">Output Indices</h3>
             <div className="flex flex-col gap-5">
               {outputIndices.map((v) => (
-                <div key={v.label} className="flex items-start gap-3">
-                  <span className="text-xl mt-0.5">{v.icon}</span>
-                  <div>
-                    <p className={`text-[15px] font-semibold ${v.color}`}>{v.label}</p>
-                    <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.formula}</p>
-                  </div>
+                <div key={v.label}>
+                  <p className={`text-[15px] font-semibold ${v.color}`}>{v.label}</p>
+                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.formula}</p>
                 </div>
               ))}
             </div>
