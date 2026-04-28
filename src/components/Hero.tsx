@@ -19,8 +19,8 @@ const Hero = () => (
           CIVE 580 · Spring 2026 · Project #3
         </div>
 
-        <h1 className="font-display text-[68px] font-black leading-[0.95] tracking-tight text-primary-foreground mb-[22px]">
-          Where Should<br />Your Data Center<br /><em className="not-italic text-[#5dd8e3]">Get Its Water?</em>
+        <h1 className="font-display text-[68px] font-black leading-[0.95] tracking-tight text-primary-foreground mb-[22px] whitespace-pre-line">
+          Where Will&nbsp;{"\n"}Your Data Center{"\n"}<em className="not-italic text-[#5dd8e3]">Thrive?</em>
         </h1>
 
         <p className="text-base text-[rgba(255,255,255,0.65)] leading-[1.75] mb-9 max-w-[480px]">
