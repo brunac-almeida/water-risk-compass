@@ -217,6 +217,7 @@ const Methodology = () => {
 
     <Footer />
   </div>
-);
+  );
+};
 
 export default Methodology;
