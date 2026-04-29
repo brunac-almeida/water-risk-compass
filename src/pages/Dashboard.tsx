@@ -151,9 +151,21 @@ const Dashboard = () => {
   }));
 
   /* KPI helper */
-  const KPI = ({ label, value, color }: { label: string; value: string; color?: string }) => (
+  const KPI = ({ label, value, color, tooltip }: { label: string; value: string; color?: string; tooltip?: string }) => (
     <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
-      <span className="text-xs font-body text-muted-foreground">{label}</span>
+      <span className="text-xs font-body text-muted-foreground inline-flex items-center gap-1">
+        {label}
+        {tooltip && (
+          <ShadTooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                <Info size={12} />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[260px] text-xs">{tooltip}</TooltipContent>
+          </ShadTooltip>
+        )}
+      </span>
       <span className={`text-2xl font-display font-bold ${color ?? "text-foreground"}`}>{value}</span>
     </div>
   );
