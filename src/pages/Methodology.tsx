@@ -170,6 +170,41 @@ const Methodology = () => (
       </div>
     </section>
 
+    {/* Section 5 — Glossary */}
+    <section className="bg-background py-20 border-t border-border">
+      <div className="max-w-[1240px] mx-auto px-14">
+        <div className="mb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
+          <div>
+            <span className="inline-block font-mono text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-4 tracking-wide">
+              // Glossary
+            </span>
+            <h2 className="font-display text-3xl font-black text-foreground">
+              Common Terms & Definitions
+            </h2>
+          </div>
+          <p className="text-[14px] text-slate leading-[1.7] max-w-[480px]">
+            Plain-language definitions of the technical terms used throughout this tool — written for planners, executives, and policy makers, not just engineers.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {glossary.map((item) => (
+            <div
+              key={item.term}
+              className="bg-card rounded-xl border border-border p-6 transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-teal/40"
+            >
+              <h3 className="font-display text-[16px] font-bold text-teal mb-2">
+                {item.term}
+              </h3>
+              <p className="text-[13.5px] text-slate leading-[1.7]">
+                {item.definition}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <Footer />
   </div>
 );
