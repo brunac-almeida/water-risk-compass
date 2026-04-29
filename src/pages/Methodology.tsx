@@ -1,6 +1,59 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+const glossary = [
+  {
+    term: "Total Impact Score",
+    definition:
+      "A single 0–10 number summarizing how favorable a city is for siting a water-intensive data center. It blends water, carbon, and cooling factors using user-adjustable weights. Lower is better.",
+  },
+  {
+    term: "Water Stress",
+    definition:
+      "A measure of how scarce or contested local water supply is. Higher water stress means competition with farms, residents, and industry — and a greater long-term sustainability risk for water-hungry cooling systems.",
+  },
+  {
+    term: "Water Price",
+    definition:
+      "The cost per 1,000 gallons of municipal water, used here as a real-world proxy for water scarcity. Cities with stressed supplies typically charge more, making price a practical signal of long-term water risk.",
+  },
+  {
+    term: "Carbon Intensity",
+    definition:
+      "The amount of CO₂ emitted per unit of electricity generated on the local power grid (kg CO₂ per MWh). Lower carbon intensity means cleaner electricity and a smaller climate footprint per server hour.",
+  },
+  {
+    term: "Cooling Cost Index",
+    definition:
+      "A normalized estimate of how much energy and water a data center will need to stay cool in a given climate. Hotter cities score higher (worse) because cooling equipment must work harder year-round.",
+  },
+  {
+    term: "Normalization (Min–Max Scaling)",
+    definition:
+      "A statistical step that rescales each variable to a 0–1 range so different units (°F, $/gal, kg CO₂) can be fairly combined into one score without one variable dominating the others.",
+  },
+  {
+    term: "Scenario Weighting",
+    definition:
+      "The multiplier applied to each index (water, carbon, cooling) to reflect a stakeholder's priorities. Increasing the water weight, for example, makes water-stressed cities rank worse in the final score.",
+  },
+  {
+    term: "Hyperscale Data Center",
+    definition:
+      "A very large facility (typically 100,000+ sq ft) operated by major cloud providers. These sites can consume millions of gallons of water and hundreds of megawatts of power annually.",
+  },
+  {
+    term: "Grid Mix",
+    definition:
+      "The combination of energy sources (coal, gas, nuclear, hydro, wind, solar) that supplies a region's electricity. The grid mix directly determines carbon intensity in that location.",
+  },
+  {
+    term: "Site Selection",
+    definition:
+      "The process of choosing where to build infrastructure based on multiple criteria. This tool focuses on environmental criteria — water, carbon, and cooling — that are often underweighted in traditional siting decisions.",
+  },
+];
+
 const pipelineSteps = [
   { num: "01", title: "Data Collection", text: "Gather temperature, water price, and carbon intensity from NOAA, EIA, and Circle of Blue for 5 U.S. cities." },
   { num: "02", title: "Normalization", text: "Apply min-max scaling to convert all variables to a 0–1 scale for fair cross-variable comparison." },
