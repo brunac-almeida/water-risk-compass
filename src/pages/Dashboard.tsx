@@ -17,6 +17,7 @@ import DashboardMap from "@/components/DashboardMap";
 import CompareView from "@/components/dashboard/CompareView";
 import TrendsView from "@/components/dashboard/TrendsView";
 import ExportDialog from "@/components/dashboard/ExportDialog";
+import ShareButton from "@/components/dashboard/ShareButton";
 
 const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
 
