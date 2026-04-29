@@ -313,7 +313,6 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <h3 className="font-display text-sm font-bold text-foreground mb-3">Scenario</h3>
             <div className="flex flex-col gap-2">
-              <TooltipProvider delayDuration={200}>
               {SCENARIOS.map((s, i) => (
                 <button
                   key={s.label}
@@ -337,7 +336,6 @@ const Dashboard = () => {
                   </span>
                 </button>
               ))}
-              </TooltipProvider>
             </div>
           </div>
 
