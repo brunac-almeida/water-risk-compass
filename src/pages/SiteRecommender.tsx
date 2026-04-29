@@ -211,19 +211,35 @@ const SiteRecommender = () => {
 
               {/* Navigation */}
               <div className="flex justify-between mt-8 pt-6 border-t border-border">
-                <button
-                  onClick={() => setStep(s => s - 1)}
-                  className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors ${step === 0 ? "invisible" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={() => setStep(s => s + 1)}
-                  disabled={!canAdvance}
-                  className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {step === 3 ? "See Results" : "Next →"}
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setStep(s => s - 1)}
+                      className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors ${step === 0 ? "invisible" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+                    >
+                      ← Back
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Return to the previous question. Your selection is preserved.</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setStep(s => s + 1)}
+                      disabled={!canAdvance}
+                      className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {step === 3 ? "See Results" : "Next →"}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[260px]">
+                    {step === 3
+                      ? "Compute your tailored ranking based on all four answers."
+                      : !canAdvance
+                        ? "Choose an option above to continue."
+                        : "Continue to the next question."}
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
