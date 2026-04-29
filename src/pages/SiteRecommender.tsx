@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 /* ── City data & scoring (same as Dashboard) ── */
 const BASE_DATA = [
@@ -132,6 +134,7 @@ const SiteRecommender = () => {
   return (
     <div className="bg-background min-h-screen font-body flex flex-col">
       <Navbar />
+      <TooltipProvider delayDuration={200}>
 
       {/* Header */}
       <div className="max-w-[800px] mx-auto px-4 pt-16 pb-8 text-center">
@@ -208,19 +211,35 @@ const SiteRecommender = () => {
 
               {/* Navigation */}
               <div className="flex justify-between mt-8 pt-6 border-t border-border">
-                <button
-                  onClick={() => setStep(s => s - 1)}
-                  className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors ${step === 0 ? "invisible" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={() => setStep(s => s + 1)}
-                  disabled={!canAdvance}
-                  className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {step === 3 ? "See Results" : "Next →"}
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setStep(s => s - 1)}
+                      className={`text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors ${step === 0 ? "invisible" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+                    >
+                      ← Back
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Return to the previous question. Your selection is preserved.</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setStep(s => s + 1)}
+                      disabled={!canAdvance}
+                      className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {step === 3 ? "See Results" : "Next →"}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[260px]">
+                    {step === 3
+                      ? "Compute your tailored ranking based on all four answers."
+                      : !canAdvance
+                        ? "Choose an option above to continue."
+                        : "Continue to the next question."}
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
@@ -230,17 +249,33 @@ const SiteRecommender = () => {
             <div className="space-y-5">
               {/* Winner card */}
               <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
-                <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2">Recommended Location</span>
-                <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase">Recommended Location</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2 inline-flex items-center gap-1 cursor-help">
+                      Recommended Location <Info size={11} />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[280px]">The city with the lowest combined risk score given your answers. Adjust priorities in the Dashboard for deeper exploration.</TooltipContent>
+                </Tooltip>
                 <h2 className={`font-display text-3xl font-bold mt-2 ${riskColor(results[0].total_score)}`}>
                   {results[0].city}
                 </h2>
                 <div className="flex items-center justify-center gap-3 mt-3">
-                  <span className="font-display text-4xl font-bold text-foreground">{results[0].total_score.toFixed(1)}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="font-display text-4xl font-bold text-foreground cursor-help">{results[0].total_score.toFixed(1)}</span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[260px]">Composite risk score on a 0–100 scale. Lower = better. Combines water, carbon, and cooling factors weighted by your priorities.</TooltipContent>
+                  </Tooltip>
                   <span className="text-muted-foreground text-sm">/ 100</span>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${riskBg(results[0].total_score)}`}>
-                    {riskLabel(results[0].total_score)}
-                  </span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full cursor-help ${riskBg(results[0].total_score)}`}>
+                        {riskLabel(results[0].total_score)}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[240px]">Low Risk &lt; 30 · Medium 30–50 · High &gt; 50. Bands reflect overall sustainability and operational risk.</TooltipContent>
+                  </Tooltip>
                 </div>
                 <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[results[0].city]}</p>
               </div>
@@ -266,32 +301,50 @@ const SiteRecommender = () => {
               </div>
 
               {/* Weights summary */}
-              <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">Your Profile</span>
-                <p className="font-mono-code text-sm text-foreground mt-2">
-                  Water×{weights.water} · Carbon×{weights.carbon} · Cooling×{weights.cooling}
-                </p>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center cursor-help">
+                    <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase inline-flex items-center gap-1">
+                      Your Profile <Info size={11} />
+                    </span>
+                    <p className="font-mono-code text-sm text-foreground mt-2">
+                      Water×{weights.water} · Carbon×{weights.carbon} · Cooling×{weights.cooling}
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[280px]">The scoring weights derived from your four answers. Higher values mean that factor pulled more influence in the ranking. You can fine-tune these in the Dashboard.</TooltipContent>
+              </Tooltip>
 
               {/* Actions */}
               <div className="flex gap-3 justify-center pt-2">
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
-                >
-                  Explore in Dashboard →
-                </button>
-                <button
-                  onClick={reset}
-                  className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
-                >
-                  Start Over
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
+                    >
+                      Explore in Dashboard →
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[260px]">Open the full dashboard pre-loaded with your weights to dive deeper into the data.</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={reset}
+                      className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
+                    >
+                      Start Over
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Reset all answers and run the wizard again.</TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
         </div>
       </div>
+      </TooltipProvider>
 
       <Footer />
     </div>

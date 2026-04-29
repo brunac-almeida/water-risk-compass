@@ -151,9 +151,21 @@ const Dashboard = () => {
   }));
 
   /* KPI helper */
-  const KPI = ({ label, value, color }: { label: string; value: string; color?: string }) => (
+  const KPI = ({ label, value, color, tooltip }: { label: string; value: string; color?: string; tooltip?: string }) => (
     <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
-      <span className="text-xs font-body text-muted-foreground">{label}</span>
+      <span className="text-xs font-body text-muted-foreground inline-flex items-center gap-1">
+        {label}
+        {tooltip && (
+          <ShadTooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                <Info size={12} />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[260px] text-xs">{tooltip}</TooltipContent>
+          </ShadTooltip>
+        )}
+      </span>
       <span className={`text-2xl font-display font-bold ${color ?? "text-foreground"}`}>{value}</span>
     </div>
   );
@@ -202,7 +214,7 @@ const Dashboard = () => {
   return (
     <div className="bg-background min-h-screen font-body">
       <Navbar />
-
+      <TooltipProvider delayDuration={200}>
       <Dialog open={showGuide} onOpenChange={(o) => { if (!o) dismissGuide(); }}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -259,31 +271,40 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-display text-sm font-bold text-foreground">Select City</h3>
-              <button
-                onClick={() => setShowGuide(true)}
-                className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Open quick start guide"
-              >
-                <HelpCircle className="w-3.5 h-3.5" />
-                Guide
-              </button>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowGuide(true)}
+                    className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors"
+                    aria-label="Open quick start guide"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5" />
+                    Guide
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[240px] text-xs">Reopen the welcome guide explaining how to use the dashboard.</TooltipContent>
+              </ShadTooltip>
             </div>
             <div className="flex flex-col gap-1">
               {cities.map(c => (
-                <button
-                  key={c.city}
-                  onClick={() => handleCitySelect(c.city)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                    c.city === selectedCity
-                      ? "bg-accent text-accent-foreground font-semibold"
-                      : "hover:bg-muted/60 text-foreground"
-                  }`}
-                >
-                  <span>{c.city}</span>
-                  <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
-                    {c.total_score.toFixed(1)}
-                  </span>
-                </button>
+                <ShadTooltip key={c.city}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => handleCitySelect(c.city)}
+                      className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                        c.city === selectedCity
+                          ? "bg-accent text-accent-foreground font-semibold"
+                          : "hover:bg-muted/60 text-foreground"
+                      }`}
+                    >
+                      <span>{c.city}</span>
+                      <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
+                        {c.total_score.toFixed(1)}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {c.total_score.toFixed(1)}/10 (lower is better).</TooltipContent>
+                </ShadTooltip>
               ))}
             </div>
           </div>
@@ -292,7 +313,6 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <h3 className="font-display text-sm font-bold text-foreground mb-3">Scenario</h3>
             <div className="flex flex-col gap-2">
-              <TooltipProvider delayDuration={200}>
               {SCENARIOS.map((s, i) => (
                 <button
                   key={s.label}
@@ -316,22 +336,43 @@ const Dashboard = () => {
                   </span>
                 </button>
               ))}
-              </TooltipProvider>
             </div>
           </div>
 
           {/* sliders */}
           <div className="bg-card rounded-lg border border-border p-4">
-            <h3 className="font-display text-sm font-bold text-foreground mb-3">Adjust Weights</h3>
+            <div className="flex items-center gap-1 mb-3">
+              <h3 className="font-display text-sm font-bold text-foreground">Adjust Weights</h3>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                    <Info size={12} />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[260px] text-xs">
+                  Drag any slider (0–5) to change how much that factor contributes to the Total Impact Score. Higher weight = more influence on the ranking.
+                </TooltipContent>
+              </ShadTooltip>
+            </div>
             {([
-              { key: "water" as const, label: "Water Risk" },
-              { key: "climate" as const, label: "Climate Load" },
-              { key: "carbon" as const, label: "Carbon" },
-              { key: "cost" as const, label: "Energy Cost" },
+              { key: "water" as const, label: "Water Risk", tip: "How much water scarcity, drought risk, and water price influence the score. Higher = water sustainability matters more." },
+              { key: "climate" as const, label: "Climate Load", tip: "How much hot-climate cooling demand and temperature stress influence the score." },
+              { key: "carbon" as const, label: "Carbon", tip: "How much grid carbon intensity (kg CO₂/MWh) influences the score. Higher = clean energy matters more." },
+              { key: "cost" as const, label: "Energy Cost", tip: "How much industrial electricity price influences the score. Higher = OpEx matters more." },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground">{s.label}</span>
+                  <span className="text-muted-foreground inline-flex items-center gap-1">
+                    {s.label}
+                    <ShadTooltip>
+                      <TooltipTrigger asChild>
+                        <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                          <Info size={11} />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[240px] text-xs">{s.tip}</TooltipContent>
+                    </ShadTooltip>
+                  </span>
                   <span className="font-mono font-semibold text-foreground">{weights[s.key].toFixed(1)}</span>
                 </div>
                 <Slider
@@ -348,17 +389,27 @@ const Dashboard = () => {
         <main className="flex-1 min-w-0">
           <Tabs defaultValue="charts">
             <TabsList className="mb-6 bg-card border border-border">
-              <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
-              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">View KPIs, city rankings, score breakdown, and the risk landscape scatter plot.</TooltipContent>
+              </ShadTooltip>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">See all candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
+              </ShadTooltip>
             </TabsList>
 
             <TabsContent value="charts" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} />
-                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
-                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
-                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
+                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
+                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
+                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
+                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
               </div>
 
               {/* Precipitation & Variability detail */}
@@ -461,6 +512,7 @@ const Dashboard = () => {
           </Tabs>
         </main>
       </div>
+      </TooltipProvider>
       <Footer />
     </div>
   );
