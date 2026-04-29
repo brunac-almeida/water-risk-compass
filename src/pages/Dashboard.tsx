@@ -214,6 +214,7 @@ const Dashboard = () => {
   return (
     <div className="bg-background min-h-screen font-body">
       <Navbar />
+      <TooltipProvider delayDuration={200}>
 
       <Dialog open={showGuide} onOpenChange={(o) => { if (!o) dismissGuide(); }}>
         <DialogContent className="max-w-2xl">
