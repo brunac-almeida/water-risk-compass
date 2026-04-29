@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-import { Info, MapPin, SlidersHorizontal, BarChart3, HelpCircle } from "lucide-react";
+import { Info, MapPin, SlidersHorizontal, BarChart3, HelpCircle, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tooltip as ShadTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
