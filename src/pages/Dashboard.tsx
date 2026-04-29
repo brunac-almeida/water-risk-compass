@@ -272,26 +272,41 @@ const Dashboard = () => {
           <div className="bg-card rounded-lg border border-border p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-display text-sm font-bold text-foreground">Select City</h3>
-              <button
-                onClick={() => setShowGuide(true)}
-                className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Open quick start guide"
-              >
-                <HelpCircle className="w-3.5 h-3.5" />
-                Guide
-              </button>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowGuide(true)}
+                    className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors"
+                    aria-label="Open quick start guide"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5" />
+                    Guide
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[240px] text-xs">Reopen the welcome guide explaining how to use the dashboard.</TooltipContent>
+              </ShadTooltip>
             </div>
             <div className="flex flex-col gap-1">
               {cities.map(c => (
-                <button
-                  key={c.city}
-                  onClick={() => handleCitySelect(c.city)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                    c.city === selectedCity
-                      ? "bg-accent text-accent-foreground font-semibold"
-                      : "hover:bg-muted/60 text-foreground"
-                  }`}
-                >
+                <ShadTooltip key={c.city}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => handleCitySelect(c.city)}
+                      className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                        c.city === selectedCity
+                          ? "bg-accent text-accent-foreground font-semibold"
+                          : "hover:bg-muted/60 text-foreground"
+                      }`}
+                    >
+                      <span>{c.city}</span>
+                      <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
+                        {c.total_score.toFixed(1)}
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {c.total_score.toFixed(1)}/10 (lower is better).</TooltipContent>
+                </ShadTooltip>
+              ))}
                   <span>{c.city}</span>
                   <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
                     {c.total_score.toFixed(1)}
