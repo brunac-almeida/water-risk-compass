@@ -134,6 +134,7 @@ const SiteRecommender = () => {
   return (
     <div className="bg-background min-h-screen font-body flex flex-col">
       <Navbar />
+      <TooltipProvider delayDuration={200}>
 
       {/* Header */}
       <div className="max-w-[800px] mx-auto px-4 pt-16 pb-8 text-center">
