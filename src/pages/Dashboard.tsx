@@ -341,16 +341,38 @@ const Dashboard = () => {
 
           {/* sliders */}
           <div className="bg-card rounded-lg border border-border p-4">
-            <h3 className="font-display text-sm font-bold text-foreground mb-3">Adjust Weights</h3>
+            <div className="flex items-center gap-1 mb-3">
+              <h3 className="font-display text-sm font-bold text-foreground">Adjust Weights</h3>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                    <Info size={12} />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[260px] text-xs">
+                  Drag any slider (0–5) to change how much that factor contributes to the Total Impact Score. Higher weight = more influence on the ranking.
+                </TooltipContent>
+              </ShadTooltip>
+            </div>
             {([
-              { key: "water" as const, label: "Water Risk" },
-              { key: "climate" as const, label: "Climate Load" },
-              { key: "carbon" as const, label: "Carbon" },
-              { key: "cost" as const, label: "Energy Cost" },
+              { key: "water" as const, label: "Water Risk", tip: "How much water scarcity, drought risk, and water price influence the score. Higher = water sustainability matters more." },
+              { key: "climate" as const, label: "Climate Load", tip: "How much hot-climate cooling demand and temperature stress influence the score." },
+              { key: "carbon" as const, label: "Carbon", tip: "How much grid carbon intensity (kg CO₂/MWh) influences the score. Higher = clean energy matters more." },
+              { key: "cost" as const, label: "Energy Cost", tip: "How much industrial electricity price influences the score. Higher = OpEx matters more." },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground">{s.label}</span>
+                  <span className="text-muted-foreground inline-flex items-center gap-1">
+                    {s.label}
+                    <ShadTooltip>
+                      <TooltipTrigger asChild>
+                        <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
+                          <Info size={11} />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[240px] text-xs">{s.tip}</TooltipContent>
+                    </ShadTooltip>
+                  </span>
                   <span className="font-mono font-semibold text-foreground">{weights[s.key].toFixed(1)}</span>
                 </div>
                 <Slider
@@ -367,17 +389,27 @@ const Dashboard = () => {
         <main className="flex-1 min-w-0">
           <Tabs defaultValue="charts">
             <TabsList className="mb-6 bg-card border border-border">
-              <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
-              <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">View KPIs, city rankings, score breakdown, and the risk landscape scatter plot.</TooltipContent>
+              </ShadTooltip>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">See all candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
+              </ShadTooltip>
             </TabsList>
 
             <TabsContent value="charts" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} />
-                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} />
-                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} />
-                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} />
+                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
+                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
+                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
+                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
               </div>
 
               {/* Precipitation & Variability detail */}
