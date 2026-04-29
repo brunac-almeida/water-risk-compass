@@ -419,19 +419,32 @@ const Dashboard = () => {
                   <TooltipContent className="text-xs max-w-[240px]">All candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
                 </ShadTooltip>
               </TabsList>
-              <ShadTooltip>
-                <TooltipTrigger asChild>
-                  <span>
-                    <ExportDialog
-                      cities={cities}
-                      selectedCity={selected}
-                      weights={weights}
-                      scenarioLabel={SCENARIOS[scenarioIdx]?.label ?? "Custom"}
-                    />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">Download the current rankings as PDF, Excel, or CSV — including your scenario and weights.</TooltipContent>
-              </ShadTooltip>
+              <div className="flex items-center gap-2">
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <Button asChild size="sm" variant="outline" className="gap-1.5">
+                      <Link to="/methodology#glossary">
+                        <BookOpen className="w-3.5 h-3.5" />
+                        Glossary
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Jump to plain-language definitions of terms used across this tool (Total Impact Score, Water Stress, Carbon Intensity, etc.).</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <ExportDialog
+                        cities={cities}
+                        selectedCity={selected}
+                        weights={weights}
+                        scenarioLabel={SCENARIOS[scenarioIdx]?.label ?? "Custom"}
+                      />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Download the current rankings as PDF, Excel, or CSV — including your scenario and weights.</TooltipContent>
+                </ShadTooltip>
+              </div>
             </div>
 
             <TabsContent value="overview" className="space-y-6">
