@@ -461,6 +461,18 @@ const Dashboard = () => {
                 <ShadTooltip>
                   <TooltipTrigger asChild>
                     <span>
+                      <ShareButton
+                        weights={weights}
+                        scenarioIdx={scenarioIdx}
+                        selectedCity={selected.city}
+                      />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Generate a link that opens this dashboard with the same scenario, weights, and selected city.</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <span>
                       <ExportDialog
                         cities={cities}
                         selectedCity={selected}
