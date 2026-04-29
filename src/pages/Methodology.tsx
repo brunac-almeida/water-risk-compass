@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -75,7 +77,15 @@ const outputIndices = [
   { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all three indices — lower is better" },
 ];
 
-const Methodology = () => (
+const Methodology = () => {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [hash]);
+  return (
   <div className="bg-cream min-h-screen">
     <Navbar />
 
@@ -171,7 +181,7 @@ const Methodology = () => (
     </section>
 
     {/* Section 5 — Glossary */}
-    <section className="bg-background py-20 border-t border-border">
+    <section id="glossary" className="bg-background py-20 border-t border-border scroll-mt-24">
       <div className="max-w-[1240px] mx-auto px-14">
         <div className="mb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
           <div>
@@ -207,6 +217,7 @@ const Methodology = () => (
 
     <Footer />
   </div>
-);
+  );
+};
 
 export default Methodology;
