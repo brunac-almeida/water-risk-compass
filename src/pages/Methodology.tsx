@@ -77,7 +77,15 @@ const outputIndices = [
   { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all three indices — lower is better" },
 ];
 
-const Methodology = () => (
+const Methodology = () => {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [hash]);
+  return (
   <div className="bg-cream min-h-screen">
     <Navbar />
 
