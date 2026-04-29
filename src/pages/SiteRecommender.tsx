@@ -249,17 +249,33 @@ const SiteRecommender = () => {
             <div className="space-y-5">
               {/* Winner card */}
               <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
-                <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2">Recommended Location</span>
-                <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase">Recommended Location</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2 inline-flex items-center gap-1 cursor-help">
+                      Recommended Location <Info size={11} />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[280px]">The city with the lowest combined risk score given your answers. Adjust priorities in the Dashboard for deeper exploration.</TooltipContent>
+                </Tooltip>
                 <h2 className={`font-display text-3xl font-bold mt-2 ${riskColor(results[0].total_score)}`}>
                   {results[0].city}
                 </h2>
                 <div className="flex items-center justify-center gap-3 mt-3">
-                  <span className="font-display text-4xl font-bold text-foreground">{results[0].total_score.toFixed(1)}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="font-display text-4xl font-bold text-foreground cursor-help">{results[0].total_score.toFixed(1)}</span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[260px]">Composite risk score on a 0–100 scale. Lower = better. Combines water, carbon, and cooling factors weighted by your priorities.</TooltipContent>
+                  </Tooltip>
                   <span className="text-muted-foreground text-sm">/ 100</span>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${riskBg(results[0].total_score)}`}>
-                    {riskLabel(results[0].total_score)}
-                  </span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full cursor-help ${riskBg(results[0].total_score)}`}>
+                        {riskLabel(results[0].total_score)}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[240px]">Low Risk &lt; 30 · Medium 30–50 · High &gt; 50. Bands reflect overall sustainability and operational risk.</TooltipContent>
+                  </Tooltip>
                 </div>
                 <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[results[0].city]}</p>
               </div>
