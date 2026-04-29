@@ -474,6 +474,7 @@ const Dashboard = () => {
           </Tabs>
         </main>
       </div>
+      </TooltipProvider>
       <Footer />
     </div>
   );
