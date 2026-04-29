@@ -15,6 +15,7 @@ import {
 import DashboardMap from "@/components/DashboardMap";
 import CompareView from "@/components/dashboard/CompareView";
 import TrendsView from "@/components/dashboard/TrendsView";
+import ExportDialog from "@/components/dashboard/ExportDialog";
 
 const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
 
@@ -390,32 +391,47 @@ const Dashboard = () => {
         {/* ── MAIN ── */}
         <main className="flex-1 min-w-0">
           <Tabs defaultValue="overview">
-            <TabsList className="mb-6 bg-card border border-border flex-wrap h-auto">
+            <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+              <TabsList className="bg-card border border-border flex-wrap h-auto">
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">KPIs, city rankings, score breakdown, and the risk landscape scatter plot for the selected city.</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="compare" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Compare</TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Pick up to 4 cities and compare them side-by-side across every dimension.</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="trends" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Trends</TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Modeled 12-month seasonal trend for any metric across multiple cities.</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map</TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">All candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
+                </ShadTooltip>
+              </TabsList>
               <ShadTooltip>
                 <TooltipTrigger asChild>
-                  <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+                  <span>
+                    <ExportDialog
+                      cities={cities}
+                      selectedCity={selected}
+                      weights={weights}
+                      scenarioLabel={SCENARIOS[scenarioIdx]?.label ?? "Custom"}
+                    />
+                  </span>
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">KPIs, city rankings, score breakdown, and the risk landscape scatter plot for the selected city.</TooltipContent>
+                <TooltipContent className="text-xs max-w-[240px]">Download the current rankings as PDF, Excel, or CSV — including your scenario and weights.</TooltipContent>
               </ShadTooltip>
-              <ShadTooltip>
-                <TooltipTrigger asChild>
-                  <TabsTrigger value="compare" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Compare</TabsTrigger>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">Pick up to 4 cities and compare them side-by-side across every dimension.</TooltipContent>
-              </ShadTooltip>
-              <ShadTooltip>
-                <TooltipTrigger asChild>
-                  <TabsTrigger value="trends" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Trends</TabsTrigger>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">Modeled 12-month seasonal trend for any metric across multiple cities.</TooltipContent>
-              </ShadTooltip>
-              <ShadTooltip>
-                <TooltipTrigger asChild>
-                  <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map</TabsTrigger>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">All candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
-              </ShadTooltip>
-            </TabsList>
+            </div>
 
             <TabsContent value="overview" className="space-y-6">
               {/* KPI row */}
