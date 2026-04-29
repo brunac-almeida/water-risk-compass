@@ -171,7 +171,7 @@ const Methodology = () => (
     </section>
 
     {/* Section 5 — Glossary */}
-    <section className="bg-background py-20 border-t border-border">
+    <section id="glossary" className="bg-background py-20 border-t border-border scroll-mt-24">
       <div className="max-w-[1240px] mx-auto px-14">
         <div className="mb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
           <div>
