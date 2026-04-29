@@ -13,6 +13,8 @@ import {
   PieChart, Pie, Cell, ScatterChart, Scatter, ZAxis, LabelList,
 } from "recharts";
 import DashboardMap from "@/components/DashboardMap";
+import CompareView from "@/components/dashboard/CompareView";
+import TrendsView from "@/components/dashboard/TrendsView";
 
 const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
 
@@ -387,23 +389,35 @@ const Dashboard = () => {
 
         {/* ── MAIN ── */}
         <main className="flex-1 min-w-0">
-          <Tabs defaultValue="charts">
-            <TabsList className="mb-6 bg-card border border-border">
+          <Tabs defaultValue="overview">
+            <TabsList className="mb-6 bg-card border border-border flex-wrap h-auto">
               <ShadTooltip>
                 <TooltipTrigger asChild>
-                  <TabsTrigger value="charts" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Charts View</TabsTrigger>
+                  <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">View KPIs, city rankings, score breakdown, and the risk landscape scatter plot.</TooltipContent>
+                <TooltipContent className="text-xs max-w-[240px]">KPIs, city rankings, score breakdown, and the risk landscape scatter plot for the selected city.</TooltipContent>
               </ShadTooltip>
               <ShadTooltip>
                 <TooltipTrigger asChild>
-                  <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map View</TabsTrigger>
+                  <TabsTrigger value="compare" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Compare</TabsTrigger>
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[240px]">See all candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
+                <TooltipContent className="text-xs max-w-[240px]">Pick up to 4 cities and compare them side-by-side across every dimension.</TooltipContent>
+              </ShadTooltip>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="trends" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Trends</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">Modeled 12-month seasonal trend for any metric across multiple cities.</TooltipContent>
+              </ShadTooltip>
+              <ShadTooltip>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value="map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Map</TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[240px]">All candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
               </ShadTooltip>
             </TabsList>
 
-            <TabsContent value="charts" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
                 <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
@@ -504,6 +518,14 @@ const Dashboard = () => {
                   </ResponsiveContainer>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="compare">
+              <CompareView cities={cities} weights={weights} initialSelection={[selected.city]} />
+            </TabsContent>
+
+            <TabsContent value="trends">
+              <TrendsView cities={cities} weights={weights} />
             </TabsContent>
 
             <TabsContent value="map">
