@@ -301,27 +301,44 @@ const SiteRecommender = () => {
               </div>
 
               {/* Weights summary */}
-              <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">Your Profile</span>
-                <p className="font-mono-code text-sm text-foreground mt-2">
-                  Water×{weights.water} · Carbon×{weights.carbon} · Cooling×{weights.cooling}
-                </p>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center cursor-help">
+                    <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase inline-flex items-center gap-1">
+                      Your Profile <Info size={11} />
+                    </span>
+                    <p className="font-mono-code text-sm text-foreground mt-2">
+                      Water×{weights.water} · Carbon×{weights.carbon} · Cooling×{weights.cooling}
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[280px]">The scoring weights derived from your four answers. Higher values mean that factor pulled more influence in the ranking. You can fine-tune these in the Dashboard.</TooltipContent>
+              </Tooltip>
 
               {/* Actions */}
               <div className="flex gap-3 justify-center pt-2">
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
-                >
-                  Explore in Dashboard →
-                </button>
-                <button
-                  onClick={reset}
-                  className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
-                >
-                  Start Over
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
+                    >
+                      Explore in Dashboard →
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[260px]">Open the full dashboard pre-loaded with your weights to dive deeper into the data.</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={reset}
+                      className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
+                    >
+                      Start Over
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs">Reset all answers and run the wizard again.</TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
