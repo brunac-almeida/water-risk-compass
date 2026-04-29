@@ -17,6 +17,7 @@ import DashboardMap from "@/components/DashboardMap";
 import CompareView from "@/components/dashboard/CompareView";
 import TrendsView from "@/components/dashboard/TrendsView";
 import ExportDialog from "@/components/dashboard/ExportDialog";
+import ShareButton from "@/components/dashboard/ShareButton";
 
 const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
 
@@ -72,6 +73,14 @@ const Dashboard = () => {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+
+    // Parse share-link URL params (if present)
+    const params = new URLSearchParams(window.location.search);
+    const sParam = params.get("s");
+    const ww = params.get("ww"), wc = params.get("wc"), wb = params.get("wb"), we = params.get("we");
+    const cityParam = params.get("city");
+    const hasUrlWeights = ww !== null && wc !== null && wb !== null && we !== null;
+
     fetch(DATA_URL)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(json => {
@@ -88,7 +97,19 @@ const Dashboard = () => {
           avg_annual_precipitation: c.inputs?.avg_annual_precipitation ?? 0,
         }));
         setBaseData(cities);
-        if (json.default_weights) {
+
+        if (hasUrlWeights) {
+          setWeights({
+            water: parseFloat(ww!) || 0,
+            climate: parseFloat(wc!) || 0,
+            carbon: parseFloat(wb!) || 0,
+            cost: parseFloat(we!) || 0,
+          });
+          if (sParam !== null) {
+            const idx = parseInt(sParam, 10);
+            if (!Number.isNaN(idx) && idx >= 0 && idx < SCENARIOS.length) setScenarioIdx(idx);
+          }
+        } else if (json.default_weights) {
           const dw: Weights = {
             water: json.default_weights.water ?? 2.0,
             climate: json.default_weights.climate ?? 1.0,
@@ -97,6 +118,12 @@ const Dashboard = () => {
           };
           setWeights(dw);
         }
+
+        if (cityParam && cities.some(c => c.city === cityParam)) {
+          manualSelect.current = true;
+          setSelectedCity(cityParam);
+        }
+
         setLoading(false);
       })
       .catch(e => { if (!cancelled) { setError(e.message); setLoading(false); } });
@@ -430,6 +457,18 @@ const Dashboard = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="text-xs max-w-[240px]">Jump to plain-language definitions of terms used across this tool (Total Impact Score, Water Stress, Carbon Intensity, etc.).</TooltipContent>
+                </ShadTooltip>
+                <ShadTooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <ShareButton
+                        weights={weights}
+                        scenarioIdx={scenarioIdx}
+                        selectedCity={selected.city}
+                      />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs max-w-[240px]">Generate a link that opens this dashboard with the same scenario, weights, and selected city.</TooltipContent>
                 </ShadTooltip>
                 <ShadTooltip>
                   <TooltipTrigger asChild>
