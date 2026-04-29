@@ -520,6 +520,14 @@ const Dashboard = () => {
               </div>
             </TabsContent>
 
+            <TabsContent value="compare">
+              <CompareView cities={cities} weights={weights} initialSelection={[selected.city]} />
+            </TabsContent>
+
+            <TabsContent value="trends">
+              <TrendsView cities={cities} weights={weights} />
+            </TabsContent>
+
             <TabsContent value="map">
               <DashboardMap weights={weights} cities={cities} />
             </TabsContent>
