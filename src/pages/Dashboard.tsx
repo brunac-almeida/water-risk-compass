@@ -307,12 +307,6 @@ const Dashboard = () => {
                   <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {c.total_score.toFixed(1)}/10 (lower is better).</TooltipContent>
                 </ShadTooltip>
               ))}
-                  <span>{c.city}</span>
-                  <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
-                    {c.total_score.toFixed(1)}
-                  </span>
-                </button>
-              ))}
             </div>
           </div>
 
