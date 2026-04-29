@@ -295,6 +295,7 @@ const SiteRecommender = () => {
           )}
         </div>
       </div>
+      </TooltipProvider>
 
       <Footer />
     </div>
