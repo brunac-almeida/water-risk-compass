@@ -59,7 +59,7 @@ const glossary = [
 const pipelineSteps = [
   { num: "01", title: "Data Collection", text: "Gather temperature, water price, and carbon intensity from NOAA, EIA, and Circle of Blue for 5 U.S. cities." },
   { num: "02", title: "Normalization", text: "Apply min-max scaling to convert all variables to a 0–1 scale for fair cross-variable comparison." },
-  { num: "03", title: "Index Calculation", text: "Compute three sub-indices: Cooling Cost Index, Water Stress Score, and Carbon Cost Index." },
+  { num: "03", title: "Index Calculation", text: "Compute four sub-indices: Water Risk Score, Climate Load Index, Carbon Impact Score, and Energy Cost Score." },
   { num: "04", title: "Weighting", text: "Apply scenario weights to each index — adjustable by the user to reflect different planning priorities." },
   { num: "05", title: "Visualization", text: "Render results as interactive charts, a clickable map, and a Total Impact Score. Lower = better." },
 ];
@@ -68,13 +68,20 @@ const inputVars = [
   { label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
   { label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
   { label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
+  { label: "Drought Risk", source: "U.S. Drought Monitor · 2023 · Multi-year average severity classification" },
+  { label: "Water Stress Index", source: "WRI Aqueduct · 2023 · Baseline water stress ratio" },
+  { label: "Cooling Degree Days (CDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
+  { label: "Heating Degree Days (HDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
+  { label: "Annual Precipitation (in)", source: "NOAA Climate at a Glance · 2023 · State-level annual total" },
+  { label: "Electricity Price ($/kWh)", source: "EIA Electric Power Monthly · 2023 · Industrial rate" },
 ];
 
 const outputIndices = [
-  { label: "Cooling Cost Index", color: "text-risk-amber", formula: "Normalized Temperature" },
-  { label: "Water Stress Score", color: "text-teal", formula: "Normalized Water Price" },
-  { label: "Carbon Cost Index", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
-  { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all three indices — lower is better" },
+  { label: "Water Risk Score", color: "text-teal", formula: "Normalized Water Price, Drought Risk, and Water Stress Index" },
+  { label: "Climate Load Index", color: "text-risk-amber", formula: "Normalized Temperature, CDD, HDD, and Precipitation" },
+  { label: "Carbon Impact Score", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
+  { label: "Energy Cost Score", color: "text-foreground", formula: "Normalized electricity and industrial cost proxy" },
+  { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all four indices — lower is better" },
 ];
 
 const Methodology = () => {
@@ -166,13 +173,15 @@ const Methodology = () => {
         <p className="font-mono text-[15px] leading-[2.2] text-foreground">
           <span className="text-slate">Total Impact Score =</span>
           <br />
-          ( <span className="text-teal font-semibold">Water Stress Score</span> × 2.0 ) +
+          ( <span className="text-teal font-semibold">Water Risk</span> × 2.0 ) +
           <br />
-          ( <span className="text-risk-green font-semibold">Carbon Cost Index</span> × 1.5 ) +
+          ( <span className="text-risk-amber font-semibold">Climate Load</span> × 1.0 ) +
           <br />
-          ( <span className="text-risk-amber font-semibold">Cooling Cost Index</span> × 1.0 )
+          ( <span className="text-risk-green font-semibold">Carbon Impact</span> × 1.5 ) +
           <br />
-          <span className="text-slate">÷ 4.5 × 10  →  displayed on a 0–10 scale</span>
+          ( <span className="text-foreground font-semibold">Energy Cost</span> × 2.0 )
+          <br />
+          <span className="text-slate">÷ 6.5 × 10  →  displayed on a 0–10 scale</span>
         </p>
         <p className="font-body text-[13px] text-slate italic mt-6">
           Weights are user-adjustable. Base case prioritizes water sustainability (2.0×). Lower score = more sustainable site.
