@@ -574,14 +574,10 @@ const Dashboard = () => {
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
                       <XAxis type="number" dataKey="x" name="Energy Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Energy Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
                       <YAxis type="number" dataKey="y" name="Water Risk" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Risk", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                      <ZAxis dataKey="z" range={[200, 400]} />
+                      <ZAxis range={[300, 300]} />
                       <Tooltip
                         formatter={(v: number, name: string) => [v.toFixed(1), name]}
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
-                        itemSorter={(item) => (item.dataKey === "x" ? 0 : item.dataKey === "y" ? 1 : 2)}
-                        filterNull
-                        // Hide the z (bubble size) row from the tooltip
-                        wrapperStyle={{ outline: "none" }}
                       />
                       <Scatter data={scatterData}>
                         {scatterData.map((d, i) => <Cell key={i} fill={d.fill} />)}
