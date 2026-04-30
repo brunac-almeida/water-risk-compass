@@ -174,8 +174,8 @@ const Dashboard = () => {
   ] : [];
 
   const scatterData = cities.map(c => ({
-    x: c.energy_cost * 100,
-    y: c.water_risk * 100,
+    x: c.energy_cost,
+    y: c.water_risk,
     z: c.total_score,
     city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fill: RISK_COLOR(c.total_score),
@@ -568,15 +568,31 @@ const Dashboard = () => {
               {/* scatter */}
               <div className="bg-card rounded-lg border border-border p-5">
                 <h4 className="font-display text-sm font-bold text-foreground mb-4">Risk Landscape — Energy Cost vs Water Risk</h4>
-                <div className="scatter-no-clip" style={{ overflow: "visible" }}>
+                <div className="scatter-no-clip relative" style={{ overflow: "visible" }}>
                   <ResponsiveContainer width="100%" height={320}>
-                    <ScatterChart margin={{ top: 40, right: 30, bottom: 20, left: 10 }}>
+                    <ScatterChart margin={{ top: 40, right: 30, bottom: 40, left: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-                      <XAxis type="number" dataKey="x" name="Energy Cost" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Energy Cost Index", position: "bottom", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
-                      <YAxis type="number" dataKey="y" name="Water Risk" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} label={{ value: "Water Risk", angle: -90, position: "insideLeft", style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }} />
+                      <XAxis
+                        type="number"
+                        dataKey="x"
+                        name="Energy Cost"
+                        domain={[0, 1]}
+                        ticks={[0, 0.25, 0.5, 0.75, 1]}
+                        tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                        label={{ value: "Energy Cost Score (0 = lowest cost, 1 = highest cost)", position: "bottom", offset: 5, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }}
+                      />
+                      <YAxis
+                        type="number"
+                        dataKey="y"
+                        name="Water Risk"
+                        domain={[0, 1]}
+                        ticks={[0, 0.25, 0.5, 0.75, 1]}
+                        tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                        label={{ value: "Water Risk Score (0 = lowest risk, 1 = highest risk)", angle: -90, position: "insideLeft", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" } }}
+                      />
                       <ZAxis range={[300, 300]} />
                       <Tooltip
-                        formatter={(v: number, name: string) => [v.toFixed(1), name]}
+                        formatter={(v: number, name: string) => [v.toFixed(2), name]}
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
                       />
                       <Scatter data={scatterData}>
@@ -585,7 +601,19 @@ const Dashboard = () => {
                       </Scatter>
                     </ScatterChart>
                   </ResponsiveContainer>
+                  {/* Quadrant labels */}
+                  <div className="pointer-events-none absolute inset-0" style={{ paddingTop: 40, paddingBottom: 40, paddingLeft: 60, paddingRight: 30 }}>
+                    <div className="relative w-full h-full">
+                      <span className="absolute top-1 left-1 text-[10px] italic text-muted-foreground/60">High water risk / Low cost</span>
+                      <span className="absolute top-1 right-1 text-[10px] italic text-muted-foreground/60">High risk / High cost</span>
+                      <span className="absolute bottom-1 left-1 text-[10px] italic text-muted-foreground/60">Low risk / Low cost</span>
+                      <span className="absolute bottom-1 right-1 text-[10px] italic text-muted-foreground/60">Low water risk / High cost</span>
+                    </div>
+                  </div>
                 </div>
+                <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed">
+                  Scores are normalized relative to cities in this dataset. Bottom-left = best on both dimensions. Top-right = highest combined risk.
+                </p>
               </div>
             </TabsContent>
 
