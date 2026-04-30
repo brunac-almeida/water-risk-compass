@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const stats = [
   { num: "5", title: "U.S. Cities Analyzed", desc: "From Virginia to Phoenix — top data center markets" },
   { num: "4", title: "Key Variables", desc: "Temp · Rainfall · Water Price · Grid Carbon" },
-  { num: "3", title: "Decision Scenarios", desc: "Balanced · Carbon Priority · Cost Priority" },
+  { num: "4", title: "Decision Scenarios", desc: "Water Stress · Carbon Intensity · Cooling Costs · Energy Cost" },
 ];
 
 const Hero = () => (
