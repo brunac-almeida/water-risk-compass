@@ -167,10 +167,10 @@ const Dashboard = () => {
   }));
 
   const donutData = selected ? [
-    { name: "Water Risk", value: +(selected.water_risk * weights.water).toFixed(3) },
-    { name: "Climate Load", value: +(selected.climate_load * weights.climate).toFixed(3) },
-    { name: "Carbon", value: +(selected.carbon * weights.carbon).toFixed(3) },
-    { name: "Energy Cost", value: +(selected.energy_cost * weights.cost).toFixed(3) },
+    { name: "Water", raw: selected.water_risk ?? 0, value: +((selected.water_risk ?? 0) * weights.water).toFixed(3) },
+    { name: "Climate", raw: selected.climate_load ?? 0, value: +((selected.climate_load ?? 0) * weights.climate).toFixed(3) },
+    { name: "Carbon", raw: selected.carbon ?? 0, value: +((selected.carbon ?? 0) * weights.carbon).toFixed(3) },
+    { name: "Cost", raw: selected.energy_cost ?? 0, value: +((selected.energy_cost ?? 0) * weights.cost).toFixed(3) },
   ] : [];
 
   const scatterData = cities.map(c => ({
@@ -545,23 +545,39 @@ const Dashboard = () => {
 
                 <div className="col-span-2 bg-card rounded-lg border border-border p-5">
                   <h4 className="font-display text-sm font-bold text-foreground mb-2">Score Breakdown — {selected.city}</h4>
-                  <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie data={donutData} dataKey="value" innerRadius={55} outerRadius={85} paddingAngle={3} cx="50%" cy="50%">
-                        {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i]} />)}
-                      </Pie>
-                      <Tooltip
-                        formatter={(v: number, name: string) => [v.toFixed(3), name]}
-                        contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="flex justify-center gap-3 text-[11px] text-muted-foreground -mt-2 flex-wrap">
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[0] }} />Water</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Climate</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Carbon</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[3] }} />Cost</span>
+                  <div className="relative">
+                    <ResponsiveContainer width="100%" height={220}>
+                      <PieChart>
+                        <Pie data={donutData} dataKey="value" innerRadius={55} outerRadius={85} paddingAngle={3} cx="50%" cy="50%">
+                          {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i]} />)}
+                        </Pie>
+                        <Tooltip
+                          formatter={(_v: number, _name: string, item: any) => {
+                            const raw = item?.payload?.raw ?? 0;
+                            const weighted = item?.payload?.value ?? 0;
+                            return [`${raw.toFixed(2)} (weighted ${weighted.toFixed(2)})`, item?.payload?.name];
+                          }}
+                          contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    {/* Center total score */}
+                    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`font-display text-3xl font-bold leading-none ${totalColor}`}>
+                        {(selected.total_score ?? 0).toFixed(1)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground mt-1 tracking-wide">/ 10</span>
+                    </div>
                   </div>
+                  <div className="flex justify-center gap-3 text-[11px] text-muted-foreground -mt-2 flex-wrap">
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[0] }} />Water: {(selected.water_risk ?? 0).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Climate: {(selected.climate_load ?? 0).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Carbon: {(selected.carbon ?? 0).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[3] }} />Cost: {(selected.energy_cost ?? 0).toFixed(2)}</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed text-center">
+                    Slice size shows each pillar's weighted contribution to the total score. Smaller slices = lower risk contribution.
+                  </p>
                 </div>
               </div>
 
