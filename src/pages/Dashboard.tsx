@@ -159,11 +159,13 @@ const Dashboard = () => {
   const selected = cities.find(c => c.city === selectedCity) ?? cities[0];
 
   /* chart data */
+  const barRiskColor = (s: number) =>
+    s < 4 ? "hsl(148,62%,30%)" : s <= 6 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
   const barData = cities.map(c => ({
     city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fullCity: c.city,
     score: c.total_score,
-    fill: RISK_COLOR(c.total_score ?? 0),
+    fill: barRiskColor(c.total_score ?? 0),
     stroke: c.city === selectedCity ? "hsl(184,100%,20%)" : "transparent",
   }));
 
