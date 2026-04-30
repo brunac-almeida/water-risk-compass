@@ -163,7 +163,8 @@ const Dashboard = () => {
     city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fullCity: c.city,
     score: c.total_score,
-    fill: c.city === selectedCity ? "hsl(184,100%,26%)" : "hsl(218,26%,90%)",
+    fill: RISK_COLOR(c.total_score ?? 0),
+    stroke: c.city === selectedCity ? "hsl(184,100%,20%)" : "transparent",
   }));
 
   const donutData = selected ? [
