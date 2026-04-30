@@ -159,11 +159,14 @@ const Dashboard = () => {
   const selected = cities.find(c => c.city === selectedCity) ?? cities[0];
 
   /* chart data */
+  const barRiskColor = (s: number) =>
+    s < 4 ? "hsl(148,62%,30%)" : s <= 6 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
   const barData = cities.map(c => ({
     city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
     fullCity: c.city,
     score: c.total_score,
-    fill: c.city === selectedCity ? "hsl(184,100%,26%)" : "hsl(218,26%,90%)",
+    fill: barRiskColor(c.total_score ?? 0),
+    stroke: c.city === selectedCity ? "hsl(184,100%,20%)" : "transparent",
   }));
 
   const donutData = selected ? [
@@ -525,9 +528,10 @@ const Dashboard = () => {
               {/* bar + donut */}
               <div className="grid grid-cols-5 gap-4">
                 <div className="col-span-3 bg-card rounded-lg border border-border p-5">
-                  <h4 className="font-display text-sm font-bold text-foreground mb-4">City Rankings</h4>
+                  <h4 className="font-display text-sm font-bold text-foreground mb-1">City Rankings</h4>
+                  <p className="text-[11px] text-muted-foreground mb-3">Shorter bar = better site (lower score = lower risk)</p>
                   <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 20 }}>
+                    <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
                       <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
                       <YAxis type="category" dataKey="city" width={120} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
@@ -537,7 +541,8 @@ const Dashboard = () => {
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
                       />
                       <Bar dataKey="score" radius={[0, 4, 4, 0]} barSize={18}>
-                        {barData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                        {barData.map((d, i) => <Cell key={i} fill={d.fill} stroke={d.stroke} strokeWidth={d.stroke === "transparent" ? 0 : 2} />)}
+                        <LabelList dataKey="score" position="right" formatter={(v: number) => v.toFixed(1)} style={{ fontSize: 11, fill: "hsl(213,18%,49%)", fontWeight: 600 }} />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
