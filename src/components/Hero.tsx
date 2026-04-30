@@ -14,10 +14,6 @@ const Hero = () => (
 
     <div className="relative z-10 max-w-[1240px] mx-auto grid grid-cols-[1fr_430px] gap-16 items-center">
       <div>
-        <div className="inline-flex items-center gap-[7px] font-mono-code text-[10px] tracking-[1px] text-[#7dd3db] bg-[rgba(0,184,204,0.12)] border border-[rgba(0,184,204,0.25)] px-[13px] py-[5px] rounded-full mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#7dd3db] animate-blink" />
-          CIVE 580 · Spring 2026 · Project #3
-        </div>
 
         <h1 className="font-display text-[68px] font-black leading-[0.95] tracking-tight text-primary-foreground mb-[22px] whitespace-pre-line">
           Where Will&nbsp;{"\n"}Your Data Center{"\n"}<em className="not-italic text-[#5dd8e3]">Thrive?</em>

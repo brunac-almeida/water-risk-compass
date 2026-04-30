@@ -138,9 +138,6 @@ const SiteRecommender = () => {
 
       {/* Header */}
       <div className="max-w-[800px] mx-auto px-4 pt-16 pb-8 text-center">
-        <span className="inline-block font-mono-code text-xs tracking-widest text-primary bg-accent px-3 py-1 rounded-full mb-4">
-          // Smart Site Selection
-        </span>
         <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
           Find Your <span className="text-primary">Ideal Location</span>
         </h1>

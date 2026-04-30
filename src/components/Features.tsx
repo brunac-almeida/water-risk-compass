@@ -27,9 +27,6 @@ const features: { Icon: LucideIcon; bg: string; iconColor: string; title: string
 const Features = () => (
   <section className="pb-[72px]">
     <div className="max-w-[1240px] mx-auto px-14">
-      <span className="font-mono-code text-[10px] tracking-[1.5px] uppercase text-teal bg-teal-light border border-teal-mid px-3 py-1 rounded-full inline-block mb-3.5">
-        // What You Can Do
-      </span>
       <h2 className="font-display text-[42px] font-black leading-[1.1] text-foreground mb-2">
         Built for Decision‑Makers
       </h2>
