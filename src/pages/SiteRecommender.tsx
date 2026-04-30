@@ -1,40 +1,53 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 
-/* ── City data & scoring (same as Dashboard) ── */
-const BASE_DATA = [
-  { city: "Northern Virginia", water_stress: 0.434, carbon_index: 0.419, cooling_cost: 0.249, raw_temp: "55.1°F", raw_water: "$4.95/1k gal", raw_carbon: "235.0 kg CO₂/MWh" },
-  { city: "Dallas–Fort Worth", water_stress: 0.251, carbon_index: 1.0, cooling_cost: 1.0, raw_temp: "64.9°F", raw_water: "$4.29/1k gal", raw_carbon: "338.6 kg CO₂/MWh" },
-  { city: "Silicon Valley", water_stress: 1.0, carbon_index: 0.0, cooling_cost: 0.45, raw_temp: "57.7°F", raw_water: "$7.00/1k gal", raw_carbon: "160.2 kg CO₂/MWh" },
-  { city: "Phoenix", water_stress: 0.0, carbon_index: 0.831, cooling_cost: 0.604, raw_temp: "59.8°F", raw_water: "$3.38/1k gal", raw_carbon: "308.5 kg CO₂/MWh" },
-  { city: "Chicago", water_stress: 0.139, carbon_index: 0.294, cooling_cost: 0.0, raw_temp: "51.9°F", raw_water: "$3.88/1k gal", raw_carbon: "212.7 kg CO₂/MWh" },
-];
+const DATA_URL = "https://raw.githubusercontent.com/ozzyd-2/site-selector-dashboard/refs/heads/main/data/dashboard_data.json";
+
+/* ── Types ── */
+type Weights = { water: number; climate: number; carbon: number; cost: number };
+
+type CityData = {
+  city: string;
+  state: string;
+  water_risk: number;
+  climate_load: number;
+  carbon: number;
+  energy_cost: number;
+};
 
 const CITY_TAGLINES: Record<string, string> = {
   "Chicago": "Cleanest grid and lowest cooling demand — strong all-around choice",
-  "Northern Virginia": "Largest market with moderate risk profile — good infrastructure",
+  "Northern Virginia (NoVA)": "Largest market with moderate risk profile — good infrastructure",
   "Phoenix": "Fast-growing market but high carbon grid — monitor closely",
   "Silicon Valley": "Cleanest electricity grid but highest water price in the dataset",
   "Dallas–Fort Worth": "Strong connectivity hub but highest carbon intensity of all markets",
 };
 
-type Weights = { water: number; carbon: number; cooling: number };
-
-function computeTotal(c: typeof BASE_DATA[0], w: Weights) {
-  const raw = (c.water_stress * 100) * w.water + (c.carbon_index * 100) * w.carbon + (c.cooling_cost * 100) * w.cooling;
-  return +(raw / (w.water + w.carbon + w.cooling)).toFixed(1);
+/* Same formula as Dashboard: 0–10 scale */
+function computeTotal(c: CityData, w: Weights) {
+  const sum = w.water + w.climate + w.carbon + w.cost;
+  if (sum === 0) return 0;
+  const raw =
+    (c.water_risk ?? 0) * w.water +
+    (c.climate_load ?? 0) * w.climate +
+    (c.carbon ?? 0) * w.carbon +
+    (c.energy_cost ?? 0) * w.cost;
+  return +((raw / sum) * 10).toFixed(1);
 }
 
-const riskLabel = (s: number) => s < 30 ? "Low Risk" : s <= 50 ? "Medium Risk" : "High Risk";
-const riskColor = (s: number) => s < 30 ? "text-risk-green" : s <= 50 ? "text-risk-amber" : "text-risk-coral";
-const riskBg = (s: number) => s < 30 ? "bg-green-light text-risk-green" : s <= 50 ? "bg-amber-light text-risk-amber" : "bg-coral-light text-risk-coral";
+/* Risk bands match Dashboard (0–10 scale) */
+const riskLabel = (s: number) => (s < 3 ? "Low Risk" : s <= 5 ? "Medium Risk" : "High Risk");
+const riskColor = (s: number) => (s < 3 ? "text-risk-green" : s <= 5 ? "text-risk-amber" : "text-risk-coral");
+const riskBg = (s: number) =>
+  s < 3 ? "bg-green-light text-risk-green" : s <= 5 ? "bg-amber-light text-risk-amber" : "bg-coral-light text-risk-coral";
 
-/* ── Wizard steps config ── */
+/* ── Wizard steps config (UI/copy unchanged) ── */
 const FACILITY_TYPES = [
   { label: "Cloud / Hyperscale", desc: "Large scale, water-intensive cooling" },
   { label: "Colocation", desc: "Shared facility, moderate footprint" },
@@ -45,7 +58,7 @@ const FACILITY_TYPES = [
 const CONSTRAINTS = [
   { label: "Water Availability", desc: "Water scarcity is a deal-breaker", key: "water" as const },
   { label: "Carbon Footprint", desc: "ESG commitments require a clean grid", key: "carbon" as const },
-  { label: "Cooling Cost", desc: "Energy cost for cooling dominates OpEx", key: "cooling" as const },
+  { label: "Cooling Cost", desc: "Energy cost for cooling dominates OpEx", key: "cost" as const },
   { label: "Balanced", desc: "No single factor dominates", key: "balanced" as const },
 ];
 
@@ -63,50 +76,91 @@ const SiteRecommender = () => {
   const [riskTol, setRiskTol] = useState<number | null>(null);
   const [sustainability, setSustainability] = useState(3);
 
+  /* fetched data */
+  const [baseData, setBaseData] = useState<CityData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetch(DATA_URL)
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(json => {
+        if (cancelled) return;
+        const cities: CityData[] = (json.cities ?? []).map((c: any) => ({
+          city: c.city,
+          state: c.state,
+          water_risk: c.scores?.water_risk ?? 0,
+          climate_load: c.scores?.climate_load ?? 0,
+          carbon: c.scores?.carbon ?? 0,
+          energy_cost: c.scores?.energy_cost ?? 0,
+        }));
+        setBaseData(cities);
+        setLoading(false);
+      })
+      .catch(e => { if (!cancelled) { setError(e.message); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, []);
+
   const canAdvance = step === 0 ? facility !== null : step === 1 ? constraint !== null : step === 2 ? riskTol !== null : true;
 
-  /* Compute weights from answers */
+  /* Compute 4 weights from answers */
   const weights = useMemo<Weights>(() => {
-    // Base weights from facility type
-    let w: Weights = { water: 1.5, carbon: 1.5, cooling: 1.5 };
-    if (facility === 0) w = { water: 2.0, carbon: 1.5, cooling: 1.0 }; // Cloud
-    if (facility === 1) w = { water: 1.5, carbon: 1.5, cooling: 1.5 }; // Colo
-    if (facility === 2) w = { water: 1.0, carbon: 1.0, cooling: 2.5 }; // AI/GPU
-    if (facility === 3) w = { water: 1.5, carbon: 1.5, cooling: 1.5 }; // Enterprise
+    // Base weights from facility type — 4 pillars
+    let w: Weights = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
+    if (facility === 0) w = { water: 2.0, climate: 1.0, carbon: 1.5, cost: 1.5 }; // Cloud
+    if (facility === 1) w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 }; // Colo
+    if (facility === 2) w = { water: 1.0, climate: 1.5, carbon: 1.0, cost: 2.5 }; // AI/GPU
+    if (facility === 3) w = { water: 1.5, climate: 1.0, carbon: 1.5, cost: 2.0 }; // Enterprise
 
-    // Constraint override
+    // Constraint override → set one weight to 3.0
     if (constraint === 0) w.water = 3.0;
     if (constraint === 1) w.carbon = 3.0;
-    if (constraint === 2) w.cooling = 3.0;
-    if (constraint === 3) { w.water = 1.5; w.carbon = 1.5; w.cooling = 1.5; }
+    if (constraint === 2) w.cost = 3.0;
+    if (constraint === 3) w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
 
-    // Risk tolerance
-    if (riskTol === 0) { w.water *= 1.3; w.carbon *= 1.3; w.cooling *= 1.3; }
+    // Risk tolerance — applies to all 4
+    if (riskTol === 0) {
+      w.water *= 1.3; w.climate *= 1.3; w.carbon *= 1.3; w.cost *= 1.3;
+    }
     if (riskTol === 2) {
-      const maxKey = w.water >= w.carbon && w.water >= w.cooling ? "water" : w.carbon >= w.cooling ? "carbon" : "cooling";
-      for (const k of ["water", "carbon", "cooling"] as const) {
+      const entries = [["water", w.water], ["climate", w.climate], ["carbon", w.carbon], ["cost", w.cost]] as const;
+      const maxKey = entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+      (["water", "climate", "carbon", "cost"] as const).forEach(k => {
         if (k !== maxKey) w[k] *= 0.5;
-      }
+      });
     }
 
     // Sustainability slider
     if (sustainability >= 4) { w.water += 0.5; w.carbon += 0.5; }
-    if (sustainability <= 2) { w.cooling += 0.5; }
+    if (sustainability <= 2) { w.climate += 0.5; w.cost += 0.5; }
 
-    // Round
+    // Round to 1 decimal
     w.water = +w.water.toFixed(1);
+    w.climate = +w.climate.toFixed(1);
     w.carbon = +w.carbon.toFixed(1);
-    w.cooling = +w.cooling.toFixed(1);
+    w.cost = +w.cost.toFixed(1);
     return w;
   }, [facility, constraint, riskTol, sustainability]);
 
   const results = useMemo(() =>
-    BASE_DATA.map(c => ({ ...c, total_score: computeTotal(c, weights) }))
+    baseData.map(c => ({ ...c, total_score: computeTotal(c, weights) }))
       .sort((a, b) => a.total_score - b.total_score),
-    [weights]
+    [baseData, weights]
   );
 
   const reset = () => { setStep(0); setFacility(null); setConstraint(null); setRiskTol(null); setSustainability(3); };
+
+  const goToDashboard = () => {
+    const params = new URLSearchParams({
+      ww: weights.water.toFixed(2),
+      wc: weights.climate.toFixed(2),
+      wb: weights.carbon.toFixed(2),
+      we: weights.cost.toFixed(2),
+    });
+    navigate(`/dashboard?${params.toString()}`);
+  };
 
   const OptionCard = ({ label, desc, selected, onClick }: { label: string; desc: string; selected: boolean; onClick: () => void }) => (
     <button
@@ -130,6 +184,9 @@ const SiteRecommender = () => {
   ];
 
   const sustainLabels = ["Not a priority", "Low", "Moderate", "Important", "Core to our mission"];
+
+  const winner = results[0];
+  const winnerScore = winner?.total_score ?? 0;
 
   return (
     <div className="bg-background min-h-screen font-body flex flex-col">
@@ -244,99 +301,118 @@ const SiteRecommender = () => {
           {/* ── Results ── */}
           {step === 4 && (
             <div className="space-y-5">
-              {/* Winner card */}
-              <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2 inline-flex items-center gap-1 cursor-help">
-                      Recommended Location <Info size={11} />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="text-xs max-w-[280px]">The city with the lowest combined risk score given your answers. Adjust priorities in the Dashboard for deeper exploration.</TooltipContent>
-                </Tooltip>
-                <h2 className={`font-display text-3xl font-bold mt-2 ${riskColor(results[0].total_score)}`}>
-                  {results[0].city}
-                </h2>
-                <div className="flex items-center justify-center gap-3 mt-3">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="font-display text-4xl font-bold text-foreground cursor-help">{results[0].total_score.toFixed(1)}</span>
-                    </TooltipTrigger>
-                    <TooltipContent className="text-xs max-w-[260px]">Composite risk score on a 0–100 scale. Lower = better. Combines water, carbon, and cooling factors weighted by your priorities.</TooltipContent>
-                  </Tooltip>
-                  <span className="text-muted-foreground text-sm">/ 100</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className={`text-xs font-semibold px-3 py-1 rounded-full cursor-help ${riskBg(results[0].total_score)}`}>
-                        {riskLabel(results[0].total_score)}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent className="text-xs max-w-[240px]">Low Risk &lt; 30 · Medium 30–50 · High &gt; 50. Bands reflect overall sustainability and operational risk.</TooltipContent>
-                  </Tooltip>
+              {loading && (
+                <div className="space-y-5">
+                  <Skeleton className="h-[200px] rounded-2xl" />
+                  <Skeleton className="h-[260px] rounded-2xl" />
+                  <Skeleton className="h-[80px] rounded-2xl" />
                 </div>
-                <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[results[0].city]}</p>
-              </div>
+              )}
 
-              {/* Rankings */}
-              <div className="bg-card rounded-2xl border border-border shadow-lg p-6">
-                <h3 className="font-display text-lg font-bold text-foreground mb-4">Full Rankings</h3>
-                <div className="space-y-3">
-                  {results.map((c, i) => (
-                    <div key={c.city} className={`flex items-center gap-4 p-3 rounded-xl border transition-all ${i === 0 ? "border-primary/30 bg-accent" : "border-border"}`}>
-                      <span className="font-display font-bold text-xl text-muted-foreground/40 w-8 text-center">#{i + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <span className="font-display font-bold text-[15px] text-foreground">{c.city}</span>
-                        <p className="text-xs text-muted-foreground truncate">{CITY_TAGLINES[c.city]}</p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className={`font-display font-bold text-lg ${riskColor(c.total_score)}`}>{c.total_score.toFixed(1)}</span>
-                        <span className={`block text-[10px] font-semibold ${riskColor(c.total_score)}`}>{riskLabel(c.total_score)}</span>
-                      </div>
+              {error && !loading && (
+                <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
+                  <p className="text-destructive font-semibold mb-4">Failed to load city data: {error}</p>
+                  <button onClick={() => window.location.reload()} className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold">Retry</button>
+                </div>
+              )}
+
+              {!loading && !error && winner && (
+                <>
+                  {/* Winner card */}
+                  <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase block mb-2 inline-flex items-center gap-1 cursor-help">
+                          Recommended Location <Info size={11} />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs max-w-[280px]">The city with the lowest combined risk score given your answers. Adjust priorities in the Dashboard for deeper exploration.</TooltipContent>
+                    </Tooltip>
+                    <h2 className={`font-display text-3xl font-bold mt-2 ${riskColor(winnerScore)}`}>
+                      {winner.city}
+                    </h2>
+                    <div className="flex items-center justify-center gap-3 mt-3">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="font-display text-4xl font-bold text-foreground cursor-help">{winnerScore.toFixed(1)}</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs max-w-[260px]">Composite risk score on a 0–10 scale. Lower = better. Combines water risk, climate load, carbon impact, and energy cost weighted by your priorities.</TooltipContent>
+                      </Tooltip>
+                      <span className="text-muted-foreground text-sm">/ 10</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className={`text-xs font-semibold px-3 py-1 rounded-full cursor-help ${riskBg(winnerScore)}`}>
+                            {riskLabel(winnerScore)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs max-w-[240px]">Low Risk &lt; 3 · Medium 3–5 · High &gt; 5. Bands reflect overall sustainability and operational risk.</TooltipContent>
+                      </Tooltip>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Weights summary */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center cursor-help">
-                    <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase inline-flex items-center gap-1">
-                      Your Profile <Info size={11} />
-                    </span>
-                    <p className="font-mono-code text-sm text-foreground mt-2">
-                      Water×{weights.water} · Carbon×{weights.carbon} · Cooling×{weights.cooling}
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[winner.city] ?? `${winner.state} — see the dashboard for full breakdown.`}</p>
                   </div>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[280px]">The scoring weights derived from your four answers. Higher values mean that factor pulled more influence in the ranking. You can fine-tune these in the Dashboard.</TooltipContent>
-              </Tooltip>
 
-              {/* Actions */}
-              <div className="flex gap-3 justify-center pt-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => navigate("/dashboard")}
-                      className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
-                    >
-                      Explore in Dashboard →
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="text-xs max-w-[260px]">Open the full dashboard pre-loaded with your weights to dive deeper into the data.</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={reset}
-                      className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
-                    >
-                      Start Over
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="text-xs">Reset all answers and run the wizard again.</TooltipContent>
-                </Tooltip>
-              </div>
+                  {/* Rankings */}
+                  <div className="bg-card rounded-2xl border border-border shadow-lg p-6">
+                    <h3 className="font-display text-lg font-bold text-foreground mb-4">Full Rankings</h3>
+                    <div className="space-y-3">
+                      {results.map((c, i) => (
+                        <div key={c.city} className={`flex items-center gap-4 p-3 rounded-xl border transition-all ${i === 0 ? "border-primary/30 bg-accent" : "border-border"}`}>
+                          <span className="font-display font-bold text-xl text-muted-foreground/40 w-8 text-center">#{i + 1}</span>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-display font-bold text-[15px] text-foreground">{c.city}</span>
+                            <p className="text-xs text-muted-foreground truncate">{CITY_TAGLINES[c.city] ?? c.state}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className={`font-display font-bold text-lg ${riskColor(c.total_score ?? 0)}`}>{(c.total_score ?? 0).toFixed(1)}</span>
+                            <span className={`block text-[10px] font-semibold ${riskColor(c.total_score ?? 0)}`}>{riskLabel(c.total_score ?? 0)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Weights summary */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="bg-card rounded-2xl border border-border shadow-lg p-6 text-center cursor-help">
+                        <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase inline-flex items-center gap-1">
+                          Your Profile <Info size={11} />
+                        </span>
+                        <p className="font-mono-code text-sm text-foreground mt-2">
+                          Water×{weights.water} · Climate×{weights.climate} · Carbon×{weights.carbon} · Cost×{weights.cost}
+                        </p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs max-w-[280px]">The four scoring weights derived from your answers. Higher values mean that pillar pulled more influence in the ranking. You can fine-tune these in the Dashboard.</TooltipContent>
+                  </Tooltip>
+
+                  {/* Actions */}
+                  <div className="flex gap-3 justify-center pt-2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={goToDashboard}
+                          className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition-all"
+                        >
+                          Explore in Dashboard →
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs max-w-[260px]">Open the full dashboard pre-loaded with your weights to dive deeper into the data.</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={reset}
+                          className="border border-border text-foreground text-sm font-semibold px-6 py-3 rounded-lg hover:bg-muted transition-all"
+                        >
+                          Start Over
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs">Reset all answers and run the wizard again.</TooltipContent>
+                    </Tooltip>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
