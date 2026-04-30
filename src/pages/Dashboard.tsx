@@ -423,25 +423,25 @@ const Dashboard = () => {
               <TabsList className="bg-card border border-border flex-wrap h-auto gap-1 p-1">
                 <ShadTooltip>
                   <TooltipTrigger asChild>
-                    <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:shadow-md transition-colors">Overview</TabsTrigger>
+                    <TabsTrigger value="overview" className="data-[state=active]:!bg-blue-700 data-[state=active]:!text-white data-[state=active]:!font-bold data-[state=active]:!shadow-md transition-colors">Overview</TabsTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="text-xs max-w-[240px]">KPIs, city rankings, score breakdown, and the risk landscape scatter plot for the selected city.</TooltipContent>
                 </ShadTooltip>
                 <ShadTooltip>
                   <TooltipTrigger asChild>
-                    <TabsTrigger value="compare" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:shadow-md transition-colors">Compare</TabsTrigger>
+                    <TabsTrigger value="compare" className="data-[state=active]:!bg-blue-700 data-[state=active]:!text-white data-[state=active]:!font-bold data-[state=active]:!shadow-md transition-colors">Compare</TabsTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="text-xs max-w-[240px]">Pick up to 4 cities and compare them side-by-side across every dimension.</TooltipContent>
                 </ShadTooltip>
                 <ShadTooltip>
                   <TooltipTrigger asChild>
-                    <TabsTrigger value="trends" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:shadow-md transition-colors">Trends</TabsTrigger>
+                    <TabsTrigger value="trends" className="data-[state=active]:!bg-blue-700 data-[state=active]:!text-white data-[state=active]:!font-bold data-[state=active]:!shadow-md transition-colors">Trends</TabsTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="text-xs max-w-[240px]">Modeled 12-month seasonal trend for any metric across multiple cities.</TooltipContent>
                 </ShadTooltip>
                 <ShadTooltip>
                   <TooltipTrigger asChild>
-                    <TabsTrigger value="map" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:shadow-md transition-colors">Map</TabsTrigger>
+                    <TabsTrigger value="map" className="data-[state=active]:!bg-blue-700 data-[state=active]:!text-white data-[state=active]:!font-bold data-[state=active]:!shadow-md transition-colors">Map</TabsTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="text-xs max-w-[240px]">All candidate cities plotted on a U.S. map, color-coded by risk level.</TooltipContent>
                 </ShadTooltip>
