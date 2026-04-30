@@ -578,6 +578,10 @@ const Dashboard = () => {
                       <Tooltip
                         formatter={(v: number, name: string) => [v.toFixed(1), name]}
                         contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
+                        itemSorter={(item) => (item.dataKey === "x" ? 0 : item.dataKey === "y" ? 1 : 2)}
+                        filterNull
+                        // Hide the z (bubble size) row from the tooltip
+                        wrapperStyle={{ outline: "none" }}
                       />
                       <Scatter data={scatterData}>
                         {scatterData.map((d, i) => <Cell key={i} fill={d.fill} />)}
