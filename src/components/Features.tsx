@@ -20,7 +20,7 @@ const features: { Icon: LucideIcon; bg: string; iconColor: string; title: string
     bg: "bg-risk-green-light",
     iconColor: "text-risk-green",
     title: "Scenario Planning",
-    desc: "Three built-in scenarios with adjustable weights. Shift priorities between water sustainability, carbon reduction, and operational cost.",
+    desc: "Four built-in scenarios with adjustable weights. Shift priorities between water risk, climate load, carbon impact, and energy cost.",
   },
 ];
 
