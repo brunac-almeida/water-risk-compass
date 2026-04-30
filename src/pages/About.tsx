@@ -71,9 +71,6 @@ const About = () => {
       <section className="max-w-[1240px] mx-auto px-14 pt-20 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
-            <span className="inline-block font-mono text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-5 tracking-wide">
-              // About the Project
-            </span>
             <h1 className="font-display text-[42px] leading-[1.15] font-black text-foreground mb-6">
               Why Water Matters for Data Centers
             </h1>
@@ -107,9 +104,6 @@ const About = () => {
       <section className="bg-cream py-20">
         <div className="max-w-[1240px] mx-auto px-14">
           <div className="text-center mb-12">
-            <span className="inline-block font-mono text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-4 tracking-wide">
-              // Project Goals
-            </span>
             <h2 className="font-display text-3xl font-black text-foreground">
               What We Set Out To Do
             </h2>

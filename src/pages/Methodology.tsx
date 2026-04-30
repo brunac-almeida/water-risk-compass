@@ -110,11 +110,6 @@ const Methodology = () => {
 
     {/* Section 2 — Data Pipeline */}
     <section className="max-w-[1240px] mx-auto px-14 pb-20">
-      <div className="mb-8">
-        <span className="inline-block font-mono text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full tracking-wide">
-          // Data Pipeline
-        </span>
-      </div>
 
       <div className="flex items-stretch gap-0">
         {pipelineSteps.map((step, i) => (
@@ -194,9 +189,6 @@ const Methodology = () => {
       <div className="max-w-[1240px] mx-auto px-14">
         <div className="mb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4">
           <div>
-            <span className="inline-block font-mono text-[11px] text-teal bg-teal/10 px-3 py-1 rounded-full mb-4 tracking-wide">
-              // Glossary
-            </span>
             <h2 className="font-display text-3xl font-black text-foreground">
               Common Terms & Definitions
             </h2>

@@ -51,9 +51,6 @@ const colorMap = {
 const CitiesStrip = () => (
   <section className="py-14 pb-16">
     <div className="max-w-[1240px] mx-auto px-14">
-      <span className="font-mono-code text-[10px] tracking-[1.5px] uppercase text-teal bg-teal-light border border-teal-mid px-3 py-1 rounded-full inline-block mb-3.5">
-        // U.S. Market Overview
-      </span>
       <h2 className="font-display text-[42px] font-black leading-[1.1] text-foreground mb-2">
         5 Cities. One Comparison.
       </h2>
