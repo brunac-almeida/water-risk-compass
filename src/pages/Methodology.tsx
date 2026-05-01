@@ -160,11 +160,18 @@ const Methodology = () => {
             <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
               Real-world measured values from public data sources. These feed directly into the scoring engine.
             </p>
-            <div className="flex flex-col gap-5">
-              {inputVars.map((v) => (
-                <div key={v.label}>
-                  <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+            <div className="flex flex-col gap-6">
+              {inputGroups.map((g) => (
+                <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
+                  <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
+                  <div className="flex flex-col gap-4">
+                    {g.vars.map((v) => (
+                      <div key={v.label}>
+                        <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                        <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
