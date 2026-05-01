@@ -310,6 +310,14 @@ const Methodology = () => {
         </p>
       </div>
 
+      {/* Why lower is better callout — moved above note cards */}
+      <div className="bg-teal-light rounded-xl border border-border border-l-4 border-l-teal p-7">
+        <p className="font-display text-[16px] font-bold text-teal mb-2">Why lower is better</p>
+        <p className="text-[13.5px] text-slate leading-[1.7]">
+          Each pillar score represents relative risk within this city cohort. A score of 0 means best in group, 1 means worst in group. The total score aggregates those risks — a site scoring 2.5/10 has consistently low risk across your priority dimensions.
+        </p>
+      </div>
+
       {/* Section 3 — Four note cards (2x2 grid) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
@@ -336,14 +344,6 @@ const Methodology = () => {
             <p className="text-[13px] text-slate leading-[1.65]">{note.body}</p>
           </div>
         ))}
-      </div>
-
-      {/* Section 4 — Why lower is better callout */}
-      <div className="bg-teal-light rounded-xl border border-border border-l-4 border-l-teal p-7">
-        <p className="font-display text-[16px] font-bold text-teal mb-2">Why lower is better</p>
-        <p className="text-[13.5px] text-slate leading-[1.7]">
-          Each pillar score represents relative risk within this city cohort. A score of 0 means best in group, 1 means worst in group. The total score aggregates those risks — a site scoring 2.5/10 has consistently low risk across your priority dimensions.
-        </p>
       </div>
     </section>
 
