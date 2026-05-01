@@ -141,6 +141,19 @@ const Methodology = () => {
               <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
+              {step.num === "02" && (
+                <div className="mt-3 bg-teal-light border border-border rounded-lg p-3">
+                  <p className="font-mono text-[12px] text-foreground text-center">
+                    norm(x) = (x − min) / (max − min)
+                  </p>
+                  <p className="font-mono text-[10.5px] text-slate mt-2 leading-[1.5]">
+                    0 = best in group. 1 = worst in group.
+                  </p>
+                  <p className="font-mono text-[10.5px] text-slate mt-1 leading-[1.5]">
+                    Exception: annual precipitation is inverted using 1 − norm(x) so less rain = higher risk.
+                  </p>
+                </div>
+              )}
             </div>
             {i < pipelineSteps.length - 1 && (
               <div className="flex items-center px-2 text-teal/40 text-xl font-bold shrink-0">→</div>
