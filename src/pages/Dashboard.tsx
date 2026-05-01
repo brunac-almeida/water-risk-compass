@@ -319,8 +319,12 @@ const Dashboard = () => {
                 <TooltipContent className="max-w-[240px] text-xs">Reopen the welcome guide explaining how to use the dashboard.</TooltipContent>
               </ShadTooltip>
             </div>
+            <p className="text-[11px] text-muted-foreground mb-2">Ranked by Total Impact Score — lower score = lower risk</p>
             <div className="flex flex-col gap-1">
-              {cities.map(c => (
+              {cities.map(c => {
+                const s = c.total_score ?? 0;
+                const dotClass = s < 4 ? "bg-risk-green" : s <= 6 ? "bg-risk-amber" : "bg-risk-coral";
+                return (
                 <ShadTooltip key={c.city}>
                   <TooltipTrigger asChild>
                     <button
@@ -332,15 +336,22 @@ const Dashboard = () => {
                       }`}
                     >
                       <span>{c.city}</span>
-                      <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
-                        {c.total_score.toFixed(1)}
+                      <span className="flex items-center gap-2">
+                        <span aria-hidden className={`inline-block w-2.5 h-2.5 rounded-full ${dotClass}`} />
+                        <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
+                          {s.toFixed(1)} / 10
+                        </span>
                       </span>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {c.total_score.toFixed(1)}/10 (lower is better).</TooltipContent>
+                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {s.toFixed(1)}/10 (lower is better).</TooltipContent>
                 </ShadTooltip>
-              ))}
+                );
+              })}
             </div>
+            <p className="mt-3 text-[11.5px] text-foreground/80 leading-snug">
+              Total Impact Score out of 10. <span className="text-risk-green font-semibold">Green</span> = lower risk. <span className="text-risk-coral font-semibold">Red</span> = higher risk.
+            </p>
           </div>
 
           {/* scenarios */}
