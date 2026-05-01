@@ -127,7 +127,10 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
 
       {/* Side-by-side metric table */}
       <div className="bg-card rounded-lg border border-border p-5 overflow-x-auto">
-        <h4 className="font-display text-sm font-bold text-foreground mb-4">Side-by-Side Metrics</h4>
+        <h4 className="font-display text-sm font-bold text-foreground mb-1">Side-by-Side Metrics</h4>
+        <p className="text-[11px] text-muted-foreground mb-4">
+          Raw pillar scores and Annual Precipitation are fixed values from the Python engine. Only Total Impact Score updates as weights change.
+        </p>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs text-muted-foreground border-b border-border">
