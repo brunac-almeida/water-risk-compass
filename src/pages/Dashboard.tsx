@@ -524,7 +524,7 @@ const Dashboard = () => {
                 <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
                 <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
                 <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
-                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
+                <KPI label="Total Impact Score" value={roundScore(selected.total_score).toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
               </div>
 
               {/* Precipitation & Variability detail */}
