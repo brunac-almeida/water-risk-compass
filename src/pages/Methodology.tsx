@@ -210,21 +210,55 @@ const Methodology = () => {
       </div>
 
       {/* Formula */}
-      <div className="bg-teal-light rounded-xl p-10 text-center border border-border">
-        <p className="font-mono text-[15px] leading-[2.2] text-foreground">
-          <span className="text-slate">Total Impact Score =</span>
-          <br />
-          ( <span className="text-teal font-semibold">Water Risk</span> × 2.0 ) +
-          <br />
-          ( <span className="text-risk-amber font-semibold">Climate Load</span> × 1.0 ) +
-          <br />
-          ( <span className="text-risk-green font-semibold">Carbon Impact</span> × 1.5 ) +
-          <br />
-          ( <span className="text-foreground font-semibold">Energy Cost</span> × 2.0 )
-          <br />
-          <span className="text-slate">÷ 6.5 × 10  →  displayed on a 0–10 scale</span>
-        </p>
-        <p className="font-body text-[13px] text-slate italic mt-6">
+      <div className="bg-teal-light rounded-xl p-10 border border-border">
+        {/* Annotation legend */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-slate">
+            <span className="inline-block w-2 h-2 rounded-full bg-foreground/40" />
+            Pillar names: fixed — from Python
+          </span>
+          <span className="text-slate/40">·</span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-slate">
+            <span className="inline-block w-2 h-2 rounded-full bg-risk-amber" />
+            Weight pills: user-adjustable
+          </span>
+        </div>
+
+        <div className="font-mono text-[15px] text-foreground max-w-[520px] mx-auto">
+          <p className="text-center text-slate mb-4">Total Impact Score =</p>
+
+          <div className="flex flex-col gap-2.5">
+            {[
+              { name: "Water Risk", weight: "2.0", color: "teal", textClass: "text-teal", pillClass: "bg-teal/15 text-teal border-teal/30" },
+              { name: "Climate Load", weight: "1.0", color: "amber", textClass: "text-risk-amber", pillClass: "bg-risk-amber/15 text-risk-amber border-risk-amber/30" },
+              { name: "Carbon Impact", weight: "1.5", color: "green", textClass: "text-risk-green", pillClass: "bg-risk-green/15 text-risk-green border-risk-green/30" },
+              { name: "Energy Cost", weight: "2.0", color: "coral", textClass: "text-risk-coral", pillClass: "bg-risk-coral/15 text-risk-coral border-risk-coral/30" },
+            ].map((p, i, arr) => (
+              <div key={p.name} className="flex items-center justify-between gap-3 bg-card/60 rounded-lg px-4 py-2.5 border border-border/60">
+                <span className="text-slate">(</span>
+                <span className={`font-semibold ${p.textClass} flex-1`}>{p.name}</span>
+                <span className="text-slate">×</span>
+                <span className={`inline-flex items-center justify-center min-w-[44px] px-2.5 py-0.5 rounded-full border text-[13px] font-bold ${p.pillClass}`}>
+                  {p.weight}
+                </span>
+                <span className="text-slate">){i < arr.length - 1 ? " +" : ""}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Denominator emphasis */}
+          <div className="mt-6 pt-5 border-t-2 border-dashed border-teal/40">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-teal text-center mb-2">
+              Sum of weights — updates as sliders move
+            </p>
+            <p className="text-center text-[16px] font-semibold text-foreground">
+              <span className="text-slate">÷</span> <span className="text-teal">6.5</span> <span className="text-slate">×</span> <span className="text-foreground">10</span>
+              <span className="text-slate"> → displayed on a 0–10 scale</span>
+            </p>
+          </div>
+        </div>
+
+        <p className="font-body text-[13px] text-slate italic mt-6 text-center">
           Weights are user-adjustable. Base case prioritizes water sustainability (2.0×). Lower score = more sustainable site.
         </p>
       </div>
