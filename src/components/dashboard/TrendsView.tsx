@@ -103,20 +103,25 @@ const TrendsView = ({ cities, weights }: Props) => {
   };
 
   // Yearly average per selected city for current metric.
-  // For Total Impact Score we display the canonical total_score (rounded the same way as
-  // the Select City list and Overview KPI) so all three panels agree exactly.
+  // - Total Impact Score: canonical 0–10 total_score (matches Select City list & Overview KPI).
+  // - Per-pillar metrics: raw 0–1 value fixed from the Python engine (consistent with how
+  //   pillar scores are described elsewhere in the app).
   const averages = useMemo(() => {
     return selectedCities.map(name => {
+      const c = cities.find(x => x.city === name);
       if (metric === "total") {
-        const c = cities.find(x => x.city === name);
         const total = c ? c.total_score : 0;
-        return { city: name, avg: Math.round(total * 10) / 10 };
+        return { city: name, avg: Math.round(total * 10) / 10, scale: "total" as const };
       }
-      const vals = data.map(d => d[name]).filter(v => typeof v === "number");
-      const raw = vals.reduce((s, v) => s + v, 0) / (vals.length || 1);
-      return { city: name, avg: Math.round(raw * 10) / 10 };
+      const raw01 = c
+        ? metric === "water" ? c.water_risk
+        : metric === "climate" ? c.climate_load
+        : metric === "carbon" ? c.carbon
+        : c.energy_cost
+        : 0;
+      return { city: name, avg: Math.round(raw01 * 100) / 100, scale: "pillar" as const };
     });
-  }, [data, selectedCities, metric, cities]);
+  }, [selectedCities, metric, cities]);
 
   return (
     <div className="space-y-6">
