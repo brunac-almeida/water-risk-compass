@@ -188,10 +188,18 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
             Each bar shows (pillar score × user weight) ÷ sum of weights × 10 — the pillar's proportional contribution to the Total Impact Score. Bars sum to the Total Impact Score.
           </p>
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={barData} margin={{ left: 0, right: 10 }}>
+            <BarChart data={barData} margin={{ left: 10, right: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
               <XAxis dataKey="dim" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-              <YAxis tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+              <YAxis
+                tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                label={{
+                  value: "Contribution to score (0–10)",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
+                }}
+              />
               <Tooltip
                 contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
               />
