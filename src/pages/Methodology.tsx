@@ -81,7 +81,7 @@ const outputIndices = [
   { label: "Climate Load Index", color: "text-risk-amber", formula: "Normalized Temperature, CDD, HDD, and Precipitation" },
   { label: "Carbon Impact Score", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
   { label: "Energy Cost Score", color: "text-foreground", formula: "Normalized electricity and industrial cost proxy" },
-  { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all four indices — lower is better" },
+  { label: "Total Impact Score", color: "text-foreground", formula: "Combines the four pillar scores using user-adjustable weights. Scale 0–10. Lower = better site." },
 ];
 
 const Methodology = () => {
