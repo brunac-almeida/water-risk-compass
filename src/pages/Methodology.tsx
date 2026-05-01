@@ -1,7 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+const pillarFormulas = [
+  { name: "Water Risk Score", formula: "0.34×stress + 0.28×drought + 0.22×price + 0.11×(1−precip) + 0.05×rain_std" },
+  { name: "Climate Load Index", formula: "0.34×summer_temp + 0.30×CDD + 0.18×annual_temp + 0.18×HDD" },
+  { name: "Carbon Impact Score", formula: "mean of available normalized carbon signals" },
+  { name: "Energy Cost Score", formula: "0.5×elec_price + 0.5×industrial_USD (or 100% elec_price if no merge)" },
+];
 
 const glossary = [
   {
@@ -108,6 +115,7 @@ const outputIndices = [
 ];
 
 const Methodology = () => {
+  const [showFormulas, setShowFormulas] = useState(false);
   const { hash } = useLocation();
   useEffect(() => {
     if (hash) {
@@ -141,6 +149,29 @@ const Methodology = () => {
               <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
+              {step.num === "03" && (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowFormulas((v) => !v)}
+                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                    aria-expanded={showFormulas}
+                  >
+                    <span className="text-[10px]">{showFormulas ? "▾" : "▸"}</span>
+                    {showFormulas ? "Hide pillar formulas" : "Show pillar formulas"}
+                  </button>
+                  {showFormulas && (
+                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
+                      {pillarFormulas.map((p) => (
+                        <div key={p.name} className="contents">
+                          <span className="text-teal whitespace-nowrap font-semibold">{p.name}</span>
+                          <span className="text-slate break-words">{p.formula}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             {i < pipelineSteps.length - 1 && (
               <div className="flex items-center px-2 text-teal/40 text-xl font-bold shrink-0">→</div>
