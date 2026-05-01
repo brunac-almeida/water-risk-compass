@@ -28,7 +28,7 @@ const goals = [
   {
     num: "01",
     title: "Curate Real Data",
-    text: "Gather standardized public data from NOAA, EIA, and Circle of Blue — covering temperature, rainfall, water price, and grid carbon intensity for 5 major U.S. cities.",
+    text: "Gather standardized public data from NOAA, EIA, WRI Aqueduct, and Circle of Blue — covering 9 environmental and utility variables including temperature, water stress, drought risk, rainfall, carbon intensity, and electricity price for 5 major U.S. cities.",
   },
   {
     num: "02",
@@ -53,7 +53,7 @@ const goals = [
   {
     num: "06",
     title: "Document the Process",
-    text: "Log every AI prompt used to build this app, creating a replicable vibe-coding workflow demonstrating how AI can produce professional engineering tools.",
+    text: "Document a structured AI-assisted engineering workflow — using Claude for scoring architecture, Lovable for frontend development, and formal audit passes to verify every formula, field mapping, and scale consistency before integration.",
   },
 ];
 
