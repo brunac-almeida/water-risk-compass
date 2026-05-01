@@ -84,11 +84,11 @@ const TrendsView = ({ cities, weights }: Props) => {
         let v = 0;
         if (metric === "total") {
           v = ((w * weights.water + cl * weights.climate + ca * weights.carbon + co * weights.cost) / wSum) * 10;
-        } else if (metric === "water") v = w * 10;
-        else if (metric === "climate") v = cl * 10;
-        else if (metric === "carbon") v = ca * 10;
-        else if (metric === "cost") v = co * 10;
-        row[name] = +v.toFixed(2);
+        } else if (metric === "water") v = w;
+        else if (metric === "climate") v = cl;
+        else if (metric === "carbon") v = ca;
+        else if (metric === "cost") v = co;
+        row[name] = metric === "total" ? +v.toFixed(2) : +v.toFixed(3);
       });
       return row;
     });
@@ -184,19 +184,43 @@ const TrendsView = ({ cities, weights }: Props) => {
 
       {/* Line chart */}
       <div className="bg-card rounded-lg border border-border p-5">
-        <h4 className="font-display text-sm font-bold text-foreground mb-4">
+        <h4 className="font-display text-sm font-bold text-foreground mb-1">
           {METRIC_OPTIONS.find(o => o.key === metric)?.label} — 12-Month Modeled Trend
         </h4>
+        <p className="text-[11px] text-muted-foreground mb-3">
+          Total Impact Score updates live with weight changes. Water Risk, Climate Load, Carbon, and Energy Cost are fixed values from the Python engine — sliders do not affect them.
+        </p>
         <ResponsiveContainer width="100%" height={320}>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
             <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-            <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+            <YAxis
+              domain={metric === "total" ? [0, 10] : [0, 1]}
+              tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+              label={{
+                value: metric === "total" ? "Total Impact Score (0–10)" : "Pillar Score (0–1)",
+                angle: -90,
+                position: "insideLeft",
+                style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
+              }}
+            />
             <Tooltip contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }} />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
-            {/* Risk band reference lines */}
-            <ReferenceLine y={3} stroke="hsl(148,62%,30%)" strokeDasharray="2 4" strokeOpacity={0.4} />
-            <ReferenceLine y={5} stroke="hsl(35,88%,40%)" strokeDasharray="2 4" strokeOpacity={0.4} />
+            <Legend
+              wrapperStyle={{ fontSize: 11 }}
+              formatter={(value: string) => {
+                const a = averages.find(x => x.city === value);
+                if (!a) return value;
+                const v = a.scale === "total" ? a.avg.toFixed(1) : a.avg.toFixed(2);
+                return `${value} — ${v}`;
+              }}
+            />
+            {/* Risk band reference lines (only for the 0–10 total score view) */}
+            {metric === "total" && (
+              <>
+                <ReferenceLine y={3} stroke="hsl(148,62%,30%)" strokeDasharray="2 4" strokeOpacity={0.4} />
+                <ReferenceLine y={5} stroke="hsl(35,88%,40%)" strokeDasharray="2 4" strokeOpacity={0.4} />
+              </>
+            )}
             {selectedCities.map((name, i) => (
               <Line
                 key={name}
@@ -210,9 +234,11 @@ const TrendsView = ({ cities, weights }: Props) => {
             ))}
           </LineChart>
         </ResponsiveContainer>
-        <p className="text-[11px] text-muted-foreground mt-2">
-          Dashed lines mark Low (≤3) and Moderate (≤5) risk thresholds.
-        </p>
+        {metric === "total" && (
+          <p className="text-[11px] text-muted-foreground mt-2">
+            Dashed lines mark Low (≤3) and Moderate (≤5) risk thresholds.
+          </p>
+        )}
       </div>
 
       {/* Yearly averages summary */}
