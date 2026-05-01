@@ -175,7 +175,9 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
           </tbody>
         </table>
         <p className="text-[11px] text-muted-foreground mt-3">★ marks the best value in the row (lower is better for risk metrics; higher for precipitation).</p>
-      </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Energy Cost raw score of 0.00 indicates this city normalized to the lowest energy cost in the cohort — not missing data.
+        </p>
 
       {/* Grouped bar + radar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
