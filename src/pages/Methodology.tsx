@@ -150,6 +150,32 @@ const Methodology = () => {
               <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
+              {step.num === "02" && (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowNormFormula((v) => !v)}
+                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                    aria-expanded={showNormFormula}
+                  >
+                    <span className="text-[10px]">{showNormFormula ? "▾" : "▸"}</span>
+                    {showNormFormula ? "Hide formula" : "Show formula"}
+                  </button>
+                  {showNormFormula && (
+                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] flex flex-col gap-2">
+                      <div className="text-foreground font-semibold text-center py-1">
+                        norm(x) = (x − min) / (max − min)
+                      </div>
+                      <div className="text-slate">
+                        <span className="text-teal">•</span> 0 = best in cohort — 1 = worst in cohort
+                      </div>
+                      <div className="text-slate">
+                        <span className="text-teal">•</span> Exception: annual precipitation uses 1 − norm(x) so less rain = higher risk score
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               {step.num === "03" && (
                 <div className="mt-3">
                   <button
