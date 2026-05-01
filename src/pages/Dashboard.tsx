@@ -399,16 +399,22 @@ const Dashboard = () => {
                 </TooltipContent>
               </ShadTooltip>
             </div>
+            <p className="text-[11px] text-muted-foreground mb-3 leading-snug">
+              City pillar scores (0–1, from Python engine — fixed)
+            </p>
             {([
-              { key: "water" as const, label: "Water Risk", tip: "How much water scarcity, drought risk, and water price influence the score. Higher = water sustainability matters more." },
-              { key: "climate" as const, label: "Climate Load", tip: "How much hot-climate cooling demand and temperature stress influence the score." },
-              { key: "carbon" as const, label: "Carbon", tip: "How much grid carbon intensity (kg CO₂/MWh) influences the score. Higher = clean energy matters more." },
-              { key: "cost" as const, label: "Energy Cost", tip: "How much industrial electricity price influences the score. Higher = OpEx matters more." },
+              { key: "water" as const, label: "Water Risk", abbr: "WR", tip: "How much water scarcity, drought risk, and water price influence the score. Higher = water sustainability matters more." },
+              { key: "climate" as const, label: "Climate Load", abbr: "CL", tip: "How much hot-climate cooling demand and temperature stress influence the score." },
+              { key: "carbon" as const, label: "Carbon", abbr: "CB", tip: "How much grid carbon intensity (kg CO₂/MWh) influences the score. Higher = clean energy matters more." },
+              { key: "cost" as const, label: "Energy Cost", abbr: "EC", tip: "How much industrial electricity price influences the score. Higher = OpEx matters more." },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground inline-flex items-center gap-1">
+                  <span className="text-muted-foreground inline-flex items-center gap-1.5">
                     {s.label}
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-border bg-muted/40 font-mono text-[10px] font-semibold text-muted-foreground">
+                      {s.abbr}
+                    </span>
                     <ShadTooltip>
                       <TooltipTrigger asChild>
                         <span className="inline-flex text-muted-foreground/70 hover:text-foreground transition-colors cursor-help">
