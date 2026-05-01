@@ -161,8 +161,13 @@ const Dashboard = () => {
   /* chart data */
   const barRiskColor = (s: number) =>
     s < 4 ? "hsl(148,62%,30%)" : s <= 6 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
+  const abbreviateCity = (name: string) => {
+    if (name === "Northern Virginia (NoVA)" || name.startsWith("Northern Virginia")) return "N. Virginia";
+    if (name.startsWith("Dallas")) return "Dallas–FW";
+    return name;
+  };
   const barData = cities.map(c => ({
-    city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
+    city: abbreviateCity(c.city),
     fullCity: c.city,
     score: c.total_score,
     fill: barRiskColor(c.total_score ?? 0),
@@ -547,7 +552,8 @@ const Dashboard = () => {
               <div className="grid grid-cols-5 gap-4">
                 <div className="col-span-3 bg-card rounded-lg border border-border p-5">
                   <h4 className="font-display text-sm font-bold text-foreground mb-1">City Rankings</h4>
-                  <p className="text-[11px] text-muted-foreground mb-3">Shorter bar = better site (lower score = lower risk)</p>
+                  <p className="text-[11px] text-muted-foreground mb-1">Shorter bar = better site (lower score = lower risk)</p>
+                  <p className="text-[10.5px] text-muted-foreground/80 mb-3">Bars colored by risk threshold — green under 4.0, amber 4.0–6.0, red over 6.0. Scores are relative to this city cohort and update live as weights change.</p>
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
