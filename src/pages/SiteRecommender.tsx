@@ -381,6 +381,15 @@ const SiteRecommender = () => {
                         <p className="font-mono-code text-sm text-foreground mt-2">
                           Water×{weights.water} · Climate×{weights.climate} · Carbon×{weights.carbon} · Cost×{weights.cost}
                         </p>
+                        <p className="text-xs text-muted-foreground mt-3 max-w-md mx-auto leading-relaxed">
+                          Weights are derived from your four answers. The highest weight indicates your dominant priority. You can fine-tune these exact values using the Dashboard sliders for deeper scenario exploration.
+                        </p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); goToDashboard(); }}
+                          className="mt-4 bg-primary text-primary-foreground text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:opacity-90 transition-all"
+                        >
+                          Open in Dashboard with these weights →
+                        </button>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="text-xs max-w-[280px]">The four scoring weights derived from your answers. Higher values mean that pillar pulled more influence in the ranking. You can fine-tune these in the Dashboard.</TooltipContent>
