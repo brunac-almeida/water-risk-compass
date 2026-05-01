@@ -176,11 +176,12 @@ const Dashboard = () => {
     { name: "Cost", raw: selected.energy_cost ?? 0, value: +((selected.energy_cost ?? 0) * weights.cost).toFixed(3) },
   ] : [];
 
-  const scatterData = cities.map(c => ({
+  const scatterData = cities.map((c, i) => ({
     x: c.energy_cost,
     y: c.water_risk,
     z: c.total_score,
-    city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
+    city: c.city,
+    idx: i + 1,
     fill: RISK_COLOR(c.total_score),
   }));
 
