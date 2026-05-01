@@ -178,11 +178,15 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
         <p className="text-[11px] text-muted-foreground mt-1">
           Energy Cost raw score of 0.00 indicates this city normalized to the lowest energy cost in the cohort — not missing data.
         </p>
+      </div>
 
       {/* Grouped bar + radar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-card rounded-lg border border-border p-5">
-          <h4 className="font-display text-sm font-bold text-foreground mb-4">Weighted Contribution by Dimension</h4>
+          <h4 className="font-display text-sm font-bold text-foreground mb-1">Weighted Contribution by Dimension</h4>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Each bar shows (pillar score × user weight) ÷ sum of weights × 10 — the pillar's proportional contribution to the Total Impact Score. Bars sum to the Total Impact Score.
+          </p>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={barData} margin={{ left: 0, right: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
