@@ -42,9 +42,15 @@ const SCENARIOS: { label: string; weights: Weights; description: string; weightL
   { label: "Water Priority", weights: { water: 3.0, climate: 1.0, carbon: 1.0, cost: 1.0 }, description: "Water scarcity, drought risk, water pricing, and precipitation patterns carry the heaviest weight. Best for regions where long-term water access is the critical concern.", weightLine: "Weights: Water×3.0 Climate×1.0 Carbon×1.0 Cost×1.0" },
 ];
 
+// Standardized rounding: one decimal place via Math.round(x*10)/10.
+// Used everywhere Total Impact Score is displayed so all panels show the same value.
+export function roundScore(x: number) {
+  return Math.round(x * 10) / 10;
+}
+
 function computeTotal(c: CityData, w: Weights) {
   const raw = c.water_risk * w.water + c.climate_load * w.climate + c.carbon * w.carbon + c.energy_cost * w.cost;
-  return +((raw / (w.water + w.climate + w.carbon + w.cost)) * 10).toFixed(1);
+  return roundScore((raw / (w.water + w.climate + w.carbon + w.cost)) * 10);
 }
 
 const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)", "hsl(280,60%,45%)"];
