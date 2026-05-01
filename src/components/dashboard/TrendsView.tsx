@@ -217,13 +217,17 @@ const TrendsView = ({ cities, weights }: Props) => {
 
       {/* Yearly averages summary */}
       <div className="bg-card rounded-lg border border-border p-5">
-        <h4 className="font-display text-sm font-bold text-foreground mb-3">Annual Average ({METRIC_OPTIONS.find(o => o.key === metric)?.label})</h4>
+        <h4 className="font-display text-sm font-bold text-foreground mb-3">
+          {metric === "total"
+            ? `Annual Average (${METRIC_OPTIONS.find(o => o.key === metric)?.label})`
+            : `Annual Average (0–1 scale, fixed from Python engine)`}
+        </h4>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {averages.map((a, i) => (
             <div key={a.city} className="rounded-md border border-border p-3">
               <div className="text-[11px] text-muted-foreground truncate">{a.city}</div>
               <div className="font-display text-xl font-bold" style={{ color: SERIES_COLORS[i % SERIES_COLORS.length] }}>
-                {a.avg.toFixed(1)}
+                {a.scale === "total" ? a.avg.toFixed(1) : a.avg.toFixed(2)}
               </div>
             </div>
           ))}
