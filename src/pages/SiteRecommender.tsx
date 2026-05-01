@@ -114,27 +114,43 @@ const SiteRecommender = () => {
     if (facility === 2) w = { water: 1.0, climate: 1.5, carbon: 1.0, cost: 2.5 }; // AI/GPU
     if (facility === 3) w = { water: 1.5, climate: 1.0, carbon: 1.5, cost: 2.0 }; // Enterprise
 
-    // Risk tolerance — applies to all 4
+    // Constraint override → completely replace base: dominant=3.0, others=1.0
+    let dominant: keyof Weights | null = null;
+    if (constraint === 0) dominant = "water";
+    if (constraint === 1) dominant = "carbon";
+    if (constraint === 2) dominant = "cost";
+    if (constraint === 3) {
+      w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
+    }
+    if (dominant) {
+      w = { water: 1.0, climate: 1.0, carbon: 1.0, cost: 1.0 };
+      w[dominant] = 3.0;
+    }
+
+    // Sustainability slider — continuous: (level-1) * 0.2 added to water + carbon
+    const sustainBonus = (sustainability - 1) * 0.2;
+    w.water += sustainBonus;
+    w.carbon += sustainBonus;
+
+    // Risk tolerance
     if (riskTol === 0) {
-      w.water *= 1.3; w.climate *= 1.3; w.carbon *= 1.3; w.cost *= 1.3;
+      // Low: boost dominant (or highest) weight, reduce cost
+      const domKey = dominant ?? (["water", "climate", "carbon", "cost"] as const)
+        .reduce((a, b) => (w[b] > w[a] ? b : a));
+      w[domKey] += 0.5;
+      w.cost -= 0.3;
     }
     if (riskTol === 2) {
-      const entries = [["water", w.water], ["climate", w.climate], ["carbon", w.carbon], ["cost", w.cost]] as const;
-      const maxKey = entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
-      (["water", "climate", "carbon", "cost"] as const).forEach(k => {
-        if (k !== maxKey) w[k] *= 0.5;
-      });
+      // High: shift toward cost efficiency
+      w.cost += 0.8;
+      w.water -= 0.4;
+      w.carbon -= 0.4;
     }
 
-    // Sustainability slider
-    if (sustainability >= 4) { w.water += 0.5; w.carbon += 0.5; }
-    if (sustainability <= 2) { w.climate += 0.5; w.cost += 0.5; }
-
-    // Constraint override → lock chosen pillar to 3.0 in final profile
-    if (constraint === 0) w.water = 3.0;
-    if (constraint === 1) w.carbon = 3.0;
-    if (constraint === 2) w.cost = 3.0;
-    if (constraint === 3) w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
+    // Floor at 0.1 to avoid zero/negative weights
+    (["water", "climate", "carbon", "cost"] as const).forEach(k => {
+      w[k] = Math.max(0.1, w[k]);
+    });
 
     // Round to 1 decimal
     w.water = +w.water.toFixed(1);
