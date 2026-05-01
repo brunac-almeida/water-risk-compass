@@ -66,10 +66,10 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
   ];
 
   const radarData = [
-    { axis: "Water", ...Object.fromEntries(rows.map(r => [r.city, +(r.water_risk * 10).toFixed(2)])) },
-    { axis: "Climate", ...Object.fromEntries(rows.map(r => [r.city, +(r.climate_load * 10).toFixed(2)])) },
-    { axis: "Carbon", ...Object.fromEntries(rows.map(r => [r.city, +(r.carbon * 10).toFixed(2)])) },
-    { axis: "Energy Cost", ...Object.fromEntries(rows.map(r => [r.city, +(r.energy_cost * 10).toFixed(2)])) },
+    { axis: "Water", ...Object.fromEntries(rows.map(r => [r.city, +r.water_risk.toFixed(3)])) },
+    { axis: "Climate", ...Object.fromEntries(rows.map(r => [r.city, +r.climate_load.toFixed(3)])) },
+    { axis: "Carbon", ...Object.fromEntries(rows.map(r => [r.city, +r.carbon.toFixed(3)])) },
+    { axis: "Energy Cost", ...Object.fromEntries(rows.map(r => [r.city, +r.energy_cost.toFixed(3)])) },
   ];
 
   const available = cities.filter(c => !selected.includes(c.city));
