@@ -66,10 +66,10 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
   ];
 
   const radarData = [
-    { axis: "Water", ...Object.fromEntries(rows.map(r => [r.city, +(r.water_risk * 10).toFixed(2)])) },
-    { axis: "Climate", ...Object.fromEntries(rows.map(r => [r.city, +(r.climate_load * 10).toFixed(2)])) },
-    { axis: "Carbon", ...Object.fromEntries(rows.map(r => [r.city, +(r.carbon * 10).toFixed(2)])) },
-    { axis: "Energy Cost", ...Object.fromEntries(rows.map(r => [r.city, +(r.energy_cost * 10).toFixed(2)])) },
+    { axis: "Water", ...Object.fromEntries(rows.map(r => [r.city, +r.water_risk.toFixed(3)])) },
+    { axis: "Climate", ...Object.fromEntries(rows.map(r => [r.city, +r.climate_load.toFixed(3)])) },
+    { axis: "Carbon", ...Object.fromEntries(rows.map(r => [r.city, +r.carbon.toFixed(3)])) },
+    { axis: "Energy Cost", ...Object.fromEntries(rows.map(r => [r.city, +r.energy_cost.toFixed(3)])) },
   ];
 
   const available = cities.filter(c => !selected.includes(c.city));
@@ -127,7 +127,10 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
 
       {/* Side-by-side metric table */}
       <div className="bg-card rounded-lg border border-border p-5 overflow-x-auto">
-        <h4 className="font-display text-sm font-bold text-foreground mb-4">Side-by-Side Metrics</h4>
+        <h4 className="font-display text-sm font-bold text-foreground mb-1">Side-by-Side Metrics</h4>
+        <p className="text-[11px] text-muted-foreground mb-4">
+          Raw pillar scores and Annual Precipitation are fixed values from the Python engine. Only Total Impact Score updates as weights change.
+        </p>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs text-muted-foreground border-b border-border">
@@ -172,17 +175,31 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
           </tbody>
         </table>
         <p className="text-[11px] text-muted-foreground mt-3">★ marks the best value in the row (lower is better for risk metrics; higher for precipitation).</p>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Energy Cost raw score of 0.00 indicates this city normalized to the lowest energy cost in the cohort — not missing data.
+        </p>
       </div>
 
       {/* Grouped bar + radar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-card rounded-lg border border-border p-5">
-          <h4 className="font-display text-sm font-bold text-foreground mb-4">Weighted Contribution by Dimension</h4>
+          <h4 className="font-display text-sm font-bold text-foreground mb-1">Weighted Contribution by Dimension</h4>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Each bar shows (pillar score × user weight) ÷ sum of weights × 10 — the pillar's proportional contribution to the Total Impact Score. Bars sum to the Total Impact Score.
+          </p>
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={barData} margin={{ left: 0, right: 10 }}>
+            <BarChart data={barData} margin={{ left: 10, right: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
               <XAxis dataKey="dim" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-              <YAxis tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
+              <YAxis
+                tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                label={{
+                  value: "Contribution to score (0–10)",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
+                }}
+              />
               <Tooltip
                 contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
               />
@@ -197,17 +214,20 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
         <div className="bg-card rounded-lg border border-border p-5">
           <ShadTooltip>
             <TooltipTrigger asChild>
-              <h4 className="font-display text-sm font-bold text-foreground mb-2 cursor-help inline-block">Risk Profile (Radar)</h4>
+              <h4 className="font-display text-sm font-bold text-foreground mb-1 cursor-help inline-block">Risk Profile (Radar)</h4>
             </TooltipTrigger>
             <TooltipContent className="max-w-[260px] text-xs">
-              Each axis shows the raw 0–10 risk for that dimension. A smaller, more contained shape = lower overall risk.
+              Each axis shows the raw 0–1 pillar score. A smaller, more contained shape = lower overall environmental risk.
             </TooltipContent>
           </ShadTooltip>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Raw pillar scores from Python engine (0–1, fixed). Shows each city's environmental profile independent of weight preferences.
+          </p>
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={radarData} outerRadius={90}>
               <PolarGrid stroke="hsl(218,26%,90%)" />
               <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
+              <PolarRadiusAxis angle={90} domain={[0, 1]} tick={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
               {rows.map((r, i) => (
                 <Radar
                   key={r.city}
