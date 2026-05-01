@@ -190,60 +190,72 @@ const TrendsView = ({ cities, weights }: Props) => {
         <p className="text-[11px] text-muted-foreground mb-3">
           Total Impact Score updates live with weight changes. Water Risk, Climate Load, Carbon, and Energy Cost are fixed values from the Python engine — sliders do not affect them.
         </p>
-        <ResponsiveContainer width="100%" height={360}>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-            <XAxis
-              dataKey="month"
-              tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
-              label={{
-                value: "Month",
-                position: "insideBottom",
-                offset: -5,
-                style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
-              }}
-            />
-            <YAxis
-              domain={metric === "total" ? [0, 10] : [0, 1]}
-              tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
-              label={{
-                value: metric === "total" ? "Total Impact Score (0–10)" : "Pillar Score (0–1)",
-                angle: -90,
-                position: "insideLeft",
-                style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
-              }}
-            />
-            <Tooltip contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }} />
-            <Legend
-              verticalAlign="bottom"
-              wrapperStyle={{ fontSize: 11, paddingTop: 24, bottom: -8 }}
-              formatter={(value: string) => {
-                const a = averages.find(x => x.city === value);
-                if (!a) return value;
-                const v = a.scale === "total" ? a.avg.toFixed(1) : a.avg.toFixed(2);
-                return `${value} — ${v}`;
-              }}
-            />
-            {/* Risk band reference lines (only for the 0–10 total score view) */}
-            {metric === "total" && (
-              <>
-                <ReferenceLine y={3} stroke="hsl(148,62%,30%)" strokeDasharray="2 4" strokeOpacity={0.4} />
-                <ReferenceLine y={5} stroke="hsl(35,88%,40%)" strokeDasharray="2 4" strokeOpacity={0.4} />
-              </>
-            )}
-            {selectedCities.map((name, i) => (
-              <Line
-                key={name}
-                type="monotone"
-                dataKey={name}
-                stroke={SERIES_COLORS[i % SERIES_COLORS.length]}
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="flex items-stretch gap-4" style={{ height: 360 }}>
+          <div className="flex-1 min-w-0">
+            <ResponsiveContainer width="100%" height={360}>
+              <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                  label={{
+                    value: "Month",
+                    position: "insideBottom",
+                    offset: -5,
+                    style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
+                  }}
+                />
+                <YAxis
+                  domain={metric === "total" ? [0, 10] : [0, 1]}
+                  tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
+                  label={{
+                    value: metric === "total" ? "Total Impact Score (0–10)" : "Pillar Score (0–1)",
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
+                  }}
+                />
+                <Tooltip contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }} />
+                {/* Risk band reference lines (only for the 0–10 total score view) */}
+                {metric === "total" && (
+                  <>
+                    <ReferenceLine y={3} stroke="hsl(148,62%,30%)" strokeDasharray="2 4" strokeOpacity={0.4} />
+                    <ReferenceLine y={5} stroke="hsl(35,88%,40%)" strokeDasharray="2 4" strokeOpacity={0.4} />
+                  </>
+                )}
+                {selectedCities.map((name, i) => (
+                  <Line
+                    key={name}
+                    type="monotone"
+                    dataKey={name}
+                    stroke={SERIES_COLORS[i % SERIES_COLORS.length]}
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-col justify-center gap-2 shrink-0 w-48 pr-1">
+            {selectedCities.map((name, i) => {
+              const a = averages.find(x => x.city === name);
+              const v = a ? (a.scale === "total" ? a.avg.toFixed(1) : a.avg.toFixed(2)) : "";
+              const color = SERIES_COLORS[i % SERIES_COLORS.length];
+              return (
+                <div key={name} className="flex items-center gap-2" style={{ fontSize: 11 }}>
+                  <span
+                    className="shrink-0 rounded-sm"
+                    style={{ width: 14, height: 2, backgroundColor: color }}
+                  />
+                  <span className="text-foreground truncate">
+                    {name}{a ? ` — ${v}` : ""}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
         {metric === "total" && (
           <p className="text-[11px] text-muted-foreground mt-2">
             Dashed lines mark Low (≤3) and Moderate (≤5) risk thresholds.
