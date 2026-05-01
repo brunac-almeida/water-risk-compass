@@ -351,12 +351,12 @@ const Dashboard = () => {
                       <span className="flex items-center gap-2">
                         <span aria-hidden className={`inline-block w-2.5 h-2.5 rounded-full ${dotClass}`} />
                         <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
-                          {s.toFixed(1)} / 10
+                          {roundScore(s).toFixed(1)} / 10
                         </span>
                       </span>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {s.toFixed(1)}/10 (lower is better).</TooltipContent>
+                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {roundScore(s).toFixed(1)}/10 (lower is better).</TooltipContent>
                 </ShadTooltip>
                 );
               })}
