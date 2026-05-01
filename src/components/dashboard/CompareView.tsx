@@ -214,17 +214,20 @@ const CompareView = ({ cities, weights, initialSelection }: Props) => {
         <div className="bg-card rounded-lg border border-border p-5">
           <ShadTooltip>
             <TooltipTrigger asChild>
-              <h4 className="font-display text-sm font-bold text-foreground mb-2 cursor-help inline-block">Risk Profile (Radar)</h4>
+              <h4 className="font-display text-sm font-bold text-foreground mb-1 cursor-help inline-block">Risk Profile (Radar)</h4>
             </TooltipTrigger>
             <TooltipContent className="max-w-[260px] text-xs">
-              Each axis shows the raw 0–10 risk for that dimension. A smaller, more contained shape = lower overall risk.
+              Each axis shows the raw 0–1 pillar score. A smaller, more contained shape = lower overall environmental risk.
             </TooltipContent>
           </ShadTooltip>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Raw pillar scores from Python engine (0–1, fixed). Shows each city's environmental profile independent of weight preferences.
+          </p>
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={radarData} outerRadius={90}>
               <PolarGrid stroke="hsl(218,26%,90%)" />
               <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
-              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
+              <PolarRadiusAxis angle={90} domain={[0, 1]} tick={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
               {rows.map((r, i) => (
                 <Radar
                   key={r.city}
