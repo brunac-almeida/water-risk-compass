@@ -84,11 +84,11 @@ const TrendsView = ({ cities, weights }: Props) => {
         let v = 0;
         if (metric === "total") {
           v = ((w * weights.water + cl * weights.climate + ca * weights.carbon + co * weights.cost) / wSum) * 10;
-        } else if (metric === "water") v = w * 10;
-        else if (metric === "climate") v = cl * 10;
-        else if (metric === "carbon") v = ca * 10;
-        else if (metric === "cost") v = co * 10;
-        row[name] = +v.toFixed(2);
+        } else if (metric === "water") v = w;
+        else if (metric === "climate") v = cl;
+        else if (metric === "carbon") v = ca;
+        else if (metric === "cost") v = co;
+        row[name] = metric === "total" ? +v.toFixed(2) : +v.toFixed(3);
       });
       return row;
     });
