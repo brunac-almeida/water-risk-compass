@@ -215,7 +215,8 @@ const TrendsView = ({ cities, weights }: Props) => {
             />
             <Tooltip contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }} />
             <Legend
-              wrapperStyle={{ fontSize: 11 }}
+              verticalAlign="bottom"
+              wrapperStyle={{ fontSize: 11, paddingTop: 24, bottom: -8 }}
               formatter={(value: string) => {
                 const a = averages.find(x => x.city === value);
                 if (!a) return value;
