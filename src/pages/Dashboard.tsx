@@ -161,8 +161,13 @@ const Dashboard = () => {
   /* chart data */
   const barRiskColor = (s: number) =>
     s < 4 ? "hsl(148,62%,30%)" : s <= 6 ? "hsl(35,88%,40%)" : "hsl(13,65%,47%)";
+  const abbreviateCity = (name: string) => {
+    if (name === "Northern Virginia (NoVA)" || name.startsWith("Northern Virginia")) return "N. Virginia";
+    if (name.startsWith("Dallas")) return "Dallas–FW";
+    return name;
+  };
   const barData = cities.map(c => ({
-    city: c.city.length > 14 ? c.city.slice(0, 14) + "…" : c.city,
+    city: abbreviateCity(c.city),
     fullCity: c.city,
     score: c.total_score,
     fill: barRiskColor(c.total_score ?? 0),
