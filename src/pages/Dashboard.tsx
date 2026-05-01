@@ -593,10 +593,10 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="flex justify-center gap-3 text-[11px] text-muted-foreground -mt-2 flex-wrap">
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[0] }} />Water: {(selected.water_risk ?? 0).toFixed(2)}</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Climate: {(selected.climate_load ?? 0).toFixed(2)}</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Carbon: {(selected.carbon ?? 0).toFixed(2)}</span>
-                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[3] }} />Cost: {(selected.energy_cost ?? 0).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[0] }} />Water: {((selected.water_risk ?? 0) * weights.water).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[1] }} />Climate: {((selected.climate_load ?? 0) * weights.climate).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[2] }} />Carbon: {((selected.carbon ?? 0) * weights.carbon).toFixed(2)}</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: DONUT_COLORS[3] }} />Cost: {((selected.energy_cost ?? 0) * weights.cost).toFixed(2)}</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed text-center">
                     Slice size shows each pillar's weighted contribution to the total score. Smaller slices = lower risk contribution.
