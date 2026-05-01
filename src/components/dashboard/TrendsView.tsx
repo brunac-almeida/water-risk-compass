@@ -102,14 +102,21 @@ const TrendsView = ({ cities, weights }: Props) => {
     );
   };
 
-  // Yearly average per selected city for current metric
+  // Yearly average per selected city for current metric.
+  // For Total Impact Score we display the canonical total_score (rounded the same way as
+  // the Select City list and Overview KPI) so all three panels agree exactly.
   const averages = useMemo(() => {
     return selectedCities.map(name => {
+      if (metric === "total") {
+        const c = cities.find(x => x.city === name);
+        const total = c ? c.total_score : 0;
+        return { city: name, avg: Math.round(total * 10) / 10 };
+      }
       const vals = data.map(d => d[name]).filter(v => typeof v === "number");
-      const avg = vals.reduce((s, v) => s + v, 0) / (vals.length || 1);
-      return { city: name, avg: +avg.toFixed(2) };
+      const raw = vals.reduce((s, v) => s + v, 0) / (vals.length || 1);
+      return { city: name, avg: Math.round(raw * 10) / 10 };
     });
-  }, [data, selectedCities]);
+  }, [data, selectedCities, metric, cities]);
 
   return (
     <div className="space-y-6">

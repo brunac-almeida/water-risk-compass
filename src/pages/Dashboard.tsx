@@ -42,9 +42,15 @@ const SCENARIOS: { label: string; weights: Weights; description: string; weightL
   { label: "Water Priority", weights: { water: 3.0, climate: 1.0, carbon: 1.0, cost: 1.0 }, description: "Water scarcity, drought risk, water pricing, and precipitation patterns carry the heaviest weight. Best for regions where long-term water access is the critical concern.", weightLine: "Weights: Water×3.0 Climate×1.0 Carbon×1.0 Cost×1.0" },
 ];
 
+// Standardized rounding: one decimal place via Math.round(x*10)/10.
+// Used everywhere Total Impact Score is displayed so all panels show the same value.
+export function roundScore(x: number) {
+  return Math.round(x * 10) / 10;
+}
+
 function computeTotal(c: CityData, w: Weights) {
   const raw = c.water_risk * w.water + c.climate_load * w.climate + c.carbon * w.carbon + c.energy_cost * w.cost;
-  return +((raw / (w.water + w.climate + w.carbon + w.cost)) * 10).toFixed(1);
+  return roundScore((raw / (w.water + w.climate + w.carbon + w.cost)) * 10);
 }
 
 const DONUT_COLORS = ["hsl(184,100%,26%)", "hsl(148,62%,30%)", "hsl(35,88%,40%)", "hsl(280,60%,45%)"];
@@ -345,12 +351,12 @@ const Dashboard = () => {
                       <span className="flex items-center gap-2">
                         <span aria-hidden className={`inline-block w-2.5 h-2.5 rounded-full ${dotClass}`} />
                         <span className={`font-mono text-xs ${c.city === selectedCity ? "text-primary" : "text-muted-foreground"}`}>
-                          {s.toFixed(1)} / 10
+                          {roundScore(s).toFixed(1)} / 10
                         </span>
                       </span>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {s.toFixed(1)}/10 (lower is better).</TooltipContent>
+                  <TooltipContent className="text-xs">Select {c.city} to see its full risk breakdown. Score: {roundScore(s).toFixed(1)}/10 (lower is better).</TooltipContent>
                 </ShadTooltip>
                 );
               })}
@@ -518,7 +524,7 @@ const Dashboard = () => {
                 <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
                 <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
                 <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
-                <KPI label="Total Impact Score" value={selected.total_score.toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
+                <KPI label="Total Impact Score" value={roundScore(selected.total_score).toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
               </div>
 
               {/* Precipitation & Variability detail */}
