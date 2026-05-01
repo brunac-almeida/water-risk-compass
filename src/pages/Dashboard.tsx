@@ -655,10 +655,10 @@ const Dashboard = () => {
                     </ScatterChart>
                   </ResponsiveContainer>
                   {/* Quadrant labels */}
-                  <div className="pointer-events-none absolute inset-0" style={{ paddingTop: 40, paddingBottom: 40, paddingLeft: 60, paddingRight: 30 }}>
+                  <div className="pointer-events-none absolute inset-0" style={{ paddingTop: 20, paddingBottom: 40, paddingLeft: 60, paddingRight: 30 }}>
                     <div className="relative w-full h-full">
-                      <span className="absolute top-1 left-1 text-[10px] italic text-muted-foreground/60">High water risk / Low cost</span>
-                      <span className="absolute top-1 right-1 text-[10px] italic text-muted-foreground/60">High risk / High cost</span>
+                      <span className="absolute -top-1 left-1 text-[10px] italic text-muted-foreground/60">High water risk / Low cost</span>
+                      <span className="absolute -top-1 right-1 text-[10px] italic text-muted-foreground/60">High risk / High cost</span>
                       <span className="absolute bottom-1 left-1 text-[10px] italic text-muted-foreground/60">Low risk / Low cost</span>
                       <span className="absolute bottom-1 right-1 text-[10px] italic text-muted-foreground/60">Low water risk / High cost</span>
                     </div>
