@@ -417,6 +417,11 @@ const SiteRecommender = () => {
                         <p className="font-mono-code text-sm text-foreground mt-2">
                           Water×{weights.water} · Climate×{weights.climate} · Carbon×{weights.carbon} · Cost×{weights.cost}
                         </p>
+                        {winnerExplanation && (
+                          <p className="text-xs text-foreground mt-3 max-w-md mx-auto leading-relaxed font-medium">
+                            {winnerExplanation}
+                          </p>
+                        )}
                         <p className="text-xs text-muted-foreground mt-3 max-w-md mx-auto leading-relaxed">
                           Weights are derived from your four answers. The highest weight indicates your dominant priority. You can fine-tune these exact values using the Dashboard sliders for deeper scenario exploration.
                         </p>
