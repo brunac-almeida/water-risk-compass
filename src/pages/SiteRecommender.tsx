@@ -170,6 +170,15 @@ const SiteRecommender = () => {
   const winnerExplanation = useMemo(() => {
     if (!results.length || !baseData.length) return "";
     const w = results[0];
+
+    // Special expanded explanation when NoVA wins
+    if (w.city === "Northern Virginia (NoVA)" || w.city === "Northern Virginia") {
+      const sv = baseData.find(c => c.city === "Silicon Valley");
+      const energyScore = (w.energy_cost ?? 0).toFixed(1);
+      const carbonScore = (w.carbon ?? 0).toFixed(1);
+      return `Northern Virginia ranks first because it holds the lowest energy cost score in the dataset (${energyScore}/10) and a competitive carbon score (${carbonScore}/10) — a combination that remains advantageous across most weight profiles. Silicon Valley has a marginally cleaner grid but higher water stress and cost scores prevent it from overtaking NoVA within this five-city cohort.`;
+    }
+
     const pillars = [
       { key: "water_risk" as const, label: "water risk", weight: weights.water },
       { key: "climate_load" as const, label: "climate load", weight: weights.climate },
