@@ -403,10 +403,10 @@ const Dashboard = () => {
               City pillar scores (0–1, from Python engine — fixed)
             </p>
             {([
-              { key: "water" as const, label: "Water Risk", abbr: "WR", tip: "How much water scarcity, drought risk, and water price influence the score. Higher = water sustainability matters more." },
-              { key: "climate" as const, label: "Climate Load", abbr: "CL", tip: "How much hot-climate cooling demand and temperature stress influence the score." },
-              { key: "carbon" as const, label: "Carbon", abbr: "CB", tip: "How much grid carbon intensity (kg CO₂/MWh) influences the score. Higher = clean energy matters more." },
-              { key: "cost" as const, label: "Energy Cost", abbr: "EC", tip: "How much industrial electricity price influences the score. Higher = OpEx matters more." },
+              { key: "water" as const, label: "Water Risk", abbr: "WR", tip: "WR = 0.34×Water Stress + 0.28×Drought Risk + 0.22×Water Price + 0.11×Dryness + 0.05×Rain Variability. All inputs normalized 0–1. Higher score = worse water outlook." },
+              { key: "climate" as const, label: "Climate Load", abbr: "CL", tip: "CL = 0.34×Avg Summer Temp + 0.30×Cooling Degree Days + 0.18×Avg Annual Temp + 0.18×Heating Degree Days. Higher score = greater thermal demand on cooling infrastructure." },
+              { key: "carbon" as const, label: "Carbon", abbr: "CB", tip: "CB = average of normalized Grid Carbon Intensity plus State CO₂ and Grid MWh when grid data merges successfully. Higher score = dirtier grid." },
+              { key: "cost" as const, label: "Energy Cost", abbr: "EC", tip: "EC = 0.5×Electricity Price + 0.5×Industrial Total USD when merged, otherwise 100% Electricity Price. Higher score = higher operational energy cost." },
             ]).map(s => (
               <div key={s.key} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-xs mb-1.5">
