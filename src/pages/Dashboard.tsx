@@ -617,8 +617,9 @@ const Dashboard = () => {
                         name="Energy Cost"
                         domain={[0, 1]}
                         ticks={[0, 0.25, 0.5, 0.75, 1]}
+                        tickFormatter={(v: number) => v === 1 ? "1.0" : String(v)}
                         tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
-                        label={{ value: "Energy Cost Score (0 = lowest cost, 1 = highest cost)", position: "bottom", offset: 5, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }}
+                        label={{ value: "Energy Cost Score", position: "bottom", offset: 5, style: { fontSize: 11, fill: "hsl(213,18%,49%)" } }}
                       />
                       <YAxis
                         type="number"
@@ -626,17 +627,30 @@ const Dashboard = () => {
                         name="Water Risk"
                         domain={[0, 1]}
                         ticks={[0, 0.25, 0.5, 0.75, 1]}
+                        tickFormatter={(v: number) => v === 1 ? "1.0" : String(v)}
                         tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
-                        label={{ value: "Water Risk Score (0 = lowest risk, 1 = highest risk)", angle: -90, position: "insideLeft", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" } }}
+                        label={{ value: "Water Risk Score", angle: -90, position: "insideLeft", offset: 0, style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" } }}
                       />
                       <ZAxis range={[300, 300]} />
                       <Tooltip
                         formatter={(v: number, name: string) => [v.toFixed(2), name]}
-                        contentStyle={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12 }}
+                        labelFormatter={() => ""}
+                        content={({ active, payload }: any) => {
+                          if (!active || !payload?.length) return null;
+                          const p = payload[0].payload;
+                          return (
+                            <div style={{ background: "hsl(0,0%,100%)", border: "1px solid hsl(218,26%,90%)", borderRadius: 8, fontSize: 12, padding: "6px 10px" }}>
+                              <div style={{ fontWeight: 600, marginBottom: 2 }}>{p.idx}. {p.city}</div>
+                              <div>Energy Cost: {p.x.toFixed(2)}</div>
+                              <div>Water Risk: {p.y.toFixed(2)}</div>
+                              <div>Total: {p.z.toFixed(2)}</div>
+                            </div>
+                          );
+                        }}
                       />
                       <Scatter data={scatterData}>
                         {scatterData.map((d, i) => <Cell key={i} fill={d.fill} />)}
-                        <LabelList dataKey="city" position="top" dy={-12} style={{ fontSize: 10, fill: "hsl(213,18%,49%)" }} />
+                        <LabelList dataKey="idx" position="center" style={{ fontSize: 10, fill: "white", fontWeight: 700, pointerEvents: "none" }} />
                       </Scatter>
                     </ScatterChart>
                   </ResponsiveContainer>
@@ -648,6 +662,21 @@ const Dashboard = () => {
                       <span className="absolute bottom-1 left-1 text-[10px] italic text-muted-foreground/60">Low risk / Low cost</span>
                       <span className="absolute bottom-1 right-1 text-[10px] italic text-muted-foreground/60">Low water risk / High cost</span>
                     </div>
+                  </div>
+                </div>
+                {/* City key + color legend */}
+                <div className="mt-3 flex flex-wrap items-start gap-x-6 gap-y-2 text-[11px]">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-muted-foreground">
+                    {scatterData.map(d => (
+                      <span key={d.city} className="whitespace-nowrap">
+                        <span className="font-semibold text-foreground">{d.idx}</span> — {d.city} ({d.z.toFixed(1)})
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-muted-foreground ml-auto">
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(148,62%,30%)" }} />Low risk (under 4.0)</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(35,88%,40%)" }} />Medium risk (4.0–6.0)</span>
+                    <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(13,65%,47%)" }} />High risk (over 6.0)</span>
                   </div>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed">
