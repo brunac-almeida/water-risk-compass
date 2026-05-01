@@ -115,6 +115,7 @@ const outputIndices = [
 ];
 
 const Methodology = () => {
+  const [showFormulas, setShowFormulas] = useState(false);
   const { hash } = useLocation();
   useEffect(() => {
     if (hash) {
