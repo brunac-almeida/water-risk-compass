@@ -24,7 +24,7 @@ type CityData = {
 const CITY_TAGLINES: Record<string, string> = {
   "Chicago": "Cleanest grid and lowest cooling demand — strong all-around choice",
   "Northern Virginia (NoVA)": "Largest market with moderate risk profile — good infrastructure",
-  "Phoenix": "Fast-growing market but high carbon grid — monitor closely",
+  "Phoenix": "Fast-growing market but high water stress and extreme summer cooling demand — monitor closely.",
   "Silicon Valley": "Cleanest electricity grid but highest water price in the dataset",
   "Dallas–Fort Worth": "Strong connectivity hub but highest carbon intensity of all markets",
 };
@@ -114,12 +114,6 @@ const SiteRecommender = () => {
     if (facility === 2) w = { water: 1.0, climate: 1.5, carbon: 1.0, cost: 2.5 }; // AI/GPU
     if (facility === 3) w = { water: 1.5, climate: 1.0, carbon: 1.5, cost: 2.0 }; // Enterprise
 
-    // Constraint override → set one weight to 3.0
-    if (constraint === 0) w.water = 3.0;
-    if (constraint === 1) w.carbon = 3.0;
-    if (constraint === 2) w.cost = 3.0;
-    if (constraint === 3) w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
-
     // Risk tolerance — applies to all 4
     if (riskTol === 0) {
       w.water *= 1.3; w.climate *= 1.3; w.carbon *= 1.3; w.cost *= 1.3;
@@ -135,6 +129,12 @@ const SiteRecommender = () => {
     // Sustainability slider
     if (sustainability >= 4) { w.water += 0.5; w.carbon += 0.5; }
     if (sustainability <= 2) { w.climate += 0.5; w.cost += 0.5; }
+
+    // Constraint override → lock chosen pillar to 3.0 in final profile
+    if (constraint === 0) w.water = 3.0;
+    if (constraint === 1) w.carbon = 3.0;
+    if (constraint === 2) w.cost = 3.0;
+    if (constraint === 3) w = { water: 1.5, climate: 1.5, carbon: 1.5, cost: 1.5 };
 
     // Round to 1 decimal
     w.water = +w.water.toFixed(1);
