@@ -178,12 +178,28 @@ const Methodology = () => {
           </div>
         </div>
 
-        {/* Transformation divider */}
-        <div className="hidden lg:flex flex-col items-center justify-center px-2">
-          <div className="bg-teal-light border border-teal/30 rounded-xl px-4 py-5 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-slate mb-2">Transformation</p>
-            <p className="font-display text-[14px] font-bold text-teal leading-tight">Python<br />Scoring Engine</p>
-            <div className="text-teal text-2xl font-bold mt-3">→</div>
+        {/* Transformation flow strip */}
+        <div className="hidden lg:flex flex-col items-center justify-center px-1">
+          <div
+            className="bg-muted/40 border border-border rounded-xl p-3 flex flex-col gap-1 cursor-help"
+            title="Applies min-max scaling across all cities then computes four weighted pillar scores. Runs in Python — results exported to dashboard_data.json"
+          >
+            {[
+              { n: "1", title: "Read raw data", sub: "CSV input files" },
+              { n: "2", title: "Normalize", sub: "Min-max 0–1 per variable" },
+              { n: "3", title: "Compute pillars", sub: "Fixed inner weights" },
+            ].map((s, i, arr) => (
+              <div key={s.n} className="flex flex-col items-center">
+                <div className="bg-card border border-border rounded-lg px-3 py-2 text-center min-w-[150px]">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-teal mb-0.5">Step {s.n}</p>
+                  <p className="font-display text-[12.5px] font-bold text-foreground leading-tight">{s.title}</p>
+                  <p className="text-[10.5px] text-slate leading-tight mt-0.5">{s.sub}</p>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="text-teal/60 text-lg font-bold leading-none my-0.5">↓</div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
