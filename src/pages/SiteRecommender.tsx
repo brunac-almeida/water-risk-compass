@@ -396,6 +396,13 @@ const SiteRecommender = () => {
                     <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[winner.city] ?? `${winner.state} — see the dashboard for full breakdown.`}</p>
                   </div>
 
+                  {/* Cohort limitation callout */}
+                  <div className="bg-muted/50 border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      <span className="font-semibold text-foreground">About these results:</span> Rankings are relative to the five cities in this dataset. Northern Virginia's structural advantage on energy cost means it remains competitive across most priority profiles in this cohort. Expanding the analysis to include additional markets — such as Seattle, Columbus, or Denver — would produce more differentiated results under carbon and water priority scenarios. Use the Dashboard to explore weight sensitivity in detail.
+                    </p>
+                  </div>
+
                   {/* Rankings */}
                   <div className="bg-card rounded-2xl border border-border shadow-lg p-6">
                     <h3 className="font-display text-lg font-bold text-foreground mb-4">Full Rankings</h3>
