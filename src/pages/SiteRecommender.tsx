@@ -166,6 +166,26 @@ const SiteRecommender = () => {
     [baseData, weights]
   );
 
+  /* Dynamic explanation: which pillar gives the winner its biggest weighted advantage */
+  const winnerExplanation = useMemo(() => {
+    if (!results.length || !baseData.length) return "";
+    const w = results[0];
+    const pillars = [
+      { key: "water_risk" as const, label: "water risk", weight: weights.water },
+      { key: "climate_load" as const, label: "climate load", weight: weights.climate },
+      { key: "carbon" as const, label: "carbon intensity", weight: weights.carbon },
+      { key: "energy_cost" as const, label: "energy cost", weight: weights.cost },
+    ];
+    let best = pillars[0];
+    let bestAdvantage = -Infinity;
+    pillars.forEach(p => {
+      const avg = baseData.reduce((s, c) => s + (c[p.key] ?? 0), 0) / baseData.length;
+      const advantage = (avg - (w[p.key] ?? 0)) * p.weight;
+      if (advantage > bestAdvantage) { bestAdvantage = advantage; best = p; }
+    });
+    return `${w.city} ranks first because it has one of the lowest ${best.label} scores in the dataset (${(w[best.key] ?? 0).toFixed(1)}/10) under your selected priorities.`;
+  }, [results, baseData, weights]);
+
   const reset = () => { setStep(0); setFacility(null); setConstraint(null); setRiskTol(null); setSustainability(3); };
 
   const goToDashboard = () => {
