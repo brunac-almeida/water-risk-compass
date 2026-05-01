@@ -81,7 +81,7 @@ const outputIndices = [
   { label: "Climate Load Index", color: "text-risk-amber", formula: "Normalized Temperature, CDD, HDD, and Precipitation" },
   { label: "Carbon Impact Score", color: "text-risk-green", formula: "Normalized Grid Carbon Intensity" },
   { label: "Energy Cost Score", color: "text-foreground", formula: "Normalized electricity and industrial cost proxy" },
-  { label: "Total Impact Score", color: "text-foreground", formula: "Weighted sum of all four indices — lower is better" },
+  { label: "Total Impact Score", color: "text-foreground", formula: "Combines the four pillar scores using user-adjustable weights. Scale 0–10. Lower = better site." },
 ];
 
 const Methodology = () => {
@@ -129,11 +129,14 @@ const Methodology = () => {
 
     {/* Section 3 — Input Variables & Output Indices */}
     <section className="bg-background py-20">
-      <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Input Variables */}
+      <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-stretch">
+        {/* Raw Input Variables */}
         <div className="bg-card rounded-xl border border-border overflow-hidden flex">
           <div className="border-l-4 border-l-teal p-7 flex-1">
-            <h3 className="font-display text-xl font-bold text-foreground mb-5">Input Variables</h3>
+            <h3 className="font-display text-xl font-bold text-foreground mb-1">Raw Input Variables</h3>
+            <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
+              Real-world measured values from public data sources. These feed directly into the scoring engine.
+            </p>
             <div className="flex flex-col gap-5">
               {inputVars.map((v) => (
                 <div key={v.label}>
@@ -145,10 +148,22 @@ const Methodology = () => {
           </div>
         </div>
 
-        {/* Output Indices */}
+        {/* Transformation divider */}
+        <div className="hidden lg:flex flex-col items-center justify-center px-2">
+          <div className="bg-teal-light border border-teal/30 rounded-xl px-4 py-5 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-slate mb-2">Transformation</p>
+            <p className="font-display text-[14px] font-bold text-teal leading-tight">Python<br />Scoring Engine</p>
+            <div className="text-teal text-2xl font-bold mt-3">→</div>
+          </div>
+        </div>
+
+        {/* Calculated Pillar Scores */}
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="border-l-4 border-l-risk-coral p-7">
-            <h3 className="font-display text-xl font-bold text-foreground mb-5">Output Indices</h3>
+            <h3 className="font-display text-xl font-bold text-foreground mb-1">Calculated Pillar Scores</h3>
+            <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
+              Derived by the scoring engine using min-max normalization and fixed inner weights. These are not raw measurements.
+            </p>
             <div className="flex flex-col gap-5">
               {outputIndices.map((v) => (
                 <div key={v.label}>
