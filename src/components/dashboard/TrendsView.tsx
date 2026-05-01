@@ -191,18 +191,9 @@ const TrendsView = ({ cities, weights }: Props) => {
           Total Impact Score updates live with weight changes. Water Risk, Climate Load, Carbon, and Energy Cost are fixed values from the Python engine — sliders do not affect them.
         </p>
         <ResponsiveContainer width="100%" height={320}>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 16 }}>
+          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(218,26%,90%)" />
-            <XAxis
-              dataKey="month"
-              tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
-              label={{
-                value: "Month",
-                position: "insideBottom",
-                offset: -8,
-                style: { fontSize: 11, fill: "hsl(213,18%,49%)", textAnchor: "middle" },
-              }}
-            />
+            <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }} />
             <YAxis
               domain={metric === "total" ? [0, 10] : [0, 1]}
               tick={{ fontSize: 11, fill: "hsl(213,18%,49%)" }}
