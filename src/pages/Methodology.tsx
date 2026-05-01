@@ -1,7 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+const pillarFormulas = [
+  { name: "Water Risk Score", formula: "0.34×stress + 0.28×drought + 0.22×price + 0.11×(1−precip) + 0.05×rain_std" },
+  { name: "Climate Load Index", formula: "0.34×summer_temp + 0.30×CDD + 0.18×annual_temp + 0.18×HDD" },
+  { name: "Carbon Impact Score", formula: "mean of available normalized carbon signals" },
+  { name: "Energy Cost Score", formula: "0.5×elec_price + 0.5×industrial_USD (or 100% elec_price if no merge)" },
+];
 
 const glossary = [
   {
