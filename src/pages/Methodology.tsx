@@ -64,16 +64,39 @@ const pipelineSteps = [
   { num: "05", title: "Visualization", text: "Render results as interactive charts, a clickable map, and a Total Impact Score. Lower = better." },
 ];
 
-const inputVars = [
-  { label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
-  { label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
-  { label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
-  { label: "Drought Risk", source: "U.S. Drought Monitor · 2023 · Multi-year average severity classification" },
-  { label: "Water Stress Index", source: "WRI Aqueduct · 2023 · Baseline water stress ratio" },
-  { label: "Cooling Degree Days (CDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
-  { label: "Heating Degree Days (HDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
-  { label: "Annual Precipitation (in)", source: "NOAA Climate at a Glance · 2023 · State-level annual total" },
-  { label: "Electricity Price ($/kWh)", source: "EIA Electric Power Monthly · 2023 · Industrial rate" },
+const inputGroups = [
+  {
+    label: "Water",
+    accent: "border-l-teal",
+    tagColor: "text-teal",
+    vars: [
+      { label: "Water Stress Index", source: "WRI Aqueduct · 2023 · Baseline water stress ratio" },
+      { label: "Drought Risk", source: "U.S. Drought Monitor · 2023 · Multi-year average severity classification" },
+      { label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
+      { label: "Annual Precipitation (in)", source: "NOAA Climate at a Glance · 2023 · State-level annual total" },
+      { label: "Monthly Rainfall Variability", source: "NOAA NCEI · 2023 · Coefficient of variation across monthly totals" },
+    ],
+  },
+  {
+    label: "Climate",
+    accent: "border-l-risk-amber",
+    tagColor: "text-risk-amber",
+    vars: [
+      { label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
+      { label: "Avg Summer Temp", source: "NOAA Climate at a Glance · 2023 · June–August state-level mean" },
+      { label: "Cooling Degree Days (CDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
+      { label: "Heating Degree Days (HDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
+    ],
+  },
+  {
+    label: "Energy & Carbon",
+    accent: "border-l-risk-green",
+    tagColor: "text-risk-green",
+    vars: [
+      { label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
+      { label: "Electricity Price ($/kWh)", source: "EIA Electric Power Monthly · 2023 · Industrial rate" },
+    ],
+  },
 ];
 
 const outputIndices = [
@@ -137,11 +160,18 @@ const Methodology = () => {
             <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
               Real-world measured values from public data sources. These feed directly into the scoring engine.
             </p>
-            <div className="flex flex-col gap-5">
-              {inputVars.map((v) => (
-                <div key={v.label}>
-                  <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+            <div className="flex flex-col gap-6">
+              {inputGroups.map((g) => (
+                <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
+                  <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
+                  <div className="flex flex-col gap-4">
+                    {g.vars.map((v) => (
+                      <div key={v.label}>
+                        <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                        <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
