@@ -170,6 +170,15 @@ const SiteRecommender = () => {
   const winnerExplanation = useMemo(() => {
     if (!results.length || !baseData.length) return "";
     const w = results[0];
+
+    // Special expanded explanation when NoVA wins
+    if (w.city === "Northern Virginia (NoVA)" || w.city === "Northern Virginia") {
+      const sv = baseData.find(c => c.city === "Silicon Valley");
+      const energyScore = (w.energy_cost ?? 0).toFixed(1);
+      const carbonScore = (w.carbon ?? 0).toFixed(1);
+      return `Northern Virginia ranks first because it holds the lowest energy cost score in the dataset (${energyScore}/10) and a competitive carbon score (${carbonScore}/10) — a combination that remains advantageous across most weight profiles. Silicon Valley has a marginally cleaner grid but higher water stress and cost scores prevent it from overtaking NoVA within this five-city cohort.`;
+    }
+
     const pillars = [
       { key: "water_risk" as const, label: "water risk", weight: weights.water },
       { key: "climate_load" as const, label: "climate load", weight: weights.climate },
@@ -385,6 +394,13 @@ const SiteRecommender = () => {
                       </Tooltip>
                     </div>
                     <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">{CITY_TAGLINES[winner.city] ?? `${winner.state} — see the dashboard for full breakdown.`}</p>
+                  </div>
+
+                  {/* Cohort limitation callout */}
+                  <div className="bg-muted/50 border border-border rounded-xl p-4">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      <span className="font-semibold text-foreground">About these results:</span> Rankings are relative to the five cities in this dataset. Northern Virginia's structural advantage on energy cost means it remains competitive across most priority profiles in this cohort. Expanding the analysis to include additional markets — such as Seattle, Columbus, or Denver — would produce more differentiated results under carbon and water priority scenarios. Use the Dashboard to explore weight sensitivity in detail.
+                    </p>
                   </div>
 
                   {/* Rankings */}
