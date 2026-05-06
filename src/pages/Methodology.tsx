@@ -204,25 +204,15 @@ const Methodology = () => {
 
     {/* Section 3 — Input Variables & Output Indices */}
     <section className="bg-background py-20">
-      <div
-        className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 gap-6 items-start transition-[grid-template-columns] duration-500 ease-in-out"
-        style={{
-          gridTemplateColumns: undefined,
-        }}
-      >
-        <style>{`
-          @media (min-width: 1024px) {
-            .methodology-grid {
-              display: grid;
-              grid-template-columns: ${showInputs ? "2.2fr auto 1fr" : "1fr auto 1fr"};
-              transition: grid-template-columns 500ms ease-in-out;
-            }
+      <style>{`
+        @media (min-width: 1024px) {
+          .methodology-grid {
+            grid-template-columns: ${showInputs ? "2.2fr auto 1fr" : "1fr auto 1fr"} !important;
+            transition: grid-template-columns 500ms ease-in-out;
           }
-        `}</style>
-        <div className="contents lg:hidden" />
-        {/* Wrapper override using class-based grid for lg */}
-      </div>
-      <div className="max-w-[1240px] mx-auto px-14 methodology-grid grid grid-cols-1 gap-6 items-start -mt-[calc(theme(spacing.6)+0px)]">
+        }
+      `}</style>
+      <div className="max-w-[1240px] mx-auto px-14 methodology-grid grid grid-cols-1 gap-6 items-start">
         {/* Raw Input Variables */}
         <div className="bg-card rounded-xl border border-border overflow-hidden flex min-w-0">
           <div className="border-l-4 border-l-teal p-7 flex-1 min-w-0">
