@@ -116,6 +116,8 @@ const outputIndices = [
 const Methodology = () => {
   const [showFormulas, setShowFormulas] = useState(false);
   const [showInputs, setShowInputs] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
+  const [showOutputs, setShowOutputs] = useState(false);
   const [showNormFormula, setShowNormFormula] = useState(false);
   const { hash } = useLocation();
   useEffect(() => {
@@ -217,73 +219,121 @@ const Methodology = () => {
               <div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Raw Input Variables</h3>
                 <p className="text-[12.5px] text-slate leading-[1.6]">
-                  Real-world measured values from public data sources. These feed directly into the scoring engine.
+                  Public datasets used as inputs for the scoring model.
                 </p>
               </div>
               <ChevronDown
-                className={`text-teal shrink-0 mt-1 transition-transform ${showInputs ? "rotate-180" : ""}`}
+                className={`text-teal shrink-0 mt-1 transition-transform duration-300 ${showInputs ? "rotate-180" : ""}`}
                 size={20}
               />
             </button>
-            {showInputs && (
-              <div className="flex flex-col gap-6 mt-5">
-                {inputGroups.map((g) => (
-                  <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
-                    <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
-                    <div className="flex flex-col gap-4">
-                      {g.vars.map((v) => (
-                        <div key={v.label}>
-                          <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                          <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
-                        </div>
-                      ))}
+            <div
+              className={`grid transition-all duration-300 ease-out ${showInputs ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
+            >
+              <div className="overflow-hidden">
+                <div className="flex flex-col gap-6">
+                  {inputGroups.map((g) => (
+                    <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
+                      <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
+                      <div className="flex flex-col gap-4">
+                        {g.vars.map((v) => (
+                          <div key={v.label}>
+                            <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                            <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
 
-        {/* Transformation flow strip */}
-        <div className="hidden lg:flex flex-col items-center justify-center px-1">
-          <div
-            className="bg-muted/40 border border-border rounded-xl p-3 flex flex-col gap-1 cursor-help"
-            title="Applies min-max scaling across all cities then computes four weighted pillar scores. Runs in Python — results exported to dashboard_data.json"
-          >
-            {[
-              { n: "1", title: "Read raw data", sub: "CSV input files" },
-              { n: "2", title: "Normalize", sub: "Min-max 0–1 per variable" },
-              { n: "3", title: "Compute pillars", sub: "Fixed inner weights" },
-            ].map((s, i, arr) => (
-              <div key={s.n} className="flex flex-col items-center">
-                <div className="bg-card border border-border rounded-lg px-3 py-2 text-center min-w-[150px]">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-teal mb-0.5">Step {s.n}</p>
-                  <p className="font-display text-[12.5px] font-bold text-foreground leading-tight">{s.title}</p>
-                  <p className="text-[10.5px] text-slate leading-tight mt-0.5">{s.sub}</p>
-                </div>
-                {i < arr.length - 1 && (
-                  <div className="text-teal/60 text-lg font-bold leading-none my-0.5">↓</div>
-                )}
+        {/* Scoring Steps (middle) */}
+        <div className="bg-card rounded-xl border border-border overflow-hidden lg:w-[260px]">
+          <div className="border-l-4 border-l-risk-amber p-7">
+            <button
+              type="button"
+              onClick={() => setShowSteps((v) => !v)}
+              aria-expanded={showSteps}
+              className="w-full flex items-start justify-between gap-4 text-left"
+            >
+              <div>
+                <h3 className="font-display text-xl font-bold text-foreground mb-1">Scoring Steps</h3>
+                <p className="text-[12.5px] text-slate leading-[1.6]">
+                  Three-step process: read data, normalize, and compute scores.
+                </p>
               </div>
-            ))}
+              <ChevronDown
+                className={`text-risk-amber shrink-0 mt-1 transition-transform duration-300 ${showSteps ? "rotate-180" : ""}`}
+                size={20}
+              />
+            </button>
+            <div
+              className={`grid transition-all duration-300 ease-out ${showSteps ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
+            >
+              <div className="overflow-hidden">
+                <div
+                  className="bg-muted/40 border border-border rounded-xl p-3 flex flex-col gap-1"
+                  title="Applies min-max scaling across all cities then computes four weighted pillar scores."
+                >
+                  {[
+                    { n: "1", title: "Read raw data", sub: "CSV input files" },
+                    { n: "2", title: "Normalize", sub: "Min-max 0–1 per variable" },
+                    { n: "3", title: "Compute pillars", sub: "Fixed inner weights" },
+                  ].map((s, i, arr) => (
+                    <div key={s.n} className="flex flex-col items-center">
+                      <div className="bg-card border border-border rounded-lg px-3 py-2 text-center w-full">
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-teal mb-0.5">Step {s.n}</p>
+                        <p className="font-display text-[12.5px] font-bold text-foreground leading-tight">{s.title}</p>
+                        <p className="text-[10.5px] text-slate leading-tight mt-0.5">{s.sub}</p>
+                      </div>
+                      {i < arr.length - 1 && (
+                        <div className="text-teal/60 text-lg font-bold leading-none my-0.5">↓</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Calculated Pillar Scores */}
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="border-l-4 border-l-risk-coral p-7">
-            <h3 className="font-display text-xl font-bold text-foreground mb-1">Calculated Pillar Scores</h3>
-            <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
-              Derived by the scoring engine using min-max normalization and fixed inner weights. These are not raw measurements.
-            </p>
-            <div className="flex flex-col gap-5">
-              {outputIndices.map((v) => (
-                <div key={v.label}>
-                  <p className={`text-[15px] font-semibold ${v.color}`}>{v.label}</p>
-                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.formula}</p>
+            <button
+              type="button"
+              onClick={() => setShowOutputs((v) => !v)}
+              aria-expanded={showOutputs}
+              className="w-full flex items-start justify-between gap-4 text-left"
+            >
+              <div>
+                <h3 className="font-display text-xl font-bold text-foreground mb-1">Calculated Pillar Scores</h3>
+                <p className="text-[12.5px] text-slate leading-[1.6]">
+                  Intermediate scores used to calculate the final site impact score.
+                </p>
+              </div>
+              <ChevronDown
+                className={`text-risk-coral shrink-0 mt-1 transition-transform duration-300 ${showOutputs ? "rotate-180" : ""}`}
+                size={20}
+              />
+            </button>
+            <div
+              className={`grid transition-all duration-300 ease-out ${showOutputs ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
+            >
+              <div className="overflow-hidden">
+                <div className="flex flex-col gap-5">
+                  {outputIndices.map((v) => (
+                    <div key={v.label}>
+                      <p className={`text-[15px] font-semibold ${v.color}`}>{v.label}</p>
+                      <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.formula}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
