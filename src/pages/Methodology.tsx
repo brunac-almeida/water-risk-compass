@@ -208,25 +208,40 @@ const Methodology = () => {
         {/* Raw Input Variables */}
         <div className="bg-card rounded-xl border border-border overflow-hidden flex">
           <div className="border-l-4 border-l-teal p-7 flex-1">
-            <h3 className="font-display text-xl font-bold text-foreground mb-1">Raw Input Variables</h3>
-            <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
-              Real-world measured values from public data sources. These feed directly into the scoring engine.
-            </p>
-            <div className="flex flex-col gap-6">
-              {inputGroups.map((g) => (
-                <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
-                  <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
-                  <div className="flex flex-col gap-4">
-                    {g.vars.map((v) => (
-                      <div key={v.label}>
-                        <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                        <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
-                      </div>
-                    ))}
+            <button
+              type="button"
+              onClick={() => setShowInputs((v) => !v)}
+              aria-expanded={showInputs}
+              className="w-full flex items-start justify-between gap-4 text-left"
+            >
+              <div>
+                <h3 className="font-display text-xl font-bold text-foreground mb-1">Raw Input Variables</h3>
+                <p className="text-[12.5px] text-slate leading-[1.6]">
+                  Real-world measured values from public data sources. These feed directly into the scoring engine.
+                </p>
+              </div>
+              <ChevronDown
+                className={`text-teal shrink-0 mt-1 transition-transform ${showInputs ? "rotate-180" : ""}`}
+                size={20}
+              />
+            </button>
+            {showInputs && (
+              <div className="flex flex-col gap-6 mt-5">
+                {inputGroups.map((g) => (
+                  <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
+                    <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
+                    <div className="flex flex-col gap-4">
+                      {g.vars.map((v) => (
+                        <div key={v.label}>
+                          <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                          <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
