@@ -180,12 +180,11 @@ const Dashboard = () => {
     stroke: c.city === selectedCity ? "hsl(184,100%,20%)" : "transparent",
   }));
 
-  const _wSumDonut = weights.water + weights.climate + weights.carbon + weights.cost;
   const donutData = selected ? [
-    { name: "Water", raw: selected.water_risk ?? 0, value: +(((selected.water_risk ?? 0) * weights.water / _wSumDonut) * 10).toFixed(3) },
-    { name: "Climate", raw: selected.climate_load ?? 0, value: +(((selected.climate_load ?? 0) * weights.climate / _wSumDonut) * 10).toFixed(3) },
-    { name: "Carbon", raw: selected.carbon ?? 0, value: +(((selected.carbon ?? 0) * weights.carbon / _wSumDonut) * 10).toFixed(3) },
-    { name: "Cost", raw: selected.energy_cost ?? 0, value: +(((selected.energy_cost ?? 0) * weights.cost / _wSumDonut) * 10).toFixed(3) },
+    { name: "Water", raw: selected.water_risk ?? 0, value: +((selected.water_risk ?? 0) * weights.water).toFixed(3) },
+    { name: "Climate", raw: selected.climate_load ?? 0, value: +((selected.climate_load ?? 0) * weights.climate).toFixed(3) },
+    { name: "Carbon", raw: selected.carbon ?? 0, value: +((selected.carbon ?? 0) * weights.carbon).toFixed(3) },
+    { name: "Cost", raw: selected.energy_cost ?? 0, value: +((selected.energy_cost ?? 0) * weights.cost).toFixed(3) },
   ] : [];
 
   const scatterData = cities.map((c, i) => ({
@@ -198,7 +197,7 @@ const Dashboard = () => {
   }));
 
   /* KPI helper */
-  const KPI = ({ label, value, color, tooltip, subtitle }: { label: string; value: string; color?: string; tooltip?: string; subtitle?: string }) => (
+  const KPI = ({ label, value, color, tooltip }: { label: string; value: string; color?: string; tooltip?: string }) => (
     <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
       <span className="text-xs font-body text-muted-foreground inline-flex items-center gap-1">
         {label}
@@ -214,7 +213,6 @@ const Dashboard = () => {
         )}
       </span>
       <span className={`text-2xl font-display font-bold ${color ?? "text-foreground"}`}>{value}</span>
-      {subtitle && <span className="text-[10px] font-body text-muted-foreground">{subtitle}</span>}
     </div>
   );
 
@@ -523,10 +521,10 @@ const Dashboard = () => {
             <TabsContent value="overview" className="space-y-6">
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-4">
-                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} subtitle="weighted contribution" tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
-                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} subtitle="weighted contribution" tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
-                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} subtitle="weighted contribution" tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
-                <KPI label="Total Impact Score" value={roundScore(selected.total_score).toFixed(1)} subtitle="0–10 scale, lower is better" color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
+                <KPI label="Water Risk" value={(selected.water_risk * weights.water / wSum * 10).toFixed(1)} tooltip="Weighted water risk contribution to the Total Impact Score (0–10). Reflects scarcity, drought risk, water price, and rainfall." />
+                <KPI label="Climate Load" value={(selected.climate_load * weights.climate / wSum * 10).toFixed(1)} tooltip="Weighted climate/cooling burden contribution (0–10). Hotter climates score higher because cooling equipment runs harder." />
+                <KPI label="Carbon" value={(selected.carbon * weights.carbon / wSum * 10).toFixed(1)} tooltip="Weighted carbon contribution (0–10). Reflects grid carbon intensity (kg CO₂/MWh) at this location." />
+                <KPI label="Total Impact Score" value={roundScore(selected.total_score).toFixed(1)} color={totalColor} tooltip="The single 0–10 composite score combining water, climate, carbon, and energy cost using your weights. Lower = more favorable site." />
               </div>
 
               {/* Precipitation & Variability detail */}
