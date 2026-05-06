@@ -21,7 +21,7 @@ const members = [
     tag: "QUANTITATIVE ANALYST",
     title: "Scoring & Algorithm Engineer",
     description:
-      "Designed the multi-variable scoring framework — developing the normalization methodology, Water Stress Score, Carbon Cost Index, and Total Impact Score with adjustable scenario weights.",
+      "Designed the multi-variable scoring framework — developing the normalization methodology, Water Stress Score, Carbon Impact Score, and Total Impact Score with adjustable scenario weights.",
     accent: "green",
   },
   {
