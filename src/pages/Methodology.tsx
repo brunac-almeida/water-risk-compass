@@ -338,25 +338,6 @@ const Methodology = () => {
           </div>
         </div>
       </div>
-
-        {/* Calculated Pillar Scores */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <div className="border-l-4 border-l-risk-coral p-7">
-            <h3 className="font-display text-xl font-bold text-foreground mb-1">Calculated Pillar Scores</h3>
-            <p className="text-[12.5px] text-slate leading-[1.6] mb-5">
-              Derived by the scoring engine using min-max normalization and fixed inner weights. These are not raw measurements.
-            </p>
-            <div className="flex flex-col gap-5">
-              {outputIndices.map((v) => (
-                <div key={v.label}>
-                  <p className={`text-[15px] font-semibold ${v.color}`}>{v.label}</p>
-                  <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.formula}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
 
     {/* Section 4 — Formula box */}
