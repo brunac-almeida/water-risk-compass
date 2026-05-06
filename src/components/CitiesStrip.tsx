@@ -73,12 +73,12 @@ const CitiesStrip = () => {
             return (
               <div
                 key={city.name}
-                className={`flip-card cursor-pointer h-[170px] transition-transform duration-200 hover:-translate-y-1.5 hover:drop-shadow-lg ${isFlipped ? "flipped" : ""}`}
+                className={`flip-card cursor-pointer transition-transform duration-200 hover:-translate-y-1.5 hover:drop-shadow-lg ${isFlipped ? "flipped" : ""}`}
                 onClick={() => toggle(city.name)}
               >
-                <div className="flip-card-inner relative w-full h-full">
+                <div className="flip-card-inner grid w-full" style={{ gridTemplateAreas: '"stack"' }}>
                   {/* Front */}
-                  <div className="flip-card-front absolute inset-0 bg-card border border-border rounded-2xl p-[22px] px-[18px] shadow-[0_4px_20px_rgba(26,26,46,0.08)] overflow-hidden">
+                  <div className={`flip-card-front [grid-area:stack] relative w-full bg-card border border-border rounded-2xl p-[22px] px-[18px] shadow-[0_4px_20px_rgba(26,26,46,0.08)] overflow-hidden`}>
                     <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${c.stripe}`} />
                     <div className={`font-display text-lg font-bold leading-tight mb-1.5 ${c.name}`}>
                       {city.name}
@@ -92,7 +92,7 @@ const CitiesStrip = () => {
                   </div>
 
                   {/* Back */}
-                  <div className={`flip-card-back absolute inset-0 bg-card border ${c.border} rounded-2xl p-[18px] shadow-[0_4px_20px_rgba(26,26,46,0.08)] overflow-hidden flex items-center`}>
+                  <div className={`flip-card-back [grid-area:stack] relative w-full bg-card border ${c.border} rounded-2xl p-[18px] shadow-[0_4px_20px_rgba(26,26,46,0.08)] overflow-hidden flex items-center`}>
                     <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${c.stripe}`} />
                     <p className="text-[11px] text-slate leading-[1.55]">
                       {city.back}
