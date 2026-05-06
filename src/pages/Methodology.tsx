@@ -313,7 +313,7 @@ const Methodology = () => {
               <div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Calculated Pillar Scores</h3>
                 <p className="text-[12.5px] text-slate leading-[1.6]">
-                  Intermediate scores used to calculate the final site impact score.
+                  Normalized pillar scores used in the final site ranking.
                 </p>
               </div>
               <ChevronDown
