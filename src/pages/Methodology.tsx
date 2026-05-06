@@ -275,23 +275,20 @@ const Methodology = () => {
               className={`grid transition-all duration-300 ease-out ${showSteps ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
             >
               <div className="overflow-hidden">
-                <div
-                  className="bg-muted/40 border border-border rounded-xl p-3 flex flex-col gap-1"
-                  title="Applies min-max scaling across all cities then computes four weighted pillar scores."
-                >
+                <div className="flex flex-col gap-1">
                   {[
                     { n: "1", title: "Read raw data", sub: "CSV input files" },
                     { n: "2", title: "Normalize", sub: "Min-max 0–1 per variable" },
                     { n: "3", title: "Compute pillars", sub: "Fixed inner weights" },
                   ].map((s, i, arr) => (
                     <div key={s.n} className="flex flex-col items-center">
-                      <div className="bg-card border border-border rounded-lg px-3 py-2 text-center w-full">
-                        <p className="font-mono text-[10px] uppercase tracking-wider text-teal mb-0.5">Step {s.n}</p>
-                        <p className="font-display text-[12.5px] font-bold text-foreground leading-tight">{s.title}</p>
-                        <p className="text-[10.5px] text-slate leading-tight mt-0.5">{s.sub}</p>
+                      <div className="bg-card border border-border rounded-xl px-4 py-3 text-center w-full shadow-sm">
+                        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-slate/70 mb-1">Step {s.n}</p>
+                        <p className="font-display text-[15px] font-bold text-foreground leading-tight">{s.title}</p>
+                        <p className="text-[12px] text-risk-amber leading-tight mt-1">{s.sub}</p>
                       </div>
                       {i < arr.length - 1 && (
-                        <div className="text-teal/60 text-lg font-bold leading-none my-0.5">↓</div>
+                        <div className="text-slate/40 text-base leading-none my-1">↓</div>
                       )}
                     </div>
                   ))}
