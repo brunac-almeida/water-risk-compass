@@ -263,7 +263,7 @@ const Methodology = () => {
               <div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Scoring Steps</h3>
                 <p className="text-[12.5px] text-slate leading-[1.6]">
-                  Three-step process: read data, normalize, and compute scores.
+                  Read, normalize, compute.
                 </p>
               </div>
               <ChevronDown
