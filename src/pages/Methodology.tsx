@@ -204,9 +204,9 @@ const Methodology = () => {
 
     {/* Section 3 — Input Variables & Output Indices */}
     <section className="bg-background py-20">
-      <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-start">
+      <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-stretch">
         {/* Raw Input Variables */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden flex">
+        <div className="bg-card rounded-xl border border-border overflow-hidden flex h-full">
           <div className="border-l-4 border-l-teal p-7 flex-1">
             <button
               type="button"
