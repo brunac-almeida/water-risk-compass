@@ -28,7 +28,7 @@ const cities = [
     state: "Arizona",
     region: "Southwest Desert",
     color: "coral" as const,
-    back: "Rapid hyperscale expansion despite facing the most severe long-term water risk in this cohort due to Colorado River constraints.",
+    back: "High cooling demand and the most acute water stress in the cohort — a high-risk, high-growth market.",
   },
   {
     name: "Chicago",
