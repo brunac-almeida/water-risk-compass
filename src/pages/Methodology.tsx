@@ -153,18 +153,18 @@ const Methodology = () => {
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
               {step.num === "02" && (
-                <div className="mt-3">
+                <div className="mt-3 flex flex-col min-h-0 flex-1">
                   <button
                     type="button"
                     onClick={() => setShowNormFormula((v) => !v)}
-                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors shrink-0"
                     aria-expanded={showNormFormula}
                   >
                     <span className="text-[10px]">{showNormFormula ? "▾" : "▸"}</span>
                     {showNormFormula ? "Hide formula" : "Show formula"}
                   </button>
                   {showNormFormula && (
-                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] flex flex-col gap-2">
+                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] flex flex-col gap-2 overflow-auto min-h-0 flex-1">
                       <div className="text-foreground font-semibold">norm(x) = (x − min) / (max − min)</div>
                       <div className="text-slate">0 = best in group — 1 = worst in group</div>
                       <div className="text-slate">Exception: annual precipitation uses 1 − norm(x) so less rain = higher risk score</div>
@@ -173,18 +173,18 @@ const Methodology = () => {
                 </div>
               )}
               {step.num === "03" && (
-                <div className="mt-3">
+                <div className="mt-3 flex flex-col min-h-0 flex-1">
                   <button
                     type="button"
                     onClick={() => setShowFormulas((v) => !v)}
-                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                    className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors shrink-0"
                     aria-expanded={showFormulas}
                   >
                     <span className="text-[10px]">{showFormulas ? "▾" : "▸"}</span>
                     {showFormulas ? "Hide pillar formulas" : "Show pillar formulas"}
                   </button>
                   {showFormulas && (
-                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
+                    <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 overflow-auto min-h-0 flex-1 content-start">
                       {pillarFormulas.map((p) => (
                         <div key={p.name} className="contents">
                           <span className="text-teal whitespace-nowrap font-semibold">{p.name}</span>
