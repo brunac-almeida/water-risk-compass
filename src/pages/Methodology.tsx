@@ -65,7 +65,7 @@ const glossary = [
 ];
 
 const pipelineSteps = [
-  { num: "01", title: "Data Collection", text: "Gather temperature, water price, and carbon intensity from NOAA, EIA, and Circle of Blue for 5 U.S. cities." },
+  { num: "01", title: "Data Collection", text: "Gather 9 environmental and utility variables from NOAA, EIA, WRI Aqueduct, and Circle of Blue for 5 U.S. cities." },
   { num: "02", title: "Normalization", text: "Apply min-max scaling to convert all variables to a 0–1 scale for fair cross-variable comparison." },
   { num: "03", title: "Index Calculation", text: "Compute four sub-indices: Water Risk Score, Climate Load Index, Carbon Impact Score, and Energy Cost Score." },
   { num: "04", title: "Weighting", text: "Apply scenario weights to each index — adjustable by the user to reflect different planning priorities." },
