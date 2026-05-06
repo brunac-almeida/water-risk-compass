@@ -180,11 +180,12 @@ const Dashboard = () => {
     stroke: c.city === selectedCity ? "hsl(184,100%,20%)" : "transparent",
   }));
 
+  const _wSumDonut = weights.water + weights.climate + weights.carbon + weights.cost;
   const donutData = selected ? [
-    { name: "Water", raw: selected.water_risk ?? 0, value: +((selected.water_risk ?? 0) * weights.water).toFixed(3) },
-    { name: "Climate", raw: selected.climate_load ?? 0, value: +((selected.climate_load ?? 0) * weights.climate).toFixed(3) },
-    { name: "Carbon", raw: selected.carbon ?? 0, value: +((selected.carbon ?? 0) * weights.carbon).toFixed(3) },
-    { name: "Cost", raw: selected.energy_cost ?? 0, value: +((selected.energy_cost ?? 0) * weights.cost).toFixed(3) },
+    { name: "Water", raw: selected.water_risk ?? 0, value: +(((selected.water_risk ?? 0) * weights.water / _wSumDonut) * 10).toFixed(3) },
+    { name: "Climate", raw: selected.climate_load ?? 0, value: +(((selected.climate_load ?? 0) * weights.climate / _wSumDonut) * 10).toFixed(3) },
+    { name: "Carbon", raw: selected.carbon ?? 0, value: +(((selected.carbon ?? 0) * weights.carbon / _wSumDonut) * 10).toFixed(3) },
+    { name: "Cost", raw: selected.energy_cost ?? 0, value: +(((selected.energy_cost ?? 0) * weights.cost / _wSumDonut) * 10).toFixed(3) },
   ] : [];
 
   const scatterData = cities.map((c, i) => ({
