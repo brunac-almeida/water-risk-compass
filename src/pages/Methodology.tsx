@@ -33,7 +33,7 @@ const glossary = [
       "The amount of CO₂ emitted per unit of electricity generated on the local power grid (kg CO₂ per MWh). Lower carbon intensity means cleaner electricity and a smaller climate footprint per server hour.",
   },
   {
-    term: "Cooling Cost Index",
+    term: "Climate Load Index",
     definition:
       "A normalized estimate of how much energy and water a data center will need to stay cool in a given climate. Hotter cities score higher (worse) because cooling equipment must work harder year-round.",
   },
