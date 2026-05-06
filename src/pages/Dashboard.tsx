@@ -198,7 +198,7 @@ const Dashboard = () => {
   }));
 
   /* KPI helper */
-  const KPI = ({ label, value, color, tooltip }: { label: string; value: string; color?: string; tooltip?: string }) => (
+  const KPI = ({ label, value, color, tooltip, subtitle }: { label: string; value: string; color?: string; tooltip?: string; subtitle?: string }) => (
     <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-1">
       <span className="text-xs font-body text-muted-foreground inline-flex items-center gap-1">
         {label}
@@ -214,6 +214,7 @@ const Dashboard = () => {
         )}
       </span>
       <span className={`text-2xl font-display font-bold ${color ?? "text-foreground"}`}>{value}</span>
+      {subtitle && <span className="text-[10px] font-body text-muted-foreground">{subtitle}</span>}
     </div>
   );
 
