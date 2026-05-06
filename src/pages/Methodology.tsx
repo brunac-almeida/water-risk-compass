@@ -148,7 +148,7 @@ const Methodology = () => {
       <div className="flex items-stretch gap-0">
         {pipelineSteps.map((step, i) => (
           <div key={step.num} className="flex items-stretch flex-1 min-w-0">
-            <div className="bg-card rounded-xl border border-border p-5 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg flex-1">
+            <div className="bg-card rounded-xl border border-border p-5 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg flex-1 h-[340px] overflow-hidden">
               <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
               <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
