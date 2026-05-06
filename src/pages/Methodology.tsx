@@ -204,58 +204,44 @@ const Methodology = () => {
 
     {/* Section 3 — Input Variables & Output Indices */}
     <section className="bg-background py-20">
-      <style>{`
-        @media (min-width: 1024px) {
-          .methodology-grid {
-            grid-template-columns: ${showInputs ? "2.2fr auto 1fr" : "1fr auto 1fr"} !important;
-            transition: grid-template-columns 500ms ease-in-out;
-          }
-        }
-      `}</style>
-      <div className="max-w-[1240px] mx-auto px-14 methodology-grid grid grid-cols-1 gap-6 items-start">
+      <div className="max-w-[1240px] mx-auto px-14 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-start">
         {/* Raw Input Variables */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden flex min-w-0">
-          <div className="border-l-4 border-l-teal p-7 flex-1 min-w-0">
+        <div className="bg-card rounded-xl border border-border overflow-hidden flex">
+          <div className="border-l-4 border-l-teal p-7 flex-1">
             <button
               type="button"
               onClick={() => setShowInputs((v) => !v)}
               aria-expanded={showInputs}
               className="w-full flex items-start justify-between gap-4 text-left"
             >
-              <div className="min-w-0">
+              <div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Raw Input Variables</h3>
                 <p className="text-[12.5px] text-slate leading-[1.6]">
                   Real-world measured values from public data sources. These feed directly into the scoring engine.
                 </p>
               </div>
               <ChevronDown
-                className={`text-teal shrink-0 mt-1 transition-transform duration-500 ${showInputs ? "rotate-180" : ""}`}
+                className={`text-teal shrink-0 mt-1 transition-transform ${showInputs ? "rotate-180" : ""}`}
                 size={20}
               />
             </button>
-            <div
-              className={`grid transition-all duration-500 ease-in-out ${
-                showInputs ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0 mt-0"
-              }`}
-            >
-              <div className="overflow-hidden min-h-0">
-                <div className="flex flex-col gap-6">
-                  {inputGroups.map((g) => (
-                    <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
-                      <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
-                      <div className="flex flex-col gap-4">
-                        {g.vars.map((v) => (
-                          <div key={v.label}>
-                            <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
-                            <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
-                          </div>
-                        ))}
-                      </div>
+            {showInputs && (
+              <div className="flex flex-col gap-6 mt-5">
+                {inputGroups.map((g) => (
+                  <div key={g.label} className={`border-l-2 ${g.accent} pl-4`}>
+                    <p className={`font-mono text-[11px] uppercase tracking-wider ${g.tagColor} mb-3`}>{g.label}</p>
+                    <div className="flex flex-col gap-4">
+                      {g.vars.map((v) => (
+                        <div key={v.label}>
+                          <p className="text-[15px] font-semibold text-foreground">{v.label}</p>
+                          <p className="text-[13px] text-slate leading-[1.6] mt-0.5">{v.source}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
 
