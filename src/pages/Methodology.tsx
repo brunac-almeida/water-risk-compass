@@ -252,7 +252,7 @@ const Methodology = () => {
         </div>
 
         {/* Scoring Steps (middle) */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden lg:w-[260px]">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="border-l-4 border-l-risk-amber p-7">
             <button
               type="button"
@@ -263,7 +263,7 @@ const Methodology = () => {
               <div>
                 <h3 className="font-display text-xl font-bold text-foreground mb-1">Scoring Steps</h3>
                 <p className="text-[12.5px] text-slate leading-[1.6]">
-                  Three-step process: read data, normalize, and compute scores.
+                  Read, normalize, compute.
                 </p>
               </div>
               <ChevronDown
@@ -275,26 +275,64 @@ const Methodology = () => {
               className={`grid transition-all duration-300 ease-out ${showSteps ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
             >
               <div className="overflow-hidden">
-                <div
-                  className="bg-muted/40 border border-border rounded-xl p-3 flex flex-col gap-1"
-                  title="Applies min-max scaling across all cities then computes four weighted pillar scores."
-                >
-                  {[
-                    { n: "1", title: "Read raw data", sub: "CSV input files" },
-                    { n: "2", title: "Normalize", sub: "Min-max 0–1 per variable" },
-                    { n: "3", title: "Compute pillars", sub: "Fixed inner weights" },
-                  ].map((s, i, arr) => (
-                    <div key={s.n} className="flex flex-col items-center">
-                      <div className="bg-card border border-border rounded-lg px-3 py-2 text-center w-full">
-                        <p className="font-mono text-[10px] uppercase tracking-wider text-teal mb-0.5">Step {s.n}</p>
-                        <p className="font-display text-[12.5px] font-bold text-foreground leading-tight">{s.title}</p>
-                        <p className="text-[10.5px] text-slate leading-tight mt-0.5">{s.sub}</p>
+                <div className="bg-muted/40 border border-border rounded-xl p-5">
+                  <div className="flex items-stretch gap-0">
+                    {pipelineSteps.map((step, i) => (
+                      <div key={step.num} className="flex items-stretch flex-1 min-w-0">
+                        <div className="bg-card rounded-xl border border-border p-5 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg flex-1">
+                          <span className="font-mono text-[11px] text-teal mb-2">Step {step.num}</span>
+                          <h3 className="font-display text-[15px] font-bold text-foreground mb-2">{step.title}</h3>
+                          <p className="text-[13px] text-slate leading-[1.65]">{step.text}</p>
+                          {step.num === "02" && (
+                            <div className="mt-3">
+                              <button
+                                type="button"
+                                onClick={() => setShowNormFormula((v) => !v)}
+                                className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                                aria-expanded={showNormFormula}
+                              >
+                                <span className="text-[10px]">{showNormFormula ? "▾" : "▸"}</span>
+                                {showNormFormula ? "Hide formula" : "Show formula"}
+                              </button>
+                              {showNormFormula && (
+                                <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] flex flex-col gap-2">
+                                  <div className="text-foreground font-semibold">norm(x) = (x − min) / (max − min)</div>
+                                  <div className="text-slate">0 = best in group — 1 = worst in group</div>
+                                  <div className="text-slate">Exception: annual precipitation uses 1 − norm(x) so less rain = higher risk score</div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {step.num === "03" && (
+                            <div className="mt-3">
+                              <button
+                                type="button"
+                                onClick={() => setShowFormulas((v) => !v)}
+                                className="font-mono text-[11px] text-teal hover:text-teal/80 inline-flex items-center gap-1 transition-colors"
+                                aria-expanded={showFormulas}
+                              >
+                                <span className="text-[10px]">{showFormulas ? "▾" : "▸"}</span>
+                                {showFormulas ? "Hide pillar formulas" : "Show pillar formulas"}
+                              </button>
+                              {showFormulas && (
+                                <div className="mt-2 border border-border rounded-md bg-muted/40 p-3 font-mono text-[10.5px] leading-[1.55] grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
+                                  {pillarFormulas.map((p) => (
+                                    <div key={p.name} className="contents">
+                                      <span className="text-teal whitespace-nowrap font-semibold">{p.name}</span>
+                                      <span className="text-slate break-words">{p.formula}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {i < pipelineSteps.length - 1 && (
+                          <div className="flex items-center px-2 text-teal/40 text-xl font-bold shrink-0">→</div>
+                        )}
                       </div>
-                      {i < arr.length - 1 && (
-                        <div className="text-teal/60 text-lg font-bold leading-none my-0.5">↓</div>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
