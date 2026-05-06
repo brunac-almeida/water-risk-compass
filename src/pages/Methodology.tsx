@@ -78,7 +78,6 @@ const inputGroups = [
     tagColor: "text-teal",
     vars: [
       { label: "Water Stress Index", source: "WRI Aqueduct · 2023 · Baseline water stress ratio" },
-      { label: "Drought Risk", source: "U.S. Drought Monitor · 2023 · Multi-year average severity classification" },
       { label: "Water Price ($/1,000 gal)", source: "Circle of Blue · 2018 · Standardized 100 gal/person/day scenario" },
       { label: "Annual Precipitation (in)", source: "NOAA Climate at a Glance · 2023 · State-level annual total" },
       { label: "Monthly Rainfall Variability", source: "NOAA NCEI · 2023 · Coefficient of variation across monthly totals" },
@@ -89,8 +88,7 @@ const inputGroups = [
     accent: "border-l-risk-amber",
     tagColor: "text-risk-amber",
     vars: [
-      { label: "Average Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · State-level annual average" },
-      { label: "Avg Summer Temp", source: "NOAA Climate at a Glance · 2023 · June–August state-level mean" },
+      { label: "Temperature (°F)", source: "NOAA Climate at a Glance · 2023 · Annual average and June–August mean" },
       { label: "Cooling Degree Days (CDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
       { label: "Heating Degree Days (HDD)", source: "NOAA NCEI · 2023 · Annual state-level totals" },
     ],
@@ -101,7 +99,7 @@ const inputGroups = [
     tagColor: "text-risk-green",
     vars: [
       { label: "Grid Carbon Intensity (kg CO₂/MWh)", source: "EIA SEDS + Generation Data · 2023 · State-level" },
-      { label: "Electricity Price ($/kWh)", source: "EIA Electric Power Monthly · 2023 · Industrial rate" },
+      { label: "Energy Cost Index", source: "EIA Electric Power Monthly · 2023 · Industrial rate" },
     ],
   },
 ];
