@@ -116,6 +116,8 @@ const outputIndices = [
 const Methodology = () => {
   const [showFormulas, setShowFormulas] = useState(false);
   const [showInputs, setShowInputs] = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
+  const [showOutputs, setShowOutputs] = useState(false);
   const [showNormFormula, setShowNormFormula] = useState(false);
   const { hash } = useLocation();
   useEffect(() => {
